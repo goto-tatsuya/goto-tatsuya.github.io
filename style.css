@@ -1,0 +1,33 @@
+body {
+    background-color: rgb(41, 41, 41);
+}
+
+h1, h2 {
+    color: rgb(235, 235, 235);
+}
+
+div.box {
+    background-color: #333;
+    max-width: 50em;
+    color: rgb(221, 220, 220);
+}
+
+
+a:link, a:visited, a:active, a:hover, a:focus {
+	border-bottom: 1px solid;
+}
+
+a:link {
+	border-bottom-color: #b4b4ef;
+	color: #b4b4ef;
+}
+
+a:visited {
+	border-bottom-color: #cf7ccf;
+	color: #cf7ccf;
+}
+
+a:active, a:hover {
+	border-bottom-color: rgb(203, 89, 89);
+	color: rgb(203, 89, 89);
+}
