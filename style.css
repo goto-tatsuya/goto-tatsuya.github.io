@@ -1,37 +1,29 @@
 body {
-    background-color: rgb(41, 41, 41);
+    background-color: rgb(214, 214, 214);
 }
 
 h1 {
-	font-size: 300%;
+	font-size: 350%;
 }
 
 h1, h2 {
-    color: rgb(235, 235, 235);
+    color: rgb(20, 20, 20);
 }
 
 div.box {
-    background-color: #333;
+    background-color: rgb(195, 195, 195);
     max-width: 50em;
-    color: rgb(221, 220, 220);
-}
-
-
-a:link, a:visited, a:active, a:hover, a:focus {
-	border-bottom: 1px solid;
+    color: rgb(34, 34, 34);
 }
 
 a:link {
-	border-bottom-color: #b4b4ef;
-	color: #b4b4ef;
+	color: #1f1f7d;
 }
 
 a:visited {
-	border-bottom-color: #cf7ccf;
-	color: #cf7ccf;
+	color: #a133a1;
 }
 
 a:active, a:hover {
-	border-bottom-color: rgb(203, 89, 89);
-	color: rgb(203, 89, 89);
+	color: rgb(148, 36, 36);
 }
