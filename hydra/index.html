@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>JavaScript Hydra Game</title>
+    </head>
+    <body>
+        <h1>JavaScript Hydra Game</h1>
+        <span id="status"></span><br>
+        Hydra tree: 
+        <select id="treeselect">
+            <option>[h]</option>
+            <option>[[h]]</option>
+            <option>[[h], [h]]</option>
+            <option>[[h, h]]</option>
+            <option>[[[h]]]</option>
+            <option>[[[[h]]]]</option>
+            <option>Custom</option>
+        </select>
+        <button id="generate">Generate</button><br>
+        <input type="checkbox" id="autoplay" name="autoplay" />
+        <label for="autoplay">Auto Play</label><br>
+        <img src="carrot-rotated.png" id="draggable-carrot" draggable="true" /><br>
+        <audio src="sword.mp3" id="swordaudio"></audio>
+        <audio src="grow.mp3" id="dragonaudio"></audio>
+        <audio src="fanfare.mp3" id="fanfareaudio"></audio>
+        <audio src="bite.mp3" id="biteaudio"></audio>
+        <img src="biting.png" id="bitingimg" style="display:none" />
+        <img src="carrot1.png" id="carrotimg1" style="display:none" />
+        <img src="carrot2.png" id="carrotimg2" style="display:none" />
+        <img src="carrot3.png" id="carrotimg3" style="display:none" />
+        <img src="carrot4.png" id="carrotimg4" style="display:none" />
+        <canvas width="800" height="600" id="maincanvas"></canvas>
+        <h2>How to play</h2>
+        <p>As for the rule, see <a href="https://en.wikipedia.org/wiki/Hydra_game">Wikipedia's article</a>.</p>
+        <p>Clicking a head of hydra, you can cut the head.</p>
+        <p>By dragging and dropping a carrot onto Hydra's head, you can make Hydra eat it. However, there is no effect of it.</p>
+        <h2>Credit</h2>
+        <p>This program was created by <a href="https://t-goto.jp">Tatsuya Goto</a> in 2024.</p>
+        <p>This program uses the <a href="https://brm.io/matter-js/">matter.js</a>, which is a JavaScript physics engine.</p>
+        <p>This program uses sound materials from the following site.</p>
+        <ul>
+            <li><a href="https://soundeffect-lab.info/sound/battle/">効果音ラボ</a></li>
+            <li><a href="https://pixta.jp/audio/89293929">カルマプレア（Audiostock） / PIXTA(ピクスタ) </a></li>
+            <li><a href="https://www.nakano-sound.com/free/fn.html">red bears</a></li>
+            <li><a href="https://otologic.jp/free/se/motion-eating01.html">OtoLogic</a></li>
+        </ul>
+        <script src="matter.min.js"></script>
+        <script src="hydra.js"></script>
+    </body>
+</html>
