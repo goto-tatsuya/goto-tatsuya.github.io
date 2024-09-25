@@ -1,0 +1,172 @@
+
+
+html, body,
+h1, h2, h3, h4, h5, h6,
+p, blockquote, address, pre, div, form, hr,
+ul, ol, li, dl, dt, dd,
+table, caption, tr, td, th,
+ins, del,
+a, sup, sub,
+em, strong, dfn, code, samp, kbd, var, cite, abbr, acronym {
+	margin: 0;
+	padding: 0;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+body {
+	margin: 0 auto;
+	max-width: 55rem;
+	line-height: 1.5;
+	color: #000;
+	font-size: 100%;
+}
+
+p, ul, ol, dl, pre, form, address {
+	margin: 1em 30px;
+	letter-spacing: 0.01em;
+}
+
+p.breadcrumbs {
+	margin-left: 0;
+}
+
+p {
+}
+
+h1, h2, h3, h4, h5, h6 {
+	margin: 0.5em 0; 
+}
+
+
+h1, h2 {
+	font-weight: bold;
+}
+
+h1 {
+	margin: 0;
+	padding: 40px 0;
+	font-size: 300%;
+}
+
+h1 span {
+	background: rgba(255, 214, 170, 0.7);
+
+}
+
+h2 {
+	padding: 0 10px;
+	font-size: 160%;
+}
+
+h3 {
+	padding: 0 20px;
+	border-bottom: 2px dotted #d8beb8;
+	font-size: 125%;
+}
+
+h4 {
+	padding: 0 25px;
+	font-size: 100%;
+}
+
+h5, h6 {
+	padding: 0 30px;
+	font-size: 100%;
+}
+
+pre {
+	padding: 0.5em 10px;
+	background-color: #fff;
+	white-space: pre;
+}
+
+address {
+	text-align: right;
+}
+
+blockquote {
+	margin: 1.5em 30px;
+	border: 1px solid #700;
+}
+
+li {
+	margin: 0.5em 10px;
+}
+
+li li, li p, li pre, li dt, li dd,
+dd li, dd p, dd pre, dd dt, dd dd {
+	font-size: 100%;
+}
+
+li ul, li ol, li dl, li p,
+dd ul, dd ol, dd dl, dd p {
+	margin: 0.1em 10px;
+}
+
+dt {
+	margin: 0.6em 10px 0.1em 10px;
+	background-color: #e8e8e8;
+}
+
+dd {
+	margin: 0.1em 10px 0.6em 30px;
+}
+
+table {
+	margin: 0 30px 0.5em 30px;
+	border-collapse: collapse;
+}
+td, th {
+	border: 1px solid #CCC;
+	padding: 0.1em 5px;
+}
+th {
+	background: #F3F3F3;
+}
+
+a:link, a:visited, a:active, a:hover, a:focus {
+	border-bottom: 1px solid;
+}
+
+a:link {
+	border-bottom-color: blue;
+	color: blue;
+}
+
+a:visited {
+	border-bottom-color: purple;
+	color: purple;
+}
+
+a:active, a:hover {
+	border-bottom-color: red;
+	color: red;
+}
+
+em, strong {
+	color: #d30e0e;
+}
+
+strong {
+	font-weight: bold;
+}
+
+del, del * {
+	color: #999;
+	text-decoration: line-through;
+}
+
+ins {
+	border-bottom: 1px dashed #999;
+}
+
+hr {
+	margin: 20px 0;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
