@@ -1,7 +1,4 @@
 html {
-	background-image: url("cichon-mug.jpg");
-	background-size: contain;
-	background-repeat: no-repeat;
 	padding: 0;
 	margin: 0;
 }
@@ -9,7 +6,7 @@ html {
 body {
 	margin: 0;
 	padding: 1em;
-    background-color: rgba(214, 214, 214, 0.95);
+    background-color: rgba(214, 214, 214, 1);
 }
 
 h1 {
@@ -25,6 +22,11 @@ div.box {
     background-color: rgba(0, 0, 0, 0.1);
     max-width: 50em;
     color: rgb(34, 34, 34);
+}
+
+.gallery {
+    max-width: 50em;
+	text-align: center;
 }
 
 a:link {
