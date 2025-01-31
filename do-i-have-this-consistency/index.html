@@ -6,11 +6,10 @@
         <script src="https://unpkg.com/jquery@3.7.1/dist/jquery.js"></script>
         <script src="https://unpkg.com/@popperjs/core@2"></script>
         <script src="https://unpkg.com/tippy.js@6"></script>
-        <!--
         <script src="https://d3js.org/d3.v4.min.js"></script>
         <script src="https://unpkg.com/viz.js@1.8.1/viz.js" type="javascript/worker"></script>
         <script src="https://unpkg.com/d3-graphviz@2.6.1/build/d3-graphviz.js"></script>
-        -->
+        <script src="presets.js"></script>
         <script src="main.js"></script>
         <style>
             #container {
@@ -58,69 +57,25 @@
         <h1>Do I have this consistency?</h1>
         <div id="contanier">
         <div id="left">
-        <textarea id="source" cols="50" rows="30">
-invariants:
-- add(N)
-- cov(N)
-- b
-- non(M)
-- cov(M)
-- d
-- non(N)
-- cof(N)
-- non(E)
-- cov(E)
-
-theorems:
-- add(N)<=cov(N)
-- add(N)<=b
-- cov(N)<=non(M)
-- b<=non(M) 
-- add(N)<=cov(M)
-- b<=d
-- cov(M)<=d
-- cov(M)<=non(N)
-- non(M)<=cof(N)
-- d<=cof(N)
-- non(N)<=cof(N)
-- non(N)<=cof(N)
-- non(E)<=non(M)
-- non(E)<=non(N)
-- cov(M)<=cov(E)
-- cov(N)<=cov(E)
-- add(N)<=non(E)
-- cov(E)<=cof(N)
-
-consistency:
-- non(N)<non(M) ; PTfg
-- cov(N)<non(M) ; PTfg
-- d<non(M) ; PTfg
-- d<non(N); Sgg*
-- non(N)<cov(N) ; random
-- d<cov(N) ; random
-- non(M)<cov(M) ; Cohen
-- cov(N)<b ; Laver
-- cov(M)<b ; Laver
-- non(N)<b ; Laver
-- cov(E)<b ; Laver
-- d<non(E) ; Brendle
-- cov(E)<non(E) ; Mathias</textarea><br>
-    <button id="run">Run!</button></div>
-    <div id="right">
-        <h2>Explanation:</h2>
-        <p>
-            This program tells you whether consistency of x &lt; y for cardinal invariants x and y can be deduced or not using transitivity from known theorems of inequality and known consistency results.
-        </p>
-        <p>
-            I don't explain the syntax of the input. Imitate the preset inputs.
-        </p>
-        <p>
-            If you are not familiar with cardinal invariants of the continuum, see <a href="https://en.wikipedia.org/wiki/Cardinal_characteristic_of_the_continuum">Wikipedia's article</a>.
-        </p>
-        <p>
-            This program was created by <a href="/">Tatsuya Goto</a> in 2025.
-        </p>
-    </div>
+            <select></select>
+            <textarea id="source" cols="50" rows="30"></textarea><br>
+            <button id="run">Run!</button>
+        </div>
+        <div id="right">
+            <h2>Explanation:</h2>
+            <p>
+                This program tells you whether consistency of x &lt; y for cardinal invariants x and y can be deduced or not using transitivity from known theorems of inequality and known consistency results.
+            </p>
+            <p>
+                I don't explain the syntax of the input. Imitate the preset inputs.
+            </p>
+            <p>
+                If you are not familiar with cardinal invariants of the continuum, see <a href="https://en.wikipedia.org/wiki/Cardinal_characteristic_of_the_continuum">Wikipedia's article</a>.
+            </p>
+            <p>
+                This program was created by <a href="/">Tatsuya Goto</a> in 2025.
+            </p>
+        </div>
     </div>
     </body>
 </html>

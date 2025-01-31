@@ -1,5 +1,17 @@
 window.addEventListener("load", () => {
+    const $select = $("select");
     const source = document.querySelector("#source");
+    for (let [name, text] of PRESETS) {
+        let $option = $("<option/>").text(name);
+        $select.append($option);
+        if (name === DEFAULT) {
+            $option[0].selected = true;
+            source.value = text;
+        }
+    }
+    $select[0].addEventListener("change", (e) => {
+        source.value = PRESETS.find(x => x[0] == e.target.value)[1];
+    });
     const run = document.querySelector("#run");
     const right = document.querySelector("#right");
     run.addEventListener("click", () => {
@@ -61,11 +73,11 @@ window.addEventListener("load", () => {
         $table.append($thead);
         $table.append($tbody);
         $(right).empty().append("<p>Table of Con(y < x)</p>").append($table);
-        /* let $graph = $("<div id=graph></div>")
+        let $graph = $("<div id=graph></div>")
         $(right).append($graph);
         d3.select("#graph").graphviz()
         .fade(false)
-        .renderDot(dot_text(invariants, theorems, consistency)); */
+        .renderDot(dot_text(invariants, theorems, consistency));
     });
 });
 
@@ -184,7 +196,7 @@ function parse(text) {
             continue;
         }
         let m;
-        if (m = line.match(/^(invariants|theorems|consistency):$/)) {
+        if (m = line.match(/^(invariants|theorems|consistency|models):$/)) {
             mode = m[1];
         } else if (m = line.match(/^- (.+)$/)) {
             if (mode === "invariants") {
@@ -201,6 +213,19 @@ function parse(text) {
                     throw new ParseError(i);
                 }
                 consistency.push([m2[1], m2[2], m2[3] || ""]);
+            } else if (mode === "models") {
+                let m2 = m[1].match(/^(.+);(.+);(.+)$/);
+                if (!m2) {
+                    throw new ParseError(i);
+                }
+                let model_name = m2[1];
+                let small_invariants = m2[2].split(",");
+                let large_invariants = m2[3].split(",");
+                for (let sm of small_invariants) {
+                    for (let la of large_invariants) {
+                        consistency.push([sm, la, model_name]);
+                    }
+                }
             } else {
                 throw new ParseError(i);
             }
