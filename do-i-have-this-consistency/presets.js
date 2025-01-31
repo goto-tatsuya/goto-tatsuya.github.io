@@ -147,10 +147,9 @@ theorems:
 - b<=r
 - add(N)<=e
 - e<=non(M)
-
 - p<=add(M)
-
 - cof(M)<=i
+- e<=cov(M)
 
 models:
 - Cohen;non(M),a,g;cov(M)
