@@ -72,7 +72,7 @@ models:
 - Mathias;e;h
 - Laver;e,s;b,g
 - prediction;p,b,s;e
-- Miller;u;d,g
+- Miller;u,a;d,g
 - Hechler;g;b
 - Blass-Shelah;u;s
 - Shelah1984;b;a
@@ -80,8 +80,9 @@ models:
 - Shelah1992;i;u
 - Shelah2000;d,u,i;a
 - Brendle-Fischer;a;s
-- short cofinality iteration of amoeba;g;e
+- small cofinality iteration of amoeba;g;e
 - Blass1999;g;s
+- Brendle-Cardona-Mejía;a;e
 `],
 ["Blass-Cichoń",`invariants:
 - p
