@@ -9,7 +9,7 @@
         <script src="https://d3js.org/d3.v4.min.js"></script>
         <script src="https://unpkg.com/viz.js@1.8.1/viz.js" type="javascript/worker"></script>
         <script src="https://unpkg.com/d3-graphviz@2.6.1/build/d3-graphviz.js"></script>
-        <script src="presets.js?20250201"></script>
+        <script src="presets.js?20250202"></script>
         <script src="main.js?20250131"></script>
         <style>
             #container {
@@ -31,6 +31,10 @@
 
             #source {   
                 width: 100%;
+            }
+
+            #run {
+                font-size: 200%;
             }
 
             table {
@@ -75,6 +79,40 @@
             <p>
                 This program was created by <a href="/">Tatsuya Goto</a> in 2025.
             </p>
+            <h2>References</h2>
+            <ul>
+                <li>Regarding the definitions of all cardinal invariants written in presets, see [Bla10].</li>
+                <li>To know the proof of p<=h, see Proposition 6.8 of [Bla10].</li>
+                <li>To know the proof of p<=e, see Theorem 10.4 of [Bla10].</li>
+                <li>To know the proof of h<=b, see Theorem 6.9 of [Bla10].</li>
+                <li>To know the proof of h<=g, see Proposition 6.27 of [Bla10].</li>
+                <li>To know the proof of h<=s, see Theorem 6.9 of [Bla10].</li>
+                <li>To know the proof of b<=a, see Proposition 8.4 of [Bla10].</li>
+                <li>To know the proof of b<=r, see Theorem 3.8 of [Bla10].</li>
+                <li>To know the proof of e<=r, see Theorem 10.4 of [Bla10].</li>
+                <li>b<=d is clear.</li>
+                <li>To know the proof of e<=r, see Theorem 10.4 of [Bla10].</li>
+                <li>To know the proof of g<=d, see Proposition 6.27 of [Bla10].</li>
+                <li>To know the proof of s<=d, see Theorem 3.3 of [Bla10].</li>
+                <li>To know the proof of r<=u, see Proposition 9.7 of [Bla10].</li>
+                <li>To know the proof of r<=i, see Proposition 8.12 of [Bla10].</li>
+                <li>To know the proof of d<=i, see Theorem 8.13 of [Bla10].</li>
+                <li>add(N)<=cov(N), non(N)<=cof(N) are trivial.</li>
+                <li>To know the proof of add(N)<=add(M) and cof(M)<=cof(N), see Section 2.3 of [BJ95].</li>
+                <li>To know the proof of add(M)<=b and d<=cof(M), see Corollary 5.4 of [Bla10].</li>
+                <li>To know the proof of b<=non(M) and cov(M)<=d, see Proposition 5.5 of [Bla10].</li>
+                <li>add(M)<=cov(M) and non(M)<=cof(M) are trivial.</li>
+                <li>To know the proof of cov(M)<=non(N) and cov(N)<=non(M), see Theorem 5.11 of [Bla10].</li>
+                <li>To know the proof of s<=non(M), s<=non(N), cov(M)<=r and cov(N)<=r see Theorem 5.19 of [Bla10].</li>
+                <li>p<=add(M) can be derived from p<=b and p<=cov(M) using add(M) = min{b, cov(M)} (see Theorem 5.6 of [Bla10]).</li>
+                <li>To know the proof of cof(M)<=i, see ???.</li>
+
+            </ul>
+            <h3>Reference List</h3>
+            <ul>
+                <li>[BJ95] Bartoszynski, T., &#38; Judah, H. (1995). <i>Set Theory: on the structure of the real line</i>. CRC Press.</li>
+                <li>[Bla10] Blass, A. (2010). Combinatorial cardinal characteristics of the continuum. In <i>Handbook of set theory</i> (pp. 395–489). Springer.</li>
+            </ul>
         </div>
     </div>
     </body>

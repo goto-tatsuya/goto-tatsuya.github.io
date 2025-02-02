@@ -28,10 +28,6 @@ theorems:
 - cov(N)<=non(M)
 
 consistency:
-- non(N)<non(M) ; PTfg
-- cov(N)<non(M) ; PTfg
-- d<non(M) ; PTfg
-- d<non(N); Sgg*
 - non(N)<cov(N) ; random
 - d<cov(N) ; random
 - non(M)<cov(M) ; Cohen
@@ -147,9 +143,9 @@ theorems:
 - b<=r
 - add(N)<=e
 - e<=non(M)
+- e<=cov(M)
 - p<=add(M)
 - cof(M)<=i
-- e<=cov(M)
 
 models:
 - Cohen;non(M),a,g;cov(M)
@@ -157,7 +153,7 @@ models:
 - Mathias;cov(M),e;h
 - Laver;e,s,cov(N),non(N);b,g
 - prediction;p,b,s;e
-- Miller;u;d,g
+- Miller;u,a,non(M);d,g
 - Hechler;g,s,cov(N),e;add(M)
 - Blass-Shelah;u;s
 - Shelah1984;b;a
@@ -165,10 +161,13 @@ models:
 - Shelah1992;i;u
 - Shelah2000;d,u,i;a
 - Brendle-Fischer;a;s
-- short cofinality iteration of amoeba;g;add(N)
+- small cofinality iteration of amoeba;g;add(N)
 - Blass1999;g;s
 - amoeba;s;add(N)
 - MA-sigma-centered;cov(N);p
 - Sgg*;cof(M);non(N)
-- Switzer;i;non(N)`]
+- Switzer;i;non(N)
+- GKMS2021;cof(N);r
+- Brendle;cof(N);a
+- Brendle-Cardona-Mejía;a;e`]
 ];
