@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../style-subpage.css">
-    <title>Baire空間と区間分割のTukey同値性について</title>
+    <title>自然数列と区間分割のTukey同値性について</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>
@@ -13,7 +13,6 @@
             inlineMath: [['$', '$']],
             macros: {
                 IP: "\\mathsf{IP}",
-                ouo: "\\omega^{\\uparrow \\omega}",
             }
           }
         };
@@ -141,14 +140,14 @@
             なお，$\psi$の定義は$x$が狭義単調増加関数であれば，$i_{n+1} = x(i_n) + 1$ということなので，図5のように絵に描きやすい．
         </p>
         <p>
-            こうして定められた2つの写像$\phi, \psi$について，$(\phi, \psi)$が$\IP$から$\ouo$へのTukey射となっていること，$(\psi, \phi)$が$\ouo$から$\IP$へのTukey射となっていることを示す．
+            こうして定められた2つの写像$\phi, \psi$について，$(\phi, \psi)$が$\IP$から$\omega^\omega$へのTukey射となっていること，$(\psi, \phi)$が$\omega^\omega$から$\IP$へのTukey射となっていることを示す．
         </p>
         <div class="claim">
-            主張: $(\phi, \psi)$は$\IP$から$\ouo$へのTukey射である．
+            主張: $(\phi, \psi)$は$\IP$から$\omega^\omega$へのTukey射である．
         </div>
         <div class="claimproof">
             <p>
-                主張の証明: $I \in \IP$，$y \in \ouo$とする．$x = \phi(I), J = \psi(y)$とおく．$x \le^* y$を仮定する．
+                主張の証明: $I \in \IP$，$y \in \omega^\omega$とする．$x = \phi(I), J = \psi(y)$とおく．$x \le^* y$を仮定する．
                 すると$a^* \in \omega$を取って，任意の$a \ge a^*$について$x(a) \le y(a)$とすることができる．
             </p>
             <p>
@@ -177,11 +176,11 @@
             </div>
         </div>
         <div class="claim">
-            主張: $(\psi, \phi)$は$\ouo$から$\IP$へのTukey射である．
+            主張: $(\psi, \phi)$は$\omega^\omega$から$\IP$へのTukey射である．
         </div>
         <div class="claimproof">
             <p>
-                主張の証明: $x \in \ouo, J \in \IP$とし$\psi(x) \sqsubseteq J$とする．
+                主張の証明: $x \in \omega^\omega, J \in \IP$とし$\psi(x) \sqsubseteq J$とする．
                 $I = \psi(x), y = \phi(x)$とおく．
                 $m^*$を取って，任意の$m \ge m^*$についてある$n$があり，$I_n \subseteq J_m$とする．
                 $a^* = \max J_{m^*}$とおく．
