@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>Baire空間と区間分割のTukey同値性について</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                IP: "\\mathsf{IP}",
+                ouo: "\\omega^{\\uparrow \\omega}",
+            }
+          }
+        };
+    </script>
+</head>
+
+<body>
+    <h1>自然数列と区間分割のTukey同値性について</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年4月13日
+    </p>
+    <p>
+        この記事では自然数列のなす半順序$\omega^\omega$と区間分割の半順序集合$\IP$のTukey同値性を復習する．
+    </p>
+    <div class="block def">
+        <div class="block-header">定義</div>
+        <p>$\omega^\omega$で自然数を受け取り自然数を返す関数全部の集合を表す．すなわち自然数列全部の集合である．</p>
+        <p>$\omega^\omega$上の関係$\le^*$を次で定める：
+            $$
+                x \le^* y \iff \text{有限個の$n$を除いて$x(n) \le y(n)$}.
+            $$
+        </p>
+    </div>
+    <div class="block def">
+        <div class="block-header">定義</div>
+        <p>$\IP$を$\omega$の区間分割全部のなす集合とする．</p>
+        <p>すなわち$I$が$\IP$の元であるとは次を満たすこと：</p>
+        <ul>
+            <li>$I$は$\omega$列で各成分$I(n)$は$\omega$内の有限長かつ非空な区間である</li>
+            <li>
+                $I(n)$たちは$\omega$の分割をなす：すなわち$\omega = \bigcup_{n} I(n)$ (disjoint union)である．
+            </li>
+            <li>
+                $I(n)$たちは左側の区間から順に番号が付けられている．すなわち，
+                \[
+                0 = \min I(0) < \min I(1) < \dots < \min I(n) < \dots
+                \]
+            </li>
+        </ul>
+        <p>区間分割$I$についてはその$n$成分$I(n)$を$I_n$と下添字で書くことにする．</p>
+        <p>
+            $\IP$上の順序$\sqsubseteq$を次で定める：
+            $$
+                I \sqsubseteq J \iff \text{有限個を除いて全ての$n$で，ある$k$が存在して，$I_k \subseteq J_n$}.
+            $$
+        </p>
+    </div>
+    <div class="figures">
+        <div class="figure">
+            <img src="img/omegaomega.jpeg" width="400" alt="omega^omegaのイメージ図" /><br>
+            図1. $\omega^\omega$のイメージ図
+         </div>
+         <div class="figure">
+            <img src="img/ip.jpeg" width="400" alt="IPのイメージ図" /><br>
+            図2. $\IP$のイメージ図<br>
+            <img src="img/order-of-ip.jpeg" width="400" alt="IPのイメージ図" /><br>
+            図3. $\IP$の順序のイメージ図
+          </div>
+    </div>
+    <p>
+        $I \sqsubseteq J$は，$I$が$J$の細分であれば成り立つが，この順序の成立のためには必ずしもそうである必要はない．
+    </p>
+
+    <p>次が本稿で復習する定理である．</p>
+
+    <div class="block thm">
+        <div class="block-header">定理A ((本質的に)[Bla09]のTheorem 2.10)</div>
+        <p>
+            次の2つの半順序集合は互いにTukey同値である．
+        </p>
+        <ul>
+            <li>$(\omega^\omega, \le^*)$</li>
+            <li>$(\IP, \sqsubseteq)$</li>
+        </ul>
+    </div>
+
+    <p>
+    Tukey同値という概念も復習しておこう．
+    </p>
+
+
+    <div class="block def">
+        <div class="block-header">定義</div>
+        <p>半順序集合$(P, \le)$と$(Q, \le)$について$P$が$Q$より<b>Tukey順序で下である</b>とは，写像$f \colon P \to Q$と$g \colon Q \to P$があって，次の条件：
+            $$
+                \text{任意の$p \in P$と$q \in Q$について，$f(p) \le q$ならば$p \le g(q)$}
+            $$
+            を満たすことである．
+        </p>
+        <p>
+            $P$が$Q$よりTukey順序で下であり，かつ，$Q$が$P$よりTukey順序で下であるとき$P$と$Q$はTukey同値であるという．
+        </p>
+    </div>
+    <p>
+        直観的には，Tukey同値性は半順序集合の共終な部分に注目したときほぼ同じ半順序構造を持っていることを表す概念である．
+        詳しくは，参考文献 [Bla09]の4章を参照せよ．
+    </p>
+
+
+    <div class="proof">
+        <div class="block-header">定理Aの証明</div>
+        <p>
+            写像$\phi \colon \IP \to \omega^\omega$を次で定める：
+            $$
+                \phi(I) = x \iff x(a) = \min I_{n+2} \hspace{1em}\text{(任意の$n \in \omega$と$a \in I_n$について)}
+            $$
+        </p>
+        <p>
+            写像$\psi \colon \omega^\omega \to \IP$を次で定める：
+            $$
+                \psi(x) = I \iff \text{任意の$n$で}i_{n+1} = \max \{ x(0), \dots, x(i_n), i_n\} + 1 \hspace{1em}\text{(ただし，$i_n = \min I_n$)}
+            $$
+        </p>
+        <div class="figures">
+            <div class="figure">
+                <img src="img/def-of-phi.jpeg" width="400" alt="phiのイメージ図" /><br>
+                図4. $\phi$のイメージ
+             </div>
+             <div class="figure">
+                <img src="img/def-of-psi.jpeg" width="400" alt="psiのイメージ図" /><br>
+                図5. $\psi$のイメージ
+              </div>
+        </div>
+        <p>
+            なお，$\psi$の定義は$x$が狭義単調増加関数であれば，$i_{n+1} = x(i_n) + 1$ということなので，図5のように絵に描きやすい．
+        </p>
+        <p>
+            こうして定められた2つの写像$\phi, \psi$について，$(\phi, \psi)$が$\IP$から$\ouo$へのTukey射となっていること，$(\psi, \phi)$が$\ouo$から$\IP$へのTukey射となっていることを示す．
+        </p>
+        <div class="claim">
+            主張: $(\phi, \psi)$は$\IP$から$\ouo$へのTukey射である．
+        </div>
+        <div class="claimproof">
+            <p>
+                主張の証明: $I \in \IP$，$y \in \ouo$とする．$x = \phi(I), J = \psi(y)$とおく．$x \le^* y$を仮定する．
+                すると$a^* \in \omega$を取って，任意の$a \ge a^*$について$x(a) \le y(a)$とすることができる．
+            </p>
+            <p>
+                自然数$n, m$について$i_n = \min I_n$，$j_m = \min J_m$とおく．
+            </p>
+            <p>
+                $a^* \in I_{n^*}$となる自然数$n^*$を取る．
+                自然数$m^*$を$\max I_{n^*} < \min J_{m^*}$となるよう取る．
+                $m \ge m^*$とする．
+                このとき，自然数$n$が存在して，$I_n \subseteq J_m$となることを示せば良い．
+            </p>
+            <p>
+                $j_m \in I_n$となる$n$をとる．このとき$I_{n+1} \subseteq J_m$を示す．
+                $j_m \le i_{n+1} \le i_{n+2}$は明らかであるから，あとは$i_{n+2} \le j_{m+1}$を示せばよい．
+                しかし
+                $$
+                    i_{n+2} = \phi(I)(j_m) = x(j_m) \le y(j_m) < j_{m+1}
+                $$
+                なのでこれは正しい． (主張の証明終わり)
+            </p>
+        </div>
+        <div class="figures">
+            <div class="figure">
+                <img src="img/proof-phi-psi.jpeg" width="400" alt="主張の証明" /><br>
+                図6. 主張の証明のイメージ図
+            </div>
+        </div>
+        <div class="claim">
+            主張: $(\psi, \phi)$は$\ouo$から$\IP$へのTukey射である．
+        </div>
+        <div class="claimproof">
+            <p>
+                主張の証明: $x \in \ouo, J \in \IP$とし$\psi(x) \sqsubseteq J$とする．
+                $I = \psi(x), y = \phi(x)$とおく．
+                $m^*$を取って，任意の$m \ge m^*$についてある$n$があり，$I_n \subseteq J_m$とする．
+                $a^* = \max J_{m^*}$とおく．
+                $a \ge a^*$とする．このとき$x(a) \le y(a)$を示せば良い．
+            </p>
+            <p>
+                $a \in I_n \cap J_m$なる$n, m$をとる．背理法により$y(a) < x(a)$と仮定する．
+                $x(a) \le i_{n+2}$に注意すると$j_{m+2} = y(a) < x(a) \le i_{n+2}$である．
+                $J$の区間$J_{m+1}$に含まれている$I$の区間$I_{n'}$が見つかる．
+                この$n'$は$n+1$でないといけない．
+                しかし，それは$j_{m+2} < i_{n+2}$に矛盾している． (主張の証明終わり)
+            </p>
+        </div>
+        <div class="figures">
+            <div class="figure">
+                <img src="img/proof-psi-phi.jpeg" width="400" alt="主張の証明" /><br>
+                図6. 主張の証明のイメージ図
+            </div>
+        </div>
+        <p>
+            以上により定理が示された． (定理の証明終わり)
+        </p>
+    </div>
+
+    <h2>何の役に立つか？</h2>
+    <p>
+        $\omega^\omega$と$\IP$のTukey同値性は連続体の基数不変量の不等号の証明，特に$\mathfrak{b}$や$\mathfrak{d}$が登場するものの中で役に立つ．
+        たとえば，基数不変量$\mathfrak{b}, \mathfrak{d}, \mathfrak{s}, \mathfrak{r}$について$\mathfrak{s} \le \mathfrak{d}$かつ$\mathfrak{b} \le \mathfrak{r}$が成り立つことを示す際，$\omega^\omega$を直接使うよりも$\IP$を経由して証明すると非常に楽になる．
+    </p>
+    <p>
+        直観的なことを言うと、Baire空間$\omega^\omega$というノンコンパクトな空間のことをCantor空間$2^\omega$というコンパクトな空間の中で語りたいときに非常に役に立つ。
+    </p>
+
+    <h2>参考文献</h2>
+    <ul>
+        <li>[Bla09] Blass, A. (2009). Combinatorial cardinal characteristics of the continuum. In Handbook of set theory (pp. 395-489). Dordrecht: Springer Netherlands.</li>
+    </ul>
+
+
+</body>
+
+</html>

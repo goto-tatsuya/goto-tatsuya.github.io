@@ -32,9 +32,6 @@ p.breadcrumbs {
 	margin-left: 0;
 }
 
-p {
-}
-
 h1, h2, h3, h4, h5, h6 {
 	margin: 0.5em 0; 
 }
@@ -169,4 +166,47 @@ hr {
 img {
 	max-width: 100%;
 	height: auto;
+}
+
+div.block {
+	background: #ddd;
+	padding: 0 0 0.5em 0;
+	margin: 1em 0;
+}
+div.block-header {
+	padding: 0.5em 0.5em;
+	font-weight:bold;
+}
+div.def div.block-header {
+	background: #ccc;
+}
+div.thm {
+	background: #bad3e9;
+}
+div.thm div.block-header {
+	background: #85a4d8;
+}
+div.proof {
+	border-left: 2px dotted #888;
+}
+div.claim {
+	border-left: #ccc 20px solid;
+	margin: 1em 5px;
+	padding-left: 10px;
+}
+div.claimproof {
+	margin-left: 1em;
+	border-left: 2px dotted #888;
+}
+p.figure {
+	text-align: center;
+}
+div.figures {
+	overflow: auto;
+	display: flex;
+	justify-content: center;
+}
+div.figure {
+	float: left;
+	padding-left: 5px;
 }
