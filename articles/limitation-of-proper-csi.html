@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>proper強制法の可算台反復 (countable support iteration)の制限について</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                forces: "\\Vdash",
+                Fn: "\\mathrm{Fn}",
+                support: "\\mathrm{support}",
+            }
+          }
+        };
+    </script>
+</head>
+
+<body>
+    <h1>proper強制法の可算台反復 (countable support iteration)の制限について</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年4月20日
+    </p>
+    <p>
+        proper強制法の可算台反復 (countable support iteration)では連続体濃度を$\aleph_2$より真に大きくすることはできないというのはよく言われる。
+        これがどういうことなのか解説する。
+        proper強制法についての基本的なことは[Abr09], [Bre09], [Gol92]を参照せよ。
+    </p>
+    <p>
+        以下の定理の主張は[Bre09]の4.4節に書いてあるが、あまり詳細には書かれていない。
+    </p>
+
+    <div class="block thm">
+        <div class="block-header">定理</div>
+        <ol>
+            <li>$(P_\alpha, \dot{Q}_\alpha : \alpha \in \omega_1)$を可算台反復とし、各$\dot{Q}_\alpha$は非自明な半順序であることが強制されるとする。このとき$P_{\omega_1}$は$\omega_1$-Cohen関数 over $V$を追加する。</li>
+            <li>$(P_\alpha, \dot{Q}_\alpha : \alpha \in \omega_1)$をproper強制法の可算台反復とする。このとき$P_{\omega_1}$は連続体仮説を強制する。</li>
+        </ol>
+    </div>
+    <div class="proof">
+        <div class="block-header">定理の証明</div>
+        <p>
+            (1)の証明から。
+            なお(1)の事実は、有現台反復がCohen実数を加えることの類似物である。
+            各$\alpha$について$\dot{q}_\alpha$を$\forces_\alpha \dot{q}_\alpha \ne 1 \in \dot{Q}_\alpha$なる条件の名前とする。
+            $\omega_1$から$2$への関数の名前$\dot{x}$を次で定める：
+            $$
+            \forces_{\omega_1} \dot{x}(\alpha) = 1 \iff \dot{q}_\alpha \in \dot{G}(\alpha).
+            $$
+        </p>
+        <p>
+            この$\dot{x}$が$\omega_1$-Cohen関数 over $V$であることが強制されることを示そう。
+        </p>
+        <p>
+            そのために$p \in P_{\omega_1}$と稠密集合$D \subseteq 2^{<\omega_1}$を任意に取ろう。
+            示すべきは、$q \le p$と$t \in D$があって$q \forces t \subseteq \dot{x}$である。
+        </p>
+        <p>
+            可算台反復なので、$p \in P_\beta$となる$\beta \in \omega_1$が見つかる。
+            必要に応じて条件を強めることで、$p$は次を満たすとしてよい
+            $$
+            \text{各$\alpha \in \beta$について} \forces_\alpha p(\alpha) \le \dot{q}_\alpha \text{ または } \forces_\alpha p(\alpha) \perp \dot{q}_\alpha.
+            $$
+        </p>
+        <p>
+            $s \in 2^\beta$を次で定める。
+            $$
+            s(\alpha) = 1 \iff \forces_\alpha p(\alpha) \le \dot{q}_\alpha
+            $$
+        </p>
+        <p>
+            すると当然、$p \forces s \subseteq \dot{x}$となる。この$s$に対して$D$の稠密性を使って、$t \in D$がとれて$s \subseteq t$となる。
+        </p>
+        <p>
+            $t$の長さを$\gamma$とする。
+            $p$の拡大となる条件$q \in P_\gamma$を次で定める。各$\alpha \in \gamma \setminus \beta$について、
+        </p>
+        <ul>
+            <li>もし$t(\alpha) = 1$ならば$q(\alpha) = \dot{q}_\alpha$</li>
+            <li>もし$t(\alpha) = 0$ならば$q(\alpha)$は$\dot{q}_\alpha$と両立しない条件の名前</li>
+        </ul>
+        <p>
+            こうすれば、$q \forces t \subseteq \dot{x}$である。
+        </p>
+        <hr>
+        <p>
+            次に(2)の証明。
+            (1)の証明で使った$\dot{x}$を使う。
+            各$x \in 2^{\omega_1}$と$\alpha \in \omega_1$について$x[\alpha]$という実数を
+            $$
+            (\forall n \in \omega)\ x[\alpha](n) = x(\alpha + n) 
+            $$
+            で定める。
+            $$
+            \forces_{\omega_1} 2^\omega = \{ \dot{x}[\alpha] : \alpha \in \omega_1 \}
+            $$
+            を示せば証明が終わる。
+        </p>
+        <p>
+            $\dot{y}$を実数の$P_{\omega_1}$名前とする。
+            proper強制法に関する定理により、$\dot{y}$はそれ以前のステージ$V^{P_\alpha}$ ($\alpha \in \omega_1$)で出現する。
+            $p \in P_{\omega_1}$とする。
+            示すべきは$q \le p$と$\beta$があって、$q \forces \dot{y} = \dot{x}[\beta]$となることである。
+            $\support(p) \subseteq \alpha$と仮定してよい。
+        </p>
+        <p>
+            各$n \in \omega$について$\dot{Q}_{\alpha + n}$の条件の$P_{\alpha+n}$-名前$\dot{q}(\alpha + n)$を$\dot{y}(n) = 1$ならば$\dot{q}(\alpha + n) = \dot{q}_{\alpha_n}$、そうでないならば、$\dot{q}(\alpha + n)$は$\dot{q}_{\alpha_n}$と両立しない条件として定めることができる。
+        </p>
+        <p>
+            こうして定めた条件$q$は$q \forces \dot{y} = \dot{x}[\alpha]$を満たす。 (定理の証明終わり)
+        </p>
+    </div>
+    <p>
+        この証明のポイントは$\dot{x}$に出現する実数の情報を全てコードさせたことといえる。
+    </p>
+
+
+    <div class="block thm">
+        <div class="block-header">系</div>
+        <ol>
+            <li>$(P_\alpha, \dot{Q}_\alpha : \alpha \in \omega_1)$をproper強制法の可算台反復とする。このとき$P_{\omega_1}$ジェネリック拡大において、$(2^{\aleph_0})^V$は$\aleph_1$に壊れる。</li>
+            <li>$(P_\alpha, \dot{Q}_\alpha : \alpha \in \omega_2 + \omega_1)$をproper強制法の可算台反復とし、すべてのiterandが実数が加えるとする。このとき$P_{\omega_2 + \omega_1}$-ジェネリック拡大において、$\aleph_2^V$は$\aleph_1$に壊れる。</li>
+        </ol>
+    </div>
+    <div class="proof">
+        <div class="block-header">系の証明</div>
+        <p>
+        (1)は$V^{P_{\omega_1}}$において
+        $$
+        |\mathbb{R}^V| \le |\mathbb{R}| = \aleph_1
+        $$
+        なので成り立つ。
+        </p>
+        <p>
+            (2)は$V^{P_{\omega_2}}$の時点で、$|\omega_2^V| \le |\mathbb{R}^{V[G_{\omega_2}]}|$なので(1)より成り立つ。 (系の証明終わり)
+        </p>
+    </div>
+
+    <p>
+        これで反復の長さを$\omega_2$よりちょっとだけ長くしただけでも必ず基数が壊れることを示せた。
+    </p>
+    <p>
+        なお、基数が壊れても良い文脈だと、長さが$\omega_2$より真に長い可算台反復も有用であることには注意しておく。実際PFAの無矛盾性証明はそうやってやる。
+    </p>
+
+    <h2>余談：</h2>
+    <p>
+        ccc強制法の有限台反復 (finite support iteration)の制限は必ずlimit stageでCohen realが足されること。したがって、$\mathrm{non}(\mathcal{M}) \le \mathrm{cov}(\mathcal{M})$を必ず強制してしまうことだと言える。
+        なお、proper強制法の可算台直積 (countable support product)の制限としては必ず$\mathrm{cov}(\mathcal{N}) = \mathfrak{d} = \omega_1$を強制してしまう (さもなくば基数が壊れてしまう)ということが知られている。
+    </p>
+
+    <h2>参考文献</h2>
+    <ul>
+        <li>[Abr09] Abraham, U. (2009). Proper forcing. In Handbook of set theory (pp. 333-394). Dordrecht: Springer Netherlands.</li>
+        <li>[Bre09] Brendle, J. (2009). Forcing and the structure of the real line: the Bogotá lectures. Lecture notes.</li>
+        <li>[Gol92] Goldstern, M. (1992). Tools for your forcing construction. Weizmann Science Press of Israel.</li>
+    </ul>
+
+
+</body>
+
+</html>
