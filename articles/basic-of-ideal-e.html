@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>イデアルEの基本のキ</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                forces: "\\Vdash",
+                Fn: "\\mathrm{Fn}",
+                support: "\\mathrm{support}",
+                E: "\\mathcal{E}",
+                M: "\\mathcal{M}",
+                N: "\\mathcal{N}",
+            }
+          }
+        };
+    </script>
+</head>
+
+<body>
+    <h1>イデアル$\E$の基本のキ</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年4月20日
+    </p>
+    <p>
+        この記事ではイデアル$\E$の基本に慣れることを目標にする。この記事で測度といったら必ずLebesgue測度である。
+    </p>
+    <div class="block def">
+        <div class="block-header">定義</div>
+        <p>$\E$はCantor空間$2^\omega$の閉な測度$0$部分集合から生成される$\sigma$-イデアルである。すなわち
+            $$
+            \E = \left\{ A \subseteq 2^\omega : \exists (F_n : n \in \omega)\left[A \subseteq \bigcup_n F_n, \text{各$F_n$は閉かつ測度$0$} \right] \right\}.
+            $$
+        </p>
+    </div>
+
+
+
+    <div class="block thm">
+        <div class="block-header">命題1</div>
+        <p>$\E$のどのメンバーも測度$0$かつmeagerである。すなわち$\E \subseteq \M \cap \N$.
+    </div>
+    <div class="proof">
+        <div class="block-header">命題1の証明</div>
+        <p>
+            $\E$のメンバーが測度$0$なことは測度の可算加法性より明らか。
+            $\E$のメンバーがすべてmeagerなことを示そう。そのためには、閉かつ測度$0$な集合はすべてnowhere denseなことを示せばよい。
+            補集合を取ると、示すべきことは開かつ測度$1$な集合は必ず$2^\omega$の中で稠密であることである。
+            しかし、これは明らか。実際、$U$を開かつ測度$1$な集合とすると任意の基本開集合$I$に対して$\mu(U \cap I) = \mu(I)$となり、これは正だから、$U \cap I \ne \emptyset$となる。 (証明終わり)
+        </p>
+    </div>
+    <div class="block thm">
+        <div class="block-header">命題2 (Lemma 2.6.1 of [BJ95])</div>
+        <p>$\E \subsetneq \M \cap \N$.
+    </div>
+    <div class="proof">
+        <div class="block-header">命題2の証明</div>
+        <p>
+            話を見やすくするためCantor空間ではなく$\mathbb{R}$に対して証明する。
+        </p>
+        <p>
+            $A$を閉かつnowhere denseで正測度を持ち、どんな区間$I$に対しても、もし$A \cap I \ne \emptyset$ならば$\mu(A \cap I) > 0$となる集合とする。
+        </p>
+        <p>
+            このような集合$A$が存在することを見よう。
+            $(q_n : n \in \omega)$を$\mathbb{Q}$の枚挙とする。
+            まず最後の条件を忘れたら、$A = \mathbb{R} \setminus \bigcup_n (q_n - 2^{-n-2}, q_n + 2^{-n-2})$でよい。
+            実際、$A$の測度が正なことは測度の劣可算加法性を使って簡単に計算できる。
+            $A$が閉なことも明らか。
+            $A$がnowhere denseなことだが、$A$の補集合が開かつ稠密だからよい。$A$の補集合が稠密なのは$\mathbb{Q}$を含むから。
+        </p>
+        <p>
+            この集合$A$を「どんな区間$I$に対しても、もし$A \cap I \ne \emptyset$ならば$\mu(A \cap I) > 0$」を満たす$A$に取り直そう。
+            そのためには
+            $$
+                A' = A \setminus \bigcup \{ I : \text{$I$は開区間}, \mu(A \cap I) = 0 \} \tag{$\ast$}
+            $$
+            とすればよい。
+        </p>
+        <p>
+            さて、条件をみたす集合$A$が取れたので、話を戻そう。$B$を$A$から相対的に稠密$G_\delta$な集合で測度$0$なものとする。
+            このような$B$は存在する。
+            実際、$A$の可算稠密集合$\{ a_m : m \in \omega \}$を取る。これは$\mathbb{R}$が第二可算だから可能。
+            それで、$B = \bigcap_n \bigcup_m (a_m - 2^{-n-m}, a_m + 2^{-n-m}) \cap A$とおく。
+            $\{ a_m : m \in \omega \} \subseteq B$なので$B$は$A$の中で稠密だし、定義より明らかに$G_\delta$である。
+            測度も計算すると明らかに$0$となる。
+        </p>
+        <p>
+            さて、この$B$はmeagerかつ測度$0$である。$B$より大きな$A$の時点でnowhere denseだからである。
+            これが$\E$のメンバーでないことを示そう。
+
+            そのためには、どんな$C \in \E$についても$C \cap A$が$A$の中でmeagerなことを示せば十分である 
+            ($A$は閉集合だからこれを全体集合としてBaireの範疇定理を適用できて、$A$の中でmeagerかつcomeagerな集合はない。他方で$B$は$A$の稠密$G_\delta$なのでcomeagerである)。
+        </p>
+        <p>
+            さて、どんな$C \in \E$についても$C \cap A$が$A$の中でmeagerなことを示す。
+            $C = \bigcup_n F_n$と書けて、$F_n$は閉かつ測度$0$としてよい。
+            $F_n \cap A$が$A$のnowhere denseな部分集合であればよい。
+            よって$A$の中で$F_n \cap A$が内点を持たないことを言えばよい。
+            内点を持ったとすると区間$I$が存在して、$\emptyset \ne I \cap A \subseteq F_n \cap A$となるが、$A$の取り方より真ん中の項は測度正、最右辺は測度$0$なので矛盾する。
+        </p>
+        <p>
+            以上より$B \in (\M \cap \N) \setminus \E$を示すことができた。 (証明終わり)
+        </p>
+    </div>
+    <p>
+        なお、上の証明で作った$B$はnowhere denseかつ$G_\delta$であるので、$B$は次の命題の反例にもなっている：
+        「$B$がnowhere dense $G_\delta$かつ測度$0$な集合のとき、必ず$B \in \E$」。
+    </p>
+    <!--
+    <p>
+        基本のキを超える内容なので、ここでは証明しないが、$A$が解析的集合で$\E$-positiveであったら、$\E$-positiveな$G_\delta$集合を含む ([Pet92], [Sol94]).
+    </p>
+    <div class="block thm">
+        <div class="block-header">命題3</div>
+        <p>解析的集合$A \subseteq 2^\omega$について、それが$\E$-positiveであることと、正測度を持つある閉集合$C$が存在し$A \cap C$が$C$の中でcomeagerなことは同値。
+    </div>
+    <div class="proof">
+        <div class="block-header">命題3の証明</div>
+        <p>
+            解析的集合$A$が$\E$-positiveだとする。
+            すると上で触れた事実より$\E$-positiveな$G_\delta$集合を含む。
+            結論はsupersetに遺伝するので、はじめから$A$が$G_\delta$だとしてよい。
+            $C$を$A$の位相的閉包とする。
+            $\mu(C) = 0$ならば明らかに$A \subseteq C \in \mathcal{E}$となるから、$\mu(C) > 0$である。
+            $A \cap C$は$C$の中で稠密かつ$G_\delta$なので、$C$の中でcomeagerである。
+        </p>
+        <p>
+            逆に$A$が$A \in \E$だとする (こっちの方向には解析的集合の仮定は使わない)。
+            正測度を持つある閉集合$C$を任意にとる。
+            $A$を命題2の($\ast$)の方法でどんな区間$I$に対しても、もし$C' \cap I \ne \emptyset$ならば$\mu(C' \cap I) > 0$となる閉集合$C'$に縮める。
+            このとき命題2の最後の証明により、$A \cap C'$が$C'$の中でmeagerである。
+            <span style="color:red">あれ、このとき$A \cap C$が$C$の中でmeagerって言えるか？</span>
+        </p>
+    </div>-->
+
+
+    <h2>参考文献</h2>
+    <ul>
+        <li>[BJ95] Bartoszynski, T., & Judah, H. (1995). Set Theory: on the structure of the real line. AK Peters/CRC Press.</li>
+        <!--<li>[Pet92] Petruska, G. (1992). On Borel sets with small cover: a problem of M. Laczkovich.</li>
+        <li>[Sol94] Solecki, S. (1994). Covering analytic sets by families of closed set. The Journal of Symbolic Logic, 59(3), 1022-1031.</li>-->
+    </ul>
+
+
+</body>
+
+</html>
