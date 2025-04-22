@@ -11,11 +11,16 @@ body {
 
 h1 {
 	margin-top: 0;
-	font-size: 350%;
+	font-size: 300%;
 }
 
 h1, h2 {
     color: rgb(20, 20, 20);
+}
+
+div.heading {
+	display: flex;
+    max-width: 52em;
 }
 
 div.box {
