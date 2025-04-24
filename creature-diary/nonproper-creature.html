@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>creature強制法勉強日記(4月24日): non-properなcreature強制法の例</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                forces: "\\Vdash",
+                Fn: "\\mathrm{Fn}",
+                support: "\\mathrm{support}",
+                H: "\\mathbf{H}",
+                dis: "\\mathbf{dis}",
+                nor: "\\mathbf{nor}",
+                val: "\\mathbf{val}",
+                TCR: "\\mathrm{TCR}",
+                root: "\\mathrm{root}",
+                append: "{}^\\frown",
+                Q: "\\mathbb{Q}",
+                QQ: "\\Q^{\\mathrm{tree}}_5(K, \\Sigma)",
+                dom: "\\mathrm{dom}",
+                ran: "\\mathrm{ran}",
+                suc: "\\mathrm{succ}",
+            }
+          }
+        };
+    </script>
+</head>
+
+<body>
+    <h1>creature強制法勉強日記(4月24日): non-properなcreature強制法の例</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年4月24日
+    </p>
+
+    <p>
+        この記事は参考文献[RS99]のExample 1.4.1の行間を埋めただけのものである。
+    </p>
+    <p>
+        感想：連続体濃度を可算に潰していることを見る典型的な議論を知れて面白かった。補題の集合族の構成もテクいけど分かってしまえばやっていることは単純。
+    </p>
+    
+    <div class="block lem">
+        <div class="block-header">補題</div>
+        <p>
+            族$(R_n, S^l_n, h_n : 0 < l \le n < \omega)$が存在し、次を満たす。
+        </p>
+        <ul>
+            <li>$\varnothing \ne S^l_n \subseteq R_n \subseteq [\omega]^\omega$, $h_n : R_n \to \omega$.</li>
+            <li>条件$\alpha$: $\omega \in R_n, h_n(\omega) = n + 1$.</li>
+            <li>条件$\beta$: $F \in S^l_n$ならば$h_n(F) = l$.</li>
+            <li>条件$\gamma$: $S^l_n$のメンバーはどの2つも互いに素.</li>
+            <li>条件$\delta$: $A \in R_n, h_n(A) \ge l+1, F \in S^l_n$ならば$A \cap F \in R_n$かつ$h_n(A \cap F) = l$.</li>
+            <li>条件$\epsilon$: $h_n$は単調増大、すなわち$A \subseteq A'$ in $R_n$のとき$h_n(A) \le h_n(A')$.</li>
+        </ul>
+    </div>
+    <div class="proof">
+        <p>
+            (補題の証明) 集合族$(K_\sigma : \sigma \in \omega^{<\omega})$を次を満たすように$\omega$を無限集合に次々に分割していってできるものとする。
+        </p>
+        <ul>
+            <li>$K_\varnothing = \omega$,</li>
+            <li>$K_\sigma = \bigcup_{m} K_{\sigma \append (m)}$ (disjoint union)</li>
+        </ul>
+        <p>
+            $R_n$を次で定める：
+            $$
+            R_n = \left\{ \bigcup_{\sigma \in I} K_\sigma : \varnothing \ne I \subseteq \omega^n \right\}
+            $$
+        </p>
+        <p>
+            $h_n : R_n \to \omega$を次で定める： 
+            $$
+            h_n(A) = \max \{ l+1 : l \le n, (\exists \sigma \in \omega^{n-l}) (K_\sigma \subseteq A) \}.
+            $$
+        </p>
+        <p>
+            次に
+            $$
+            F^{l,m}_n = \bigcup_{\sigma \in \omega^{n-l}} K_{\sigma \append (m)}
+            $$
+            とおき、$S^l_n = \{ F^{l,m}_n : m \in \omega\}$とおく。
+        </p>
+        <p>
+            これらが補題の条件を満たすことは容易に確認できる。 (補題の証明終わり)
+        </p>
+    </div>
+    <p>
+        以下補題の族$(R_n, S^l_n, h_n : 0 < l \le n < \omega)$を固定する。
+    </p>
+
+    <div class="block def">
+        <div class="block-header">定義 ($\H, K, \Sigma$の定義)</div>
+        <p>
+            $\omega$列$\H$は任意の$i$について$\H(i) = \omega$として定める。
+        </p>
+        <p>
+            creatureの集合$K$を定める。
+            $t \in \TCR[H]$について、$t = (\dis[t], \val[t], \nor[t])$が$K$の元であるのは次のとき：$\eta \in \omega^{<\omega}, |\eta| > 0$が存在して
+        </p>
+        <ul>
+            <li>$\dis[t] \in R_{|\eta|}$.</li>
+            <li>$\val[t] = \{ (\eta, \eta \append (m)) : m \in \dis[t] \}$.</li>
+            <li>$\nor[t] = h_{|\eta|}(\dis[t])$.</li>
+        </ul>
+        <p>
+            tree composition operator $\Sigma$は次で定める：
+            $$
+            \Sigma(\{t\}) = \{ s \in K : \val[s] \subseteq \val[t] \}.
+            $$
+            シングルトン以外の$\Sigma$の値は$\varnothing$である。
+        </p>
+    </div>
+    <p>
+        ノルム条件は次の$(c)_5$を考える：
+        $$
+        (c)_5:\hspace{1cm}(\forall k \in \omega)(\forall^\infty n)(\forall \eta \in T^p)[|\eta| \ge n \Rightarrow \nor[t_\eta] \ge k].
+        $$
+    </p>
+    <p>
+        このtree creating pair $(K, \Sigma)$とノルム条件 $(c)_5$に対するtree creature forcingを$\QQ$と書く。
+    </p>
+
+    <p>
+        完全を期すため、$\QQ$の定義をちゃんと書こう。
+    </p>
+
+    <div class="block def">
+        <div class="block-header">定義 ($\QQ$の定義)</div>
+        <p>
+            $\QQ$の条件は次のような$p$である：
+        </p>
+        <ul>
+            <li>ある非空な準木 (quasi-tree)$T \subseteq \bigcup_n \prod_{i < n} \H(i)$で$\max(T) = \varnothing$なものについて$p = (t_\eta : \eta \in T)$である (この$T$を$T^p$で書く)。</li>
+            <li>$t_\eta \in K$かつ$\ran(\val[t_\eta]) = \suc_T(\eta)$</li>
+            <li>$(t_\eta : \eta \in T)$はノルム条件$(c)_5$を満たす</li>
+        </ul>
+        <p>順序関係$(t'_\eta : \eta \in T') \le (t_\eta : \eta \in T)$を次で定める (原論文と違って小さい方を強い条件という流儀に従うことにする)：</p>
+        <ul>
+            <li>$T' \subseteq T$、かつ</li>
+            <li>各$\eta \in T'$について$T_{0,\eta} \subset (T_1)^{[\eta]}$：整礎的な準木があって、$t^2_\eta \in \Sigma(t^1_\nu : \nu \in \hat{T}_{0,\eta})$である
+            </li>
+        </ul>
+    </div>
+    <p>
+        こう書いたが、今$\Sigma$はsimpleなもの (つまりシングルトン以外では非空な値を取らないもの)なので、順序関係は、
+    </p>
+    <ul>
+        <li>$T' \subseteq T$、かつ</li>
+        <li>各$\eta \in T'$について、$t^2_\eta \in \Sigma(t^1_\eta)$である
+        </li>
+    </ul>
+    <p>
+    ということである。
+    </p>
+    <p>
+        さらに言うと、$\Sigma$の定め方より順序関係は$T' \subseteq T$のみで定まる、と言ってしまって構わない。
+    </p>
+    <p>
+        $A \in R_{|\eta|}$に対して一意なcreature $t \in K$で$\dom(\val[t]) = \eta, \dis[t] = A$なものを$t^{\eta,A}$で表す。 
+    </p>
+
+    
+    <div class="block thm">
+        <div class="block-header">定理</div>
+        <p>
+            この$\QQ$はproperでない。より強く連続体濃度を可算に潰す。
+        </p>
+    </div>
+    <div class="proof">
+        <p>
+            定理の証明。
+        </p>
+        <p>
+            $S^l_n$はどの2つのメンバーも互いに素なので、その最小元で自然に大小がつく。そこで、$S^l_n = \{ F^{l,m}_n : m \in \omega \}$と書く。
+        </p>
+        <p>
+            $\eta \in \omega^{<\omega} \setminus \{\varnothing\}$を固定する。
+            $f : [|\eta|, \omega) \to \omega$とする。これらについて条件$p^{f,\eta} \in \QQ$を定める。
+            まず$\root(p^{f,\eta}) = \eta$である。
+            そして、数列$(k_l : l \in \omega)$を$k_0 = |\eta|, k_{l+1} = f(k_l) + k_l + 1$でおくとき、
+            もし$\nu \in T^{p^{f,\eta}}, |\nu| \in [k_{l-1}, k_l)$ならば、
+            $t^{p^{f,\eta}}_\nu = t^{\nu,F^{l,f(|\nu|)}_\nu}$かつ$\suc_{T^{p^{f,\eta}}}(\nu) = \{ \nu \append (m) : m \in F^{l,f(|\nu|)}_\nu\}$で定める。
+        </p>
+        <p>
+            ノルム条件 $(c)_5$を$p^{f,\eta}$が満たすことを確認しておこう。
+            $k \in \omega$とする。$n$を$k_k$より大きく取る。このとき$k_{l-1} \le n < k_l$なる$l$を取ると、$l \ge k$である。
+            $\nu \in T^{p^{f,\eta}}$かつ$|\nu| \ge n$としよう。このとき
+            $$
+            \nor[t_\nu] = h_{|\nu|}(\dis[t_\nu]) = h_{|\nu|}(F^{l,f(|\nu|)}_\nu) = l \ge k
+            $$
+            となる。"$= l$"の部分は条件$\beta$による。
+        </p>
+        <div class="claim">
+             (主張) $f, g : [|\eta|, \omega) \to \omega$が互いに異なる関数のとき$p^{f,\eta}$と$p^{g,\eta}$は両立しない条件である。
+        </div>
+        <div class="claimproof">
+        <p>
+            (主張の証明) $n^* = \min \{ n : f(n) \ne g(n) \}$とおく。
+            このとき$|\nu| = n^*$となる$\nu \in T^{p^{f,\eta}} \cap T^{p^{g,\eta}}$について、条件$\gamma$より
+            $$
+            F^{l,f(|\nu|)}_\nu \cap F^{l,g(|\nu|)}_\nu = \varnothing.
+            $$
+            ただし、$l$は$|\nu| \in [k_{l-1}, k_l)$なる自然数である。
+            よって長さ$n^* + 1$以上の共通のノードがないため、$T^{p^{f,\eta}} \cap T^{p^{g,\eta}}$は高さ有限の木だが、それは条件にならない。よって、$p^{f,\eta}$と$p^{g,\eta}$は両立しない。
+            (主張の証明終わり) 
+        </p>
+        </div>
+        <p>
+            したがって、$\{ p^{f,\eta} : f : [|\eta|, \omega) \to \omega \}$は反鎖をなすため、次のような名前$\dot{\tau}$を定義できる：
+            $$
+            p^{f,\eta} \forces \dot{\tau}(\eta) = f.
+            $$
+        </p>
+        <p>
+            さて、連続体濃度を可算に潰すことを示すためには次を示せば十分である。
+            $$
+            \forces (\forall g \in \omega^\omega \cap V)(\exists \eta \in \omega^{<\omega})(\forall n \ge |\eta|)(\dot{\tau}(\eta)(2n) = g(n)). \tag{$\ast$}
+            $$
+        </p>
+        <p>
+            $g \in \omega^\omega$, $p \in \QQ$とする。
+            自然数列$(k_l : l \in \omega)$であって奇数ばかりからなり、$|\root(p)| < k_0 < k_1 < k_2 < \dots$であり、
+            $$
+            (\forall \nu \in T^p) [k_l \le |\eta| \Rightarrow \nor[t^p_\eta] \ge l+2]
+            $$
+            となるものを取る。これは$p$がノルム条件を満たすことから可能。
+        </p>
+        <p>
+            $f : [k_0, \omega] \to \omega$を次を満たす関数とする：
+        </p>
+        <ul>
+            <li>$f(k_l) = k_{l+1} - k_l - 1$</li>
+            <li>$n \ge k_0$ならば、$f(2n) = g(n)$</li>
+        </ul>
+        <p>$k_l$たちはすべて奇数なのでこの2条項を満たす関数$f$は存在する。</p>
+        <p>
+            $\eta \in T^p \cap \omega^{k_0}$を取る。
+        </p>
+        <p>
+            $p$と$p^{f,\eta}$が両立することを示せば、その共通拡大が目的の論理式を強制するから証明が終わる。そこで$p$と$p^{f,\eta}$の共通拡大$r$を作る。
+        </p>
+        <p>
+            $\root(r) = \eta$かつ$\nu \in T^r$で$|\nu| \in [k_{l^1}, k_l)$ならば、
+            $$
+                t^r_\nu = t^{\nu,A_\nu} \text{ かつ } \suc_{T^r}(\nu) = \{ \nu\append(m) : m \in A_\nu \}
+            $$
+            と定める。ただし$A_\nu = \dis[t^p_\nu] \cap F^{l,f(|\nu|)}_\nu$である。
+        </p>
+        <p>
+            条件$p^{f,\eta}$の定義より、$r \le p$かつ$r \le p^{f,\eta}$は明らかだが、$r$がノルム条件を満たすことを確認しなければならない。
+            しかし、これは$k_l$の取り方より$\nor[t^p_\nu] \ge l+1$なので条件$\delta$より$\nor[t^{\nu,A_\nu}] = l$となることから従う。
+        </p>
+        <p>
+            以上で($\ast$)を示せたので、$\QQ$は連続体濃度を可算に潰す。よってproperでない。 (定理の証明終わり)
+        </p>
+    </div>
+    <h2>参考文献</h2>
+    <ul>
+        <li> [RS99] Rosłanowski, A., & Shelah, S. (1999). Norms on possibilities. I. Forcing with trees and creatures. Mem. Amer. Math. Soc., 141(671), xii+167.</li>
+    </ul>
+</body>
+
+</html>
