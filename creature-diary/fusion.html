@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>creature強制法勉強日記(4月27日): Axiom Aおよび(線形な)creature forcingの定義</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                Pow: "\\mathcal{P}",
+                forces: "\\Vdash",
+                Fn: "\\mathrm{Fn}",
+                restricted: "\\upharpoonright",
+                support: "\\mathrm{support}",
+                H: "\\mathbf{H}",
+                dis: "\\mathbf{dis}",
+                nor: "\\mathbf{nor}",
+                val: "\\mathbf{val}",
+                TCR: "\\mathrm{TCR}",
+                CR: "\\mathrm{CR}",
+                root: "\\mathrm{root}",
+                append: "{}^\\frown",
+                Q: "\\mathbb{Q}",
+                QQ: "\\Q^*_{\\mathrm{s}\\infty}(K, \\Sigma)",
+                dom: "\\mathrm{dom}",
+                ran: "\\mathrm{ran}",
+                suc: "\\mathrm{succ}",
+                pos: "\\mathrm{pos}",
+                basis: "\\mathrm{basis}",
+                Cnor: "\\mathcal{C}(\\mathbf{nor})",
+            }
+          }
+        };
+    </script>
+</head>
+
+<body>
+    <h1>creature強制法勉強日記(4月27日): Axiom Aおよび(線形な)creature forcingの定義</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年4月27日
+    </p>
+    <p>
+        この記事では，Axiom Aを復習し，(線形な)creature forcingの定義を見て，その一つのパターン ($\mathrm{s}\infty$というノルム条件を入れたもの)がAxiom Aの条件の一部を満たしていることを示す．仮定を追加すればAxiom Aを全部満たすことも言えるが，それは次回に回す．
+    </p>
+    <p>
+        最初にAxiom Aのことを復習する．
+    </p>
+
+    <div class="block def">
+        <div class="block-header">定義 (Axiom A)</div>
+        <p>
+            強制概念$(P, \le)$がAxiom Aを満たすとは，$P$の半順序の列$(\le_n : n \in \omega)$が存在して，次の3条件を満たすことである．
+        </p>
+
+        <ol>
+            <li>すべての$n$について，$\le_{n+1}$は$\le_n$より強く，$\le_n$は$\le$より強い関係である．</li>
+            <li>任意の条件の列$(p_n : n \in \omega)$であって，$p_{n+1} \le_n p_n$ (for every $n$)を満たすものについて，ある条件$q$があって，$q \le_n p_n$ (for every $n$)となる．</li>
+            <li>任意の反鎖$A \subseteq P$と任意の$p \in P$と任意の$n \in \omega$について$q \le_n p$があって$\{ r \in A : r \parallel q \}$は可算集合となる．</li>
+        </ol>
+    </div>
+
+    <div class="block lem">
+        <div class="block-header">補題</div>
+        <p>
+            次は互いに同値である．
+        </p>
+        <ol>
+            <li>Axiom Aの3番目の条件.</li>
+            <li>
+                $(\forall \dot{a} \in V^P)(\forall p \in P)(\forall n \in \omega)(p \Vdash \dot{a} \in V \Rightarrow(\exists x \text{可算集合})(\exists q \leq_n p)(q \Vdash \dot{a} \in x))$.
+            </li>
+            <li>
+                $(\forall \dot{a} \in V^P)(\forall p \in P)(\forall n \in \omega)(p \Vdash \dot{a} \in \mathrm{On} \Rightarrow(\exists x \text{可算集合})(\exists q \leq_n p)(q \Vdash \dot{a} \in x))$.
+            </li>
+        </ol>
+    </div>
+    <div class="proof">
+        <p>
+            証明．(1)ならば(2)．
+            $\dot{a} \in V^P$と$p \in P$を取り，$p \Vdash \dot{a} \in V$と仮定する．
+            $\dot{a}$をnice nameとして表す：
+            $$
+            \dot{a} = \bigcup_{r \in A} \{r\} \times \check{a_r}
+            $$
+            ここで$A$は極大な反鎖である．
+            Axiom Aの最後の条件より，$q \le_n p$が存在し，$\{ r \in A : q \parallel r \}$は可算集合となる．この可算集合を$A'$と名付けよう．
+            $x = \{ a_r : r \in A'\}$とおく．
+            このとき$q \forces \dot{a} \in x$を示せばよい．
+            $q' \le q$を任意にとる．$A$が極大反鎖なので$r \in A$がとれて，$q'$と$r$は両立する．$s \le q', r$としよう．
+            $A'$の定義より$r \in A'$である．$r \forces \dot{a} = \check{a_r}$なので，それ以下の$s$も同じことを強制し，特に$s \forces \dot{a} \in x$となる．
+        </p>
+        <p>
+            (2)ならば(3)は明らか．
+        </p>
+        <p>
+            (3)ならば(1)．
+            $P$とその濃度$|P|$との間の全単射$\iota \colon P \to |P|$を取る．
+            $A \subseteq P$を反鎖とする．名前$\dot{a}$をすべての$r \in A$について
+            $$
+            r \forces \dot{a} = \iota(r)
+            $$
+            となるように取る．
+            $p \in P$と$n \in \omega$を任意にとる．
+            明らかに$p \forces \dot{a} \in \mathrm{On}$なので，(3)より順序数からなる可算集合$x$と$q \le_n p$が取れて，$q \forces \dot{a} \in x$である．
+            ここで
+            $$
+            \{ r \in A : q \parallel r \} \subseteq \iota^{-1}[x]
+            $$
+            を主張する．
+            実際，$r \in A$かつ$q \parallel r$とし，その両立元を$s$とすると$s \forces \iota(r) = \dot{a} \in x$である．よって，$\iota(r) \in x$が($\Delta_0$絶対性により$V$で)成立するので，$r \in \iota^{-1}[x]$である．
+            したがって，$\{ r \in A : q \parallel r \}$は可算集合である． (補題の証明終わり)
+        </p>
+    </div>
+
+    <div class="block lem">
+        <div class="block-header">事実</div>
+        <p>Axiom Aを満たす強制概念はproperである．</p>
+    </div>
+    <p>証明は省略する (難しくない)．</p>
+    
+    <p>
+    以下，(線形な)creature forcingを定義する．
+    原論文ではweak creatureを定義してから線形なもの，treeのものという順序で紹介しているが，ここではいきなり線形なものを紹介する．
+    </p>
+    <p>
+        十分大きな正則基数$\chi$を固定しておく．また，$\H$は$H_\chi$に属する$\omega$列である．
+    </p>
+
+    <div class="block def">
+        <div class="block-header">定義 (creature)</div>
+        <p>
+            $\H$のcreatureとは3つ組$t = (\nor[t], \val[t], \dis[t])$であって次を満たすもののことである．
+        </p>
+        <ul>
+            <li>$\nor[t]$は$0$以上の実数</li>
+            <li>ある$m_0 < m_1 < \omega$があって，
+                $\val[t] \subseteq \{ (x, y) : x \in \prod_{i < m_0} H(i), y \in \prod_{i < m_1} H(i), x \subseteq y \}$.
+            </li>
+            <li>$\dis[t] \in H_\chi$</li>
+        </ul>
+        <p>
+            $\val[t]$が非空なら2番目の条件の$m_0, m_1$は一意なので，それらを$m_{\mathrm{down}}^t$と$m_{\mathrm{up}}^t$と書く．   
+        </p>
+        <p>
+            $\CR[\H]$で$\H$のcreature全体のなす集合を表す．
+        </p>
+    </div>
+
+    <div class="block def">
+        <div class="block-header">定義 (composition)</div>
+        <p>$K \subseteq \CR[\H]$とする．</p>
+        <p>
+            $\Sigma \colon [K]^{\le \omega} \to \Pow(K)$が$K$上のcomposition operationであるとは，次の4条件を満たすことである
+        </p>
+        <ul>
+            <li>全ての$r \in K$について，$r \in \Sigma(\{r\})$.</li>
+            <li>$\Sigma(\varnothing) = \varnothing$.</li>
+            <li>(推移性) 任意の$S \in [K]^{\le \omega}$と$(S_s : s \in S)$で$S_s \in [K]^{\le \omega}$ (for every $s \in S$)なものについて，もし$s \in \Sigma(S_s)$ (for every $s \in S$)ならば，$\Sigma(S) \subseteq \Sigma(\bigcup_{s \in S} S_s)$.</li>
+            <li>任意の$S \in [K]^{\le \omega}$について，もし$\Sigma(S) \ne \varnothing$ならば，$S$は有限集合であり，ある枚挙$S = \{ t_0, \dots, t_{m-1} \}$について，$m_\mathrm{up}^{t_i} = m_\mathrm{down}^{t_{i+1}}$ for every $i < m-1$である．</li>
+            <li>
+                $s \in \Sigma(\{t_0, \dots, t_{m-1}\})$ ($t_0, \dots, t_{m-1}$は上のような枚挙)のとき$m_\mathrm{down}^s = m_\mathrm{down}^{t_0}$かつ$m_\mathrm{up}^s = m_\mathrm{up}^{t_{m-1}}$.
+            </li>
+        </ul>
+        <p>
+            このときペア$(K, \Sigma)$をcreating pairという．
+        </p>
+    </div>
+
+    <div class="block def">
+        <div class="block-header">定義 ($\basis, \pos$)</div>
+        <p>$(K, \Sigma)$をcreating pairとする．</p>
+        <p>
+            $t \in K$について
+            $$
+            \basis(t) = \{ w \in \prod_{m_\mathrm{down}^t} : (\exists s \in \Sigma(\{t\}))(\exists u)((w, u) \in \val[s]) \}
+            $$
+            とおく．
+        </p>
+        <p>
+            creatureの有限列$t_0, \dots, t_{m-1}$で$m_\mathrm{up}^{t_i} = m_\mathrm{down}^{t_{i+1}}$ for every $i < m-1$を満たしているものを考える．
+            $w \in \prod_{i < m_\mathrm{down}^{t_0}}$とする．
+            このとき，
+            $$
+            \pos^*(w, t_0, \dots, t_{m-1}) = \{ u \in \prod_{m_\mathrm{up}^{t_{m-1}}} : (\exists s \in \Sigma(\{t_1, \dots, t_{m-1} \}))((w, u) \in \val[s]) \}
+            $$
+            とおく．
+        </p>
+        <p>
+            creatureの有限列$t_0, \dots, t_{m-1}$で$m_\mathrm{up}^{t_i} = m_\mathrm{down}^{t_{i+1}}$ for every $i < m-1$を満たしているものを考える．
+            $w \in \prod_{i < m_\mathrm{down}^{t_0}}$とする．
+            これらについて，その可能性の集合を
+            \begin{align*}
+            \pos(w, t_0, \dots, t_{m-1}) = \{ u \in \prod_{i < m_\mathrm{up}^{t_{m-1}}} \H(i) : \,&\text{自然数列$0 < a_0 < \dots < a_l = m$があり，} \\
+            & u \restricted m_{\mathrm{down}}^{t_{a_0}} \in \pos^*(w, \{t_i\}_{i \in [0, a_0)}), \\
+            & u \restricted m_{\mathrm{down}}^{t_{a_1}} \in \pos^*(u \restricted m_{\mathrm{down}}^{t_{a_0}}, \{t_i\}_{i \in [a_0, a_1)}), \\
+            & \dots \\
+            & u \in \pos^*(u \restricted m_{\mathrm{down}}^{t_{a_{l-1}}}, \{t_i\}_{i \in [a_{l-1}, a_{l})})
+            \}
+            \end{align*}
+            と定める．
+        </p>
+        <p>
+            $w$と$t_0, \dots, t_{m-1}$が仮定を満たしていないときには，$\pos(w, t_0, \dots, t_{m-1}) = \varnothing$とする．
+        </p>
+    </div>
+    
+    <!--
+    <div class="block def">
+        <div class="block-header">定義 (nice)</div>
+        <p>$(K, \Sigma)$をcreating pairとする．これがniceであるとは，
+        任意の$s \in \Sigma(\{t_0, \dots, t_{m-1}\})$ ($t_0, \dots, t_{m-1}$は上の定義のような枚挙)について$\basis(t_0) \subseteq \basis(s)$を満たすこととする．
+        </p>
+    </div>
+    <p>
+        以下，creating pairは常にniceだと仮定する．
+    </p>
+    -->
+
+    <div class="block def">
+        <div class="block-header">定義 (強制概念$\Q^*_{\Cnor}(K, \Sigma)$)</div>
+        <p>
+            強制概念$\Q^*_{\Cnor}(K, \Sigma)$の条件は$p = (w, t_0, t_1, \dots)$という列であって，ある$m \in \omega$について$w \in \prod_{i < m} \H(i)$であり，各$t_i$ ($i < \omega$)は$K$の元であり，次を満たす：
+        </p>
+        <ul>
+            <li>任意の$i < \omega$について，$m_\mathrm{up}^{t_i} = m_\mathrm{down}^{t_{i+1}}$.</li>
+            <li>ある$i < \omega$について$w \in \basis(t_i)$である．</li>
+            <li>どんな有限区間$I \subseteq \omega$とどんな$u \in \pos(w, \{t_i\}_{i \in I})$についても$j = \max (\omega \setminus I)$について$u \in \basis(t_j)$である．</li>
+            <li>列$(t_i : i \in \omega)$はノルム条件$\Cnor$を満たす．</li>
+        </ul>
+        <p>以下，$p = (w, t_0, t_1, \dots)$に対して$w^p$で$w$を$t^p_i$で$t_i$を指し示すものとする．</p>
+        <p>
+            $\Q^*_{\Cnor}(K, \Sigma)$の順序関係$q \le p$を次で定める．
+            $\omega$のfinal segmentの区間分割$(I_n : n \in \omega)$があって，
+            $w^q \in \pos(t^p_i : i \in I_0)$かつ$t^q_n \in \Sigma(t^p_i : i \in I_{n+1})$ (for every $n \in \omega$).
+        </p>
+    </div>
+
+    <p><em>(TODO: この辺りの定義について直観的にどういうことなのか説明する)</em></p>
+
+    いくつかのノルム条件を紹介しよう．
+
+    <div class="block def">
+        <div class="block-header">定義 (ノルム条件$(\mathrm{s}\infty)$)</div>
+        <p>
+            creatureの列$(t_i : i \in \omega)$が条件$(\mathrm{s}\infty)$を満たすとは，次を満たすこと：
+            $$
+            (\forall i < \omega)(\nor[t_i] > \max \{ i, m_\mathrm{down}^{t_i} \}).
+            $$
+        </p>
+        <p>
+            このノルム条件を$\Cnor$として採用した場合の強制概念$\Q^*_{\Cnor}(K, \Sigma)$を$\Q^*_{\mathrm{s}\infty}(K, \Sigma)$と書く．
+        </p>
+    </div>
+
+    <p><em>(TODO: 他のノルム条件も後々追加する)</em></p>
+
+    <p>
+        $\Q^*_{\mathrm{s}\infty}(K, \Sigma)$がAxiom Aを満たすことを示したい．そのために，半順序の列$(\le^{\mathrm{s}\infty}_n : n \in \omega)$を定義する．
+    </p>
+
+    <div class="block def">
+        <div class="block-header">定義 ($\le^{\mathrm{s}\infty}_n$)</div>
+        <p>
+            $p, q \in \Q^*_{\mathrm{s}\infty}(K, \Sigma)$に対して，
+            $$
+            q\le^{\mathrm{s}\infty}_0 p \iff q \le p \text{ かつ } w^p = w^q.
+            $$
+        </p><p>
+            $p, q \in \Q^*_{\mathrm{s}\infty}(K, \Sigma)$と$n\ge1$に対して，
+            $$
+            q\le^{\mathrm{s}\infty}_n p \iff q \le p \text{ かつ } w^p = w^q \text{ かつ }(\forall i< n)(t^p_i = t^q_i).
+            $$
+        </p>
+    </div>
+
+    <p>
+        これがAxiom Aの条件の一番を満たすのは明らか．二番目をチェックしよう．なお，三番目はfinitaryという仮定を追加したら言えるが，それはまた次の記事で示す．
+    </p>
+
+
+    <div class="block lem">
+        <div class="block-header">補題</div>
+        <p>
+            半順序の列$(\le^{\mathrm{s}\infty}_n : n \in \omega)$は $\Q^*_{\mathrm{s}\infty}(K, \Sigma)$に対してAxiom Aの条件2をみたす．
+            すなわち任意の条件の列$(p_n : n \in \omega)$であって，$p_{n+1} \le^{\mathrm{s}\infty}_n p_n$ (for every $n$)を満たすものについて，ある条件$q$があって，$q \le^{\mathrm{s}\infty}_n p_n$ (for every $n$)となる．
+        </p>
+    </div>
+    <div class="proof">
+        <p>証明．
+            $p_n = (w, s^n_0, s^n_1, s^n_2, \dots)$と書く ($w$はすべてで共通である)．
+            仮定より$i < \omega$に対して$s^{i+1}_i = s^{i+2}_i = s^{i+2}_i = \dots$なことに注意しよう．
+            そこで$t_i = s^{i+1}_i$ ($i < \omega$)とおく．
+            $q = (w, t_0, t_1, \dots)$が所望の条件であることを示そう．
+        </p>
+        
+        <p>任意の$i < \omega$について，$m_\mathrm{up}^{t_i} = m_\mathrm{down}^{t_{i+1}}$なこと：
+        これは$t_i = s^{i+2}_i, t_{i+1} = s^{i+2}_i$なことと$p_{i+2}$が条件なことから従う．</p>
+        <p>
+            ある$i < \omega$について$w \in \basis(t_i)$であること：
+            $p_{|w|}$が条件なので，ある$j < \omega$があって，$w \in \basis(s^{|w|}_j)$となる．
+            ところが下にあるcreatureの個数を考えてみれば，$j < |w|$がわかる．
+            よって$w \in \basis(s^{|w|}_j) = \basis(s^{j+1}_j)$.
+        </p>
+        <p>
+            どんな有限区間$I \subseteq \omega$とどんな$u \in \pos(w, \{t_i\}_{i \in I})$についても$j = \max (\omega \setminus I)$について$u \in \basis(t_j)$であること．
+            $u \in \pos(w, \{t_i\}_{i \in I}) = \pos(w, \{s^{j+1}_i\}_{i \in I})$となるので，$p_{j+1}$が条件なことから，$u \in \basis(s^{j+1}_j) = \basis(t_j)$である．
+        </p>
+        <p>
+            $q$がノルム条件$(\mathrm{s}\infty)$を満たすこと：
+            これは，各$i$について$t_i = s^{i+1}_i$なことと$p_{i+1}$が条件なことからすぐ従う．
+        </p>
+        <p>
+            任意の$i$について$q \le p_i$であること：
+            $p_{i+1} \le p_i$の証拠となる区間分割$(I^i_n : n \in \omega)$を取る．
+            したがって，$s^{i+1}_{k} \in \Sigma(s^i_j : j \in I^i_{k+1})$となる．
+            すると$\Sigma$の推移性より，$s^{i+1}_{l} \in \Sigma(\bigcup \{s^i_j : k \in I^{i+1}_{l+1}, j \in I^i_{k+1} \})$となる．
+            この議論を繰り返すと，$q \le p_i$の証拠となる区間分割を見いだせる． (証明終わり)
+        </p>
+
+    </div>
+
+    <h2>参考文献</h2>
+    <ul>
+        <li> [RS99] Rosłanowski, A., & Shelah, S. (1999). Norms on possibilities. I. Forcing with trees and creatures. Mem. Amer. Math. Soc., 141(671), xii+167.</li>
+    </ul>
+</body>
+
+</html>

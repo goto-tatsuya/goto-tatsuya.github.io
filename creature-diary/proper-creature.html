@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>creature強制法勉強日記(4月27日): creature強制法がproperになる十分条件の一つ</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                forces: "\\Vdash",
+                Fn: "\\mathrm{Fn}",
+                support: "\\mathrm{support}",
+                H: "\\mathbf{H}",
+                dis: "\\mathbf{dis}",
+                nor: "\\mathbf{nor}",
+                val: "\\mathbf{val}",
+                TCR: "\\mathrm{TCR}",
+                root: "\\mathrm{root}",
+                append: "{}^\\frown",
+                Q: "\\mathbb{Q}",
+                QQ: "\\Q^*_{\\mathrm{s}\\infty}(K, \\Sigma)",
+                dom: "\\mathrm{dom}",
+                ran: "\\mathrm{ran}",
+                suc: "\\mathrm{succ}",
+                pos: "\\mathrm{pos}",
+            }
+          }
+        };
+    </script>
+</head>
+
+<body>
+    <h1>creature強制法勉強日記(4月27日): creature強制法がproperになる十分条件の一つ</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年4月27日
+    </p>
+    <p>
+        本記事は[RS99]のTheorem 2.1.4の行間を埋めただけのものである。
+        原論文と異なり、強制概念の小さい元ほど強いという流儀を採用する。
+    </p>
+    <p>
+        感想：添え字がいっぱいあって大変だけど、やっていることはMathias強制法がproperなことの証明とかを素朴に一般化しただけなので、冷静になればいける。
+    </p>
+    
+    <div class="block lem">
+        <div class="block-header">補題1</div>
+        <p>$(K, \Sigma)$をniceなcreating pairとする。</p>
+        <p>
+            $p = (w, s_0, \dots, s_n, s_{n+1}, s_{n+2}, \dots) \in \QQ$とする。
+            また、$w' \in \pos(w, s_0, \dots, s_{n-1})$とする。
+            このとき$q := (w', s_n, s_{n+1}, s_{n+2}, \dots)$も$\QQ$の条件となり$p$以下にいる。
+        </p>
+    </div>
+    <p>
+        上記の$p$と$w'$から$q$を作る写像を$\phi$としよう：$q = \phi(p, w')$。
+    </p>
+    <div class="block lem">
+        <div class="block-header">補題2</div>
+        <p>$(K, \Sigma)$をniceなcreating pairとする。</p>
+        <p>
+            $q \le_0 p$ in $\QQ$とし$w'\in \pos(w^q, s^q_0, \dots, s^q_{n-1})$とする。
+            すると$\phi(q, w') \le \phi(p, w')$である。
+        </p>
+    </div>
+    <div class="block lem">
+        <div class="block-header">補題3</div>
+        <p>$(K, \Sigma)$をniceなcreating pairとする。</p>
+        <p>
+            $q \le_0 p$とし$w'\in \pos(w^p, s^p_0, \dots, s^p_{n-1})$とする。
+            すると条件$q' \in \QQ$があり、$q' \le q$かつ$q' \le_0 \phi(p, w')$となる。
+        </p>
+    </div>
+    <div class="block lem">
+        <div class="block-header">補題4</div>
+        <p>$(K, \Sigma)$をniceなcreating pairとする。</p>
+        <p>
+            $q, r \in \QQ$, $w' \in \pos(w^q, s^q_0, \dots, s^q_{n-1})$とし、$r \le_0 \phi(q, w')$とする。
+            このとき$q' \in \QQ$があって、$q' \le_n q$かつ$\phi(q', w') \le r$である。
+        </p>
+    </div>
+    
+    <div class="block thm">
+        <div class="block-header">定理</div>
+        <p>$(K, \Sigma)$をniceなfinitary creating pairとする。$p \in \QQ$とし$(\dot{\tau}_m : m \in \omega)$を順序数の名前の列とする。$l \in \omega$とする。</p>
+        <p>
+            このとき、$q \in \QQ$があって、次を満たす。
+        </p>
+        <ul>
+            <li>$q \le_l p$</li>
+            <li>$l \le n < \omega$, $m \le m^{s_{n-1}}_\mathrm{up}$ならば$q$は$\dot{\tau}_m$を$n$で近似する。</li>
+        </ul>
+    </div>
+    <div class="proof">
+        <p>
+            証明。
+            $p = (w^p, t^p_0, t^p_1, \dots)$とする。
+            目的の条件$q = (w^q, s_0, s_1, \dots)$を定めていく。
+            $w^q = w^p$とし、$i < l$に対しては$s_i = t^p_i$とする。
+            $n \ge l$に関する帰納法で$q_n, s_n, t^n_{n+1}, t^n_{n+2}, \dots$を次を満たすように定める。
+        </p>
+        <ol type="i">
+            <li>$q_l = p$</li>
+            <li>$q_{n+1} = (w^p, s_0, \dots, s_n, t^n_{n+1}, t^n_{n+2}, \dots) \in \QQ$</li>
+            <li>$q_{n+1} \le_n q_n$</li>
+            <li>もし$w_1 \in \pos(w^p, s_0, \dots, s_{n-1}), m \le m^{s_{n-1}}_\mathrm{up}$かつ、ある$r \in \QQ, r \le_0 (w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$が存在して、$r$が$\dot{\tau}_m$を決定するならば、$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$もすでに決定している。</li>
+        </ol>
+        <p>
+            補題1より、上記の状況で$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$は$\QQ$の条件であることに注意する。
+        </p>
+        <div class="claim">
+            主張：上記の列を構成すれば定理の証明は終わる。
+        </div>
+        <div class="claimproof">
+            <p>
+                $q$を$(q_n : n \ge l)$のfusionとする。
+                $n \ge l$と$m \le m^{s_{n-1}}_\mathrm{up}$を固定する。
+                $w_1 \in \pos(w^q, t^q_0, \dots, t^q_{n-1})$とする。
+                $r \le_0 q$が$\dot{\tau}_m$を決定していたとする。
+                このとき補題3より$r' \in \QQ$があって、$r' \le r$かつ$r' \le_0 (w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$となる。
+            </p>
+            <p>
+                よって(iv)より$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$も$\dot{\tau}_m$を決定する。
+                したがって、$(w_1, s_n, t^n_{n+1}, t^{n+1}_{n+2}, t^{n+2}_{n+3}, \dots)$も補題2よりそれより下の条件なので$\dot{\tau}_m$を決定する。 
+            </p>
+        </div>
+        <p>
+            以上より、(i)-(iv)を満たす列を構成すればよいことがわかった。
+            $s_{n-1}$までと$t^{n-1}_{n+i}$ (for $i \in \omega$)および$q_n$が定まったとする。
+            $\pos(w^p, s_0, \dots, s_{n-1}) \times (m^{s_{n-1}}_\mathrm{up}+1)$の枚挙$((w^n_i, m^n_i) : i < k_n)$を取る。
+            creating pairがfinitaryという仮定より$k_n < \omega$である。
+        </p>
+        <p>
+            $\QQ$の条件の列$(q_{n,k} : k \le k_n)$を次を満たすように定める。
+        </p>
+        <ol style="list-style-type: lower-greek;">
+            <li>$q_{n,0} = q_n$.</li>
+            <li>$q_{n,k}$は次の形：$(w^p, s_0, \dots, s_{n-1}, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$.</li>
+            <li>$q_{n,k+1} \le_n q_{n,k}$.</li>
+            <li>ある$r \in \QQ$で$r \le_0 (w^n_k, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$が$\dot{\tau}_{m^n_k}$を決定するならば、$(w^n_k, t^{n,k+1}_n, t^{n.k+1}_{n+1}, \dots)$も$\dot{\tau}_{m^n_k}$を決定する。</li>
+        </ol>
+        <div class="claim">
+            主張：上記の列を構成すれば、条件を満たす$s_n$と$t^n_{n+i}$ ($i \in \omega$)、$q_{n+1}$を構成できる。
+        </div>
+        <div class="claimproof">
+            <p>
+                $s^n = t^{n,k_n}_k, t^n_{n+i} = t^{n,k_n}_{n+i}$, $q_{n+1} = q_{n,k_n}$とおく。
+                これが条件を満たすことを示す。
+                (iii) $q_{n+1} \le_n q_n$は$\le_n$の推移律より良い。
+            </p><p>
+                (iv)を見よう。
+                $w_1 \in \pos(w^p, s_0, \dots, s_{n-1}), m \le m^{s_{n-1}}_\mathrm{up}$とする。
+                すると$(w_1, m) = (w^n_k, m^n_k)$となる$k < k_n$が見つかる。
+                $r \in \QQ, r \le_0 (w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$があって、$r$が$\dot{\tau}_m$を決定するとする。
+                補題2より、この条件$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$は$(w^n_k, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$より$\le_0$で下にあるので、($\delta$)より、$(w^n_k, t^{n,k+1}_n, t^{n,k+1}_{n+1}, \dots)$も$\dot{\tau}_m$を決定している。
+                よって、より強い条件$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$も$\dot{\tau}_m$を決定している。
+                これで(iv)が確認できた。
+            </p>
+        </div>
+        したがって、後は($\alpha$)-($\delta$)を満たす列$(q_{n,k} : k \le k_n)$を構成すれば証明終わりである。
+        $k < k_n$について$q_{n,k}$まで構成できたとして、$q_{n,k+1}$を構成する。
+        ($\delta$)の仮定を満たさない場合は$q_{n,k+1} = q_{n,k}$でよい。
+        したがって、ある$r \in \QQ$で$r \le_0 (w^n_k, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$が$\dot{\tau}_{m^n_k}$を決定すると仮定し、このような$r$を一つ固定する。
+        この場合は、補題4を$q_{n,k}$、$r$と$w^n_k$について適用して得られる条件を$q_{n,k+1}$とすればよい。 (証明終わり)
+    </div>
+    <h2>参考文献</h2>
+    <ul>
+        <li> [RS99] Rosłanowski, A., & Shelah, S. (1999). Norms on possibilities. I. Forcing with trees and creatures. Mem. Amer. Math. Soc., 141(671), xii+167.</li>
+    </ul>
+</body>
+
+</html>
