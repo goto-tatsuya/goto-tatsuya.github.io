@@ -68,38 +68,38 @@
         執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年4月28日
     </p>
     <p>
-        本記事は[RS99]のTheorem 2.1.4の行間を埋めただけのものである。
-        原論文と異なり、強制概念の小さい元ほど強いという流儀を採用する。
+        本記事は[RS99]のTheorem 2.1.4の行間を埋めただけのものである．
+        原論文と異なり，強制概念の小さい元ほど強いという流儀を採用する．
     </p>
     <p>
-        必要な定義は<a href="fusion.html">4月27日の記事</a>に書いたので参照のこと。
+        必要な定義は<a href="fusion.html">4月27日の記事</a>に書いたので参照のこと．
     </p>
     <p>
-        感想：添え字がいっぱいあって大変だけど、やっていることはMathias強制法がproperなことの証明とかを素朴に一般化しただけなので、冷静になればいける。
+        感想：添え字がいっぱいあって大変だけど，やっていることはMathias強制法がproperなことの証明とかを素朴に一般化しただけなので，冷静になればいける．
     </p>
 
 
     <div class="block rmk">
         <div class="block-header">注意</div>
         <p>
-            以下、条件$(w, t_0, \dots)$に対して$\pos(w, t_0, \dots, t_{m-1})$から元を取ることがあるが、
-            この集合が非空な時点で$|w| = m_\mathrm{down}^{t_0}$が従うから、暗に$w \in \basis(t_0)$なこと (つまり条件の要請の$(\exists i)(w \in \basis(t_i))$の証拠$i$は$0$となっている)を要請しているのがわかる。
+            以下，条件$(w, t_0, \dots)$に対して$\pos(w, t_0, \dots, t_{m-1})$から元を取ることがあるが，
+            この集合が非空な時点で$|w| = m_\mathrm{down}^{t_0}$が従うから，暗に$w \in \basis(t_0)$なこと (つまり条件の要請の$(\exists i)(w \in \basis(t_i))$の証拠$i$は$0$となっている)を要請しているのがわかる．
         </p>
     </div>
 
-    しかし、そのような条件は以下の補題で見る通り稠密にある。
+    しかし，そのような条件は以下の補題で見る通り稠密にある．
 
     <div class="block lem">
         <div class="block-header">補題<script>label("lem", "qstarstar-is-dense")</script></div>
         <p>
-            $\QQQ := \{ p \in \QQ : w^p \in \basis(t^p_0) \}$とおくとこれは$\QQ$の稠密部分集合となる。
-            より強く任意の$p \in \QQ$について$q \in \QQQ$が存在して$q \le_0 p$となる。
+            $\QQQ := \{ p \in \QQ : w^p \in \basis(t^p_0) \}$とおくとこれは$\QQ$の稠密部分集合となる．
+            より強く任意の$p \in \QQ$について$q \in \QQQ$が存在して$q \le_0 p$となる．
         </p>
     </div>
     <div class="proof">
         <p>
-            証明。$i \in \omega$であって$w^p \in \basis(t^p_i)$となるものを取る。
-            $q = (w^p, t^p_i, t^p_{i+1}, \dots)$は所望の条件である。 (証明終わり)
+            証明．$i \in \omega$であって$w^p \in \basis(t^p_i)$となるものを取る．
+            $q = (w^p, t^p_i, t^p_{i+1}, \dots)$は所望の条件である． (証明終わり)
         </p>
     </div>
 
@@ -118,119 +118,119 @@
     <div class="block lem">
         <div class="block-header">補題<script>label("lem", "pos-trans")</script></div>
         <p>
-            $w' \in \pos(w, s_0, \dots, s_{n-1})$かつ$w'' \in \pos(w', s_n, \dots, s_{n+k-1})$とする。
-            このとき$w'' \in \pos(w, s_0, \dots, s_{n+k-1})$である。
+            $w' \in \pos(w, s_0, \dots, s_{n-1})$かつ$w'' \in \pos(w', s_n, \dots, s_{n+k-1})$とする．
+            このとき$w'' \in \pos(w, s_0, \dots, s_{n+k-1})$である．
         </p>
     </div>
     <p>
-        証明は省略する。
+        証明は省略する．
     </p>
 
     <div class="block lem">
         <div class="block-header">補題<script>label("lem", "shrink")</script></div>
-        <p>$(K, \Sigma)$をcreating pairとする。</p>
+        <p>$(K, \Sigma)$をcreating pairとする．</p>
         <p>
-            $p = (w, s_0, \dots, s_n, s_{n+1}, s_{n+2}, \dots) \in \QQQ$とする。
-            また、$w' \in \pos(w, s_0, \dots, s_{n-1})$とする。
-            このとき$q := (w', s_n, s_{n+1}, s_{n+2}, \dots)$も$\QQQ$の条件となり$p$以下にいる。
+            $p = (w, s_0, \dots, s_n, s_{n+1}, s_{n+2}, \dots) \in \QQQ$とする．
+            また，$w' \in \pos(w, s_0, \dots, s_{n-1})$とする．
+            このとき$q := (w', s_n, s_{n+1}, s_{n+2}, \dots)$も$\QQQ$の条件となり$p$以下にいる．
         </p>
     </div>
     <div class="proof">
         <p>
-            証明。
-            まず$q$が条件であることを確認していく。
+            証明．
+            まず$q$が条件であることを確認していく．
         </p>
         <p>
-            任意の$i < \omega$について，$m_\mathrm{up}^{t^q_i} = m_\mathrm{down}^{t^q_{i+1}}$であることは明らか。
+            任意の$i < \omega$について，$m_\mathrm{up}^{t^q_i} = m_\mathrm{down}^{t^q_{i+1}}$であることは明らか．
         </p>
         <p>
-            $w' \in \basis(t^q_0)$であること：$p$が条件であるので、$w' \in \pos(w, s_0, \dots, s_{n-1})$について、$w' \in \basis(s_n) = \basis(t^q_0)$となる。
+            $w' \in \basis(t^q_0)$であること：$p$が条件であるので，$w' \in \pos(w, s_0, \dots, s_{n-1})$について，$w' \in \basis(s_n) = \basis(t^q_0)$となる．
         </p>
         <p>
-            どんな有限区間$I \subseteq \omega$とどんな$u \in \pos(w', \{t^q_i\}_{i \in I})$についても$j = \max (\omega \setminus I)$について$u \in \basis(t^q_j)$であること：補題<script>ref("lem", "pos-trans")</script>と$p$が条件なことより従う。
+            どんな有限区間$I \subseteq \omega$とどんな$u \in \pos(w', \{t^q_i\}_{i \in I})$についても$j = \max (\omega \setminus I)$について$u \in \basis(t^q_j)$であること：補題<script>ref("lem", "pos-trans")</script>と$p$が条件なことより従う．
         </p>
         <p>
             列$(t^q_i : i \in \omega)$はノルム条件$\mathrm{s}\infty$を満たすことは明らか．
         </p>
         <p>
-            以上より$q$が条件であることが確かめられた。
-            $q \le p$は明らか。 (証明終わり)
+            以上より$q$が条件であることが確かめられた．
+            $q \le p$は明らか． (証明終わり)
         </p>
     </div>
     <p>
-        上記の$p$と$w'$から$q$を作る写像を$\phi$としよう：$q = \phi(p, w')$。
+        上記の$p$と$w'$から$q$を作る写像を$\phi$としよう：$q = \phi(p, w')$．
     </p>
     <div class="block lem">
         <div class="block-header">補題<script>label("lem", "phi1")</script></div>
-        <p>$(K, \Sigma)$をcreating pairとする。</p>
+        <p>$(K, \Sigma)$をcreating pairとする．</p>
         <p>
-            $p, q \in \QQQ$を条件とする。
-            $q \le p$とし$w'\in \pos(w^q, s^q_0, \dots, s^q_{n-1})$とする。
-            すると$\phi(q, w') \le \phi(p, w')$である。
+            $p, q \in \QQQ$を条件とする．
+            $q \le p$とし$w'\in \pos(w^q, s^q_0, \dots, s^q_{n-1})$とする．
+            すると$\phi(q, w') \le \phi(p, w')$である．
         </p>
     </div>
     <div class="proof">
         <p>
-            証明。$q \le p$の証拠となる区間列$(I_n : n \in \omega)$を取る：
+            証明．$q \le p$の証拠となる区間列$(I_n : n \in \omega)$を取る：
             $w^q \in \pos(w^p, t^p_i : i \in I_0)$かつ$t^q_n \in \Sigma(t^p_i : i \in I_{n+1})$ (for every $n \in \omega$).
         </p>
-        <p>このとき$w' \in \pos(w^p, t^p_0, \dots, t^p_{\min(I_n) - 1})$であるので、条件$\phi(p, w')$を考えることができる。
+        <p>このとき$w' \in \pos(w^p, t^p_0, \dots, t^p_{\min(I_n) - 1})$であるので，条件$\phi(p, w')$を考えることができる．
         </p>
         <p>
-            $J_0 = \varnothing, J_{m+1} = I_{n+m+1}$で定まる区間列が$\phi(q, w') \le \phi(p, w')$の証拠となる。 (証明終わり)
+            $J_0 = \varnothing, J_{m+1} = I_{n+m+1}$で定まる区間列が$\phi(q, w') \le \phi(p, w')$の証拠となる． (証明終わり)
         </p>
     </div>
     <div class="block lem">
         <div class="block-header">補題<script>label("lem", "phi3")</script></div>
-        <p>$(K, \Sigma)$をcreating pairとする。</p>
+        <p>$(K, \Sigma)$をcreating pairとする．</p>
         <p>
-            $q, r \in \QQQ$, $w' \in \pos(w^q, t^q_0, \dots, t^q_{n-1})$とし、$r \le_0 \phi(q, w')$とする。
-            このとき$q' \in \QQQ$があって、$q' \le_n q$かつ$\phi(q', w') = r$である。
+            $q, r \in \QQQ$, $w' \in \pos(w^q, t^q_0, \dots, t^q_{n-1})$とし，$r \le_0 \phi(q, w')$とする．
+            このとき$q' \in \QQQ$があって，$q' \le_n q$かつ$\phi(q', w') = r$である．
         </p>
     </div>
     <div class="proof">
         <p>
-            証明。
-            $q' = (w^q, t^q_0, \dots, t^q_{n-1}, t^r_0, t^r_1, \dots)$とおく。
+            証明．
+            $q' = (w^q, t^q_0, \dots, t^q_{n-1}, t^r_0, t^r_1, \dots)$とおく．
         </p>
         <p>
-            $q'$が条件なことを見よう。
-            $m_\mathrm{up}^{t^q_{n-1}} = m_\mathrm{down}^{t^r_0}$を見る必要があるが、両者は$|w'|$に等しいのでよい。 
-            $w^q \in \basis(t^q_0)$は$q \in \QQQ$より従う。
+            $q'$が条件なことを見よう．
+            $m_\mathrm{up}^{t^q_{n-1}} = m_\mathrm{down}^{t^r_0}$を見る必要があるが，両者は$|w'|$に等しいのでよい． 
+            $w^q \in \basis(t^q_0)$は$q \in \QQQ$より従う．
         </p>
         <p>
             どんな有限区間$I \subseteq \omega$とどんな$u \in \pos(w^q, \{t^{q'}_i\}_{i \in I})$についても$u \in \basis(t^{q'}_{|I|})$なこと：
-            $I=n$の場合が問題となる。
-            $t^{q'}_{|I|} = t^r_0$で$r \le \phi(q, w')$なので、ある$i \in \omega$について$t^r_0 = \Sigma(t^q_n, \dots, t^q_{n+i})$となる。
-            しかし、nicenessより、$u \in \basis(t^q_n) \subseteq \basis(t^r_0)$となる。よってよい。
+            $I=n$の場合が問題となる．
+            $t^{q'}_{|I|} = t^r_0$で$r \le \phi(q, w')$なので，ある$i \in \omega$について$t^r_0 = \Sigma(t^q_n, \dots, t^q_{n+i})$となる．
+            しかし，nicenessより，$u \in \basis(t^q_n) \subseteq \basis(t^r_0)$となる．よってよい．
         </p>
         <p>
-            ノルム条件$\mathrm{s}\infty$を満たしているのは明らか。
+            ノルム条件$\mathrm{s}\infty$を満たしているのは明らか．
         </p>
         <p>
-            $q' \le q$について。
-            $r \le_0 \phi(q, w')$なのでその証拠となる区間分割$(I_n : n \in \omega)$をとる。
-            $J_0 = \varnothing, J_1 = \{ 0 \}, \dots, J_n = \{ n-1 \}, J_{n+1} = I_1, J_{n+2} = I_2, \dots$という区間分割を取れば$q' \le q$の証拠となる。
+            $q' \le q$について．
+            $r \le_0 \phi(q, w')$なのでその証拠となる区間分割$(I_n : n \in \omega)$をとる．
+            $J_0 = \varnothing, J_1 = \{ 0 \}, \dots, J_n = \{ n-1 \}, J_{n+1} = I_1, J_{n+2} = I_2, \dots$という区間分割を取れば$q' \le q$の証拠となる．
         </p>
         <p>
-            $\phi(q', w') = r$は明らか。 (証明終わり)
+            $\phi(q', w') = r$は明らか． (証明終わり)
         </p>
     </div>
     <!--
     <div class="block lem">
         <div class="block-header">補題<script>label("lem", "phi2")</script></div>
-        <p>$(K, \Sigma)$をcreating pairとする。</p>
+        <p>$(K, \Sigma)$をcreating pairとする．</p>
         <p>
-            $p, q \in \QQQ$とし、
-            $w'\in \pos(w^p, s^p_0, \dots, s^p_{n-1})$とする。
-            $q \le p$で$w^q = w'$とする。
-            すると条件$q' \in \QQ$があり、$q' \le q$かつ$q' \le_0 \phi(p, w')$となる。
+            $p, q \in \QQQ$とし，
+            $w'\in \pos(w^p, s^p_0, \dots, s^p_{n-1})$とする．
+            $q \le p$で$w^q = w'$とする．
+            すると条件$q' \in \QQ$があり，$q' \le q$かつ$q' \le_0 \phi(p, w')$となる．
         </p>
     </div>
     <div class="proof">
         <p>
-            補題<script>ref("lem", "phi3")</script>の$q$と$r$に我々の$p$と$q$を代入する。
-            このとき得られる$q'$について、
+            補題<script>ref("lem", "phi3")</script>の$q$と$r$に我々の$p$と$q$を代入する．
+            このとき得られる$q'$について，
         </p>
     </div>
     -->
@@ -238,115 +238,115 @@
     
     <div class="block def">
         <div class="block-header">定義 (近似する)</div>
-        <p>$\QQQ$の条件$p$が順序数の名前$\dot{\tau}$を$n$で近似するとは、任意の$w_1 \in \pos(w^p, t^p_0, \dots, t^p_{n-1})$について、もし$r \in \QQQ$で$p$以下にあり、$w^r = w_1$で、$\dot{\tau}$を決定しているものがあれば、条件$(w_1, t^p_n, t^p_{n+1}, \dots)$も$\dot{\tau}$を決定している。</p>
+        <p>$\QQQ$の条件$p$が順序数の名前$\dot{\tau}$を$n$で近似するとは，任意の$w_1 \in \pos(w^p, t^p_0, \dots, t^p_{n-1})$について，もし$r \in \QQQ$で$p$以下にあり，$w^r = w_1$で，$\dot{\tau}$を決定しているものがあれば，条件$(w_1, t^p_n, t^p_{n+1}, \dots)$も$\dot{\tau}$を決定している．</p>
     </div>
     <div class="block thm">
         <div class="block-header">定理</div>
-        <p>$(K, \Sigma)$をfinitary creating pairとする。$p \in \QQQ$とし$(\dot{\tau}_m : m \in \omega)$を順序数の名前の列とする。$l \in \omega$とする。</p>
+        <p>$(K, \Sigma)$をfinitary creating pairとする．$p \in \QQQ$とし$(\dot{\tau}_m : m \in \omega)$を順序数の名前の列とする．$l \in \omega$とする．</p>
         <p>
-            このとき、$q \in \QQQ$があって、次を満たす。
+            このとき，$q \in \QQQ$があって，次を満たす．
         </p>
         <ul>
             <li>$q \le_l p$</li>
-            <li>$l \le n < \omega$, $m \le m^{s_{n-1}}_\mathrm{up}$ならば$q$は$\dot{\tau}_m$を$n$で近似する。</li>
+            <li>$l \le n < \omega$, $m \le m^{s_{n-1}}_\mathrm{up}$ならば$q$は$\dot{\tau}_m$を$n$で近似する．</li>
         </ul>
     </div>
     <div class="proof">
         <p>
-            証明。
-            $p = (w^p, t^p_0, t^p_1, \dots)$とする。
-            目的の条件$q = (w^q, s_0, s_1, \dots)$を定めていく。
-            $w^q = w^p$とし、$i < l$に対しては$s_i = t^p_i$とする。
-            $n \ge l$に関する帰納法で$q_n, s_n, t^n_{n+1}, t^n_{n+2}, \dots$を次を満たすように定める。
+            証明．
+            $p = (w^p, t^p_0, t^p_1, \dots)$とする．
+            目的の条件$q = (w^q, s_0, s_1, \dots)$を定めていく．
+            $w^q = w^p$とし，$i < l$に対しては$s_i = t^p_i$とする．
+            $n \ge l$に関する帰納法で$q_n, s_n, t^n_{n+1}, t^n_{n+2}, \dots$を次を満たすように定める．
         </p>
         <ol type="i">
             <li>$q_l = p$</li>
             <li>$q_{n+1} = (w^p, s_0, \dots, s_n, t^n_{n+1}, t^n_{n+2}, \dots) \in \QQQ$</li>
             <li>$q_{n+1} \le_n q_n$</li>
-            <li>もし$w_1 \in \pos(w^p, s_0, \dots, s_{n-1}), m \le m^{s_{n-1}}_\mathrm{up}$かつ、ある$r \in \QQQ, r \le_0 (w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$が存在して、$r$が$\dot{\tau}_m$を決定するならば、$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$もすでに決定している。</li>
+            <li>もし$w_1 \in \pos(w^p, s_0, \dots, s_{n-1}), m \le m^{s_{n-1}}_\mathrm{up}$かつ，ある$r \in \QQQ, r \le_0 (w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$が存在して，$r$が$\dot{\tau}_m$を決定するならば，$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$もすでに決定している．</li>
         </ol>
         <p>
-            補題<script>ref("lem", "shrink")</script>より、上記の状況で$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$は$\QQQ$の条件であることに注意する。
+            補題<script>ref("lem", "shrink")</script>より，上記の状況で$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$は$\QQQ$の条件であることに注意する．
         </p>
         <div class="claim">
-            主張：上記の列を構成すれば定理の証明は終わる。
+            主張：上記の列を構成すれば定理の証明は終わる．
         </div>
         <div class="claimproof">
             <p>
-                $q$を$(q_n : n \ge l)$のfusionとする。
-                $n \ge l$と$m \le m^{s_{n-1}}_\mathrm{up}$を固定する。
-                $w_1 \in \pos(w^q, t^q_0, \dots, t^q_{n-1})$とする。
-                $r \le q$で$w^r = w_1$なものが$\dot{\tau}_m$を決定していたとする。
-                この$r$は$r \le_0 (w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$を満たす。
+                $q$を$(q_n : n \ge l)$のfusionとする．
+                $n \ge l$と$m \le m^{s_{n-1}}_\mathrm{up}$を固定する．
+                $w_1 \in \pos(w^q, t^q_0, \dots, t^q_{n-1})$とする．
+                $r \le q$で$w^r = w_1$なものが$\dot{\tau}_m$を決定していたとする．
+                この$r$は$r \le_0 (w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$を満たす．
             </p>
             <p>
-                よって(iv)より$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$も$\dot{\tau}_m$を決定する。
-                したがって、$(w_1, s_n, t^n_{n+1}, t^{n+1}_{n+2}, t^{n+2}_{n+3}, \dots)$も補題<script>ref("lem", "phi1")</script>よりそれより下の条件なので$\dot{\tau}_m$を決定する。 
+                よって(iv)より$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$も$\dot{\tau}_m$を決定する．
+                したがって，$(w_1, s_n, t^n_{n+1}, t^{n+1}_{n+2}, t^{n+2}_{n+3}, \dots)$も補題<script>ref("lem", "phi1")</script>よりそれより下の条件なので$\dot{\tau}_m$を決定する． 
             </p>
         </div>
         <p>
-            以上より、(i)-(iv)を満たす列を構成すればよいことがわかった。
-            $s_{n-1}$までと$t^{n-1}_{n+i}$ (for $i \in \omega$)および$q_n$が定まったとする。
-            $\pos(w^p, s_0, \dots, s_{n-1}) \times (m^{s_{n-1}}_\mathrm{up}+1)$の枚挙$((w^n_i, m^n_i) : i < k_n)$を取る。
-            creating pairがfinitaryという仮定より$k_n < \omega$である。
+            以上より，(i)-(iv)を満たす列を構成すればよいことがわかった．
+            $s_{n-1}$までと$t^{n-1}_{n+i}$ (for $i \in \omega$)および$q_n$が定まったとする．
+            $\pos(w^p, s_0, \dots, s_{n-1}) \times (m^{s_{n-1}}_\mathrm{up}+1)$の枚挙$((w^n_i, m^n_i) : i < k_n)$を取る．
+            creating pairがfinitaryという仮定より$k_n < \omega$である．
         </p>
         <p>
-            $\QQQ$の条件の列$(q_{n,k} : k \le k_n)$を次を満たすように定める。
+            $\QQQ$の条件の列$(q_{n,k} : k \le k_n)$を次を満たすように定める．
         </p>
         <ol style="list-style-type: lower-greek;">
             <li>$q_{n,0} = q_n$.</li>
             <li>$q_{n,k}$は次の形：$(w^p, s_0, \dots, s_{n-1}, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$.</li>
             <li>$q_{n,k+1} \le_n q_{n,k}$.</li>
-            <li>ある$r \in \QQQ$で$r \le_0 (w^n_k, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$が$\dot{\tau}_{m^n_k}$を決定するならば、$(w^n_k, t^{n,k+1}_n, t^{n.k+1}_{n+1}, \dots)$も$\dot{\tau}_{m^n_k}$を決定する。</li>
+            <li>ある$r \in \QQQ$で$r \le_0 (w^n_k, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$が$\dot{\tau}_{m^n_k}$を決定するならば，$(w^n_k, t^{n,k+1}_n, t^{n.k+1}_{n+1}, \dots)$も$\dot{\tau}_{m^n_k}$を決定する．</li>
         </ol>
         <div class="claim">
-            主張：上記の列を構成すれば、条件を満たす$s_n$と$t^n_{n+i}$ ($i \in \omega$)、$q_{n+1}$を構成できる。
+            主張：上記の列を構成すれば，条件を満たす$s_n$と$t^n_{n+i}$ ($i \in \omega$)，$q_{n+1}$を構成できる．
         </div>
         <div class="claimproof">
             <p>
-                $s^n = t^{n,k_n}_k, t^n_{n+i} = t^{n,k_n}_{n+i}$, $q_{n+1} = q_{n,k_n}$とおく。
-                これが条件を満たすことを示す。
-                (iii) $q_{n+1} \le_n q_n$は$\le_n$の推移律より良い。
+                $s^n = t^{n,k_n}_k, t^n_{n+i} = t^{n,k_n}_{n+i}$, $q_{n+1} = q_{n,k_n}$とおく．
+                これが条件を満たすことを示す．
+                (iii) $q_{n+1} \le_n q_n$は$\le_n$の推移律より良い．
             </p><p>
-                (iv)を見よう。
-                $w_1 \in \pos(w^p, s_0, \dots, s_{n-1}), m \le m^{s_{n-1}}_\mathrm{up}$とする。
-                すると$(w_1, m) = (w^n_k, m^n_k)$となる$k < k_n$が見つかる。
-                $r \in \QQQ, r \le_0 (w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$があって、$r$が$\dot{\tau}_m$を決定するとする。
-                補題<script>ref("lem", "phi1")</script>より、この条件$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$は$(w^n_k, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$より$\le_0$で下にあるので、($\delta$)より、$(w^n_k, t^{n,k+1}_n, t^{n,k+1}_{n+1}, \dots)$も$\dot{\tau}_m$を決定している。
-                よって、より強い条件$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$も$\dot{\tau}_m$を決定している。
-                これで(iv)が確認できた。
+                (iv)を見よう．
+                $w_1 \in \pos(w^p, s_0, \dots, s_{n-1}), m \le m^{s_{n-1}}_\mathrm{up}$とする．
+                すると$(w_1, m) = (w^n_k, m^n_k)$となる$k < k_n$が見つかる．
+                $r \in \QQQ, r \le_0 (w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$があって，$r$が$\dot{\tau}_m$を決定するとする．
+                補題<script>ref("lem", "phi1")</script>より，この条件$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$は$(w^n_k, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$より$\le_0$で下にあるので，($\delta$)より，$(w^n_k, t^{n,k+1}_n, t^{n,k+1}_{n+1}, \dots)$も$\dot{\tau}_m$を決定している．
+                よって，より強い条件$(w_1, s_n, t^n_{n+1}, t^n_{n+2}, \dots)$も$\dot{\tau}_m$を決定している．
+                これで(iv)が確認できた．
             </p>
         </div>
         <p>
-        したがって、後は($\alpha$)-($\delta$)を満たす列$(q_{n,k} : k \le k_n)$を構成すれば証明終わりである。
-        $k < k_n$について$q_{n,k}$まで構成できたとして、$q_{n,k+1}$を構成する。
-        ($\delta$)の仮定を満たさない場合は$q_{n,k+1} = q_{n,k}$でよい。
-        したがって、ある$r \in \QQQ$で$r \le_0 (w^n_k, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$が$\dot{\tau}_{m^n_k}$を決定すると仮定し、このような$r$を一つ固定する。
-        この場合は、補題<script>ref("lem", "phi3")</script>を$q_{n,k}$、$r$と$w^n_k$について適用して得られる条件を$q_{n,k+1}$とすればよい。 (証明終わり)
+        したがって，後は($\alpha$)-($\delta$)を満たす列$(q_{n,k} : k \le k_n)$を構成すれば証明終わりである．
+        $k < k_n$について$q_{n,k}$まで構成できたとして，$q_{n,k+1}$を構成する．
+        ($\delta$)の仮定を満たさない場合は$q_{n,k+1} = q_{n,k}$でよい．
+        したがって，ある$r \in \QQQ$で$r \le_0 (w^n_k, t^{n,k}_n, t^{n,k}_{n+1}, \dots)$が$\dot{\tau}_{m^n_k}$を決定すると仮定し，このような$r$を一つ固定する．
+        この場合は，補題<script>ref("lem", "phi3")</script>を$q_{n,k}$，$r$と$w^n_k$について適用して得られる条件を$q_{n,k+1}$とすればよい． (証明終わり)
         </p>
     </div>
     <div class="block thm">
         <div class="block-header">系</div>
         <p>
-            $(K, \Sigma)$をfinitary creating pairとする。
-            $\QQQ$はAxiom Aを満たす。よって、$\QQ$はproperである。
+            $(K, \Sigma)$をfinitary creating pairとする．
+            $\QQQ$はAxiom Aを満たす．よって，$\QQ$はproperである．
         </p>
     </div>
     <div class="proof">
     <p>
-        証明。
-        順序数の名前$\dot{\tau}$と$p \in \QQQ$と$n \in \omega$を任意に取る。
-        このとき定理を$\tau_0 = \tau$として$\tau_1, \tau_2, \dots$は何でも良い順序数の名前で適用したとき$q \le_n p$が取れて、$q$は$\tau$を任意の$m \ge n$で近似する。
-        各$m \ge n$と$w_1 \in \pos(w^q, t^q_0, \dots, t^q_{m-1})$について、$(w_1, t^q_m, t^q_{m+1}, \dots)$が$\tau$を決定するときその値を$\alpha^m_{w_1}$と書く。決定しないときは、$\alpha^m_{w_1} = 0$とおいておく。
-        このとき$x := \{ \alpha^m_{w_1} : m \ge n, w_1 \in \pos(w^q, t^q_0, \dots, t^q_{m-1}) \}$は可算集合である (finitaryの仮定より$\pos(w^q, t^q_0, \dots, t^q_{n-1})$は有限集合だから)。
-        $q \forces \dot{\tau} \in x$を示せばよい。
-        $q' \le q$を任意に取る。
-        $q'' \le q'$があって$\dot{\tau}$の値を決定する。
-        $w_1 = w^{q''}$とおく。
-        $w_1$の長さは十分長いと仮定できる。そこである$m \ge n$に対して$w_1 \in \pos(w^q, t^q_0, \dots, t^q_{n-1})$である。
-        $q$は$\tau$を$m$で近似するから、$(w_1, t^q_m, t^q_{m+1}, \dots)$は$\tau$を決定している。
-        よって決定されたその値は$\alpha^m_{w_1}$であり、$\dot{x}$に属する。
-        したがって、$q'' \forces \dot{\tau} \in x$となり証明が終わる。 (証明終わり)
+        証明．
+        順序数の名前$\dot{\tau}$と$p \in \QQQ$と$n \in \omega$を任意に取る．
+        このとき定理を$\tau_0 = \tau$として$\tau_1, \tau_2, \dots$は何でも良い順序数の名前で適用したとき$q \le_n p$が取れて，$q$は$\tau$を任意の$m \ge n$で近似する．
+        各$m \ge n$と$w_1 \in \pos(w^q, t^q_0, \dots, t^q_{m-1})$について，$(w_1, t^q_m, t^q_{m+1}, \dots)$が$\tau$を決定するときその値を$\alpha^m_{w_1}$と書く．決定しないときは，$\alpha^m_{w_1} = 0$とおいておく．
+        このとき$x := \{ \alpha^m_{w_1} : m \ge n, w_1 \in \pos(w^q, t^q_0, \dots, t^q_{m-1}) \}$は可算集合である (finitaryの仮定より$\pos(w^q, t^q_0, \dots, t^q_{n-1})$は有限集合だから)．
+        $q \forces \dot{\tau} \in x$を示せばよい．
+        $q' \le q$を任意に取る．
+        $q'' \le q'$があって$\dot{\tau}$の値を決定する．
+        $w_1 = w^{q''}$とおく．
+        $w_1$の長さは十分長いと仮定できる．そこである$m \ge n$に対して$w_1 \in \pos(w^q, t^q_0, \dots, t^q_{n-1})$である．
+        $q$は$\tau$を$m$で近似するから，$(w_1, t^q_m, t^q_{m+1}, \dots)$は$\tau$を決定している．
+        よって決定されたその値は$\alpha^m_{w_1}$であり，$\dot{x}$に属する．
+        したがって，$q'' \forces \dot{\tau} \in x$となり証明が終わる． (証明終わり)
     </p>
     </div>
     <h2>参考文献</h2>
