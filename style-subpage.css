@@ -193,6 +193,12 @@ div.lem {
 div.lem div.block-header {
 	background: #97cab9;
 }
+div.rmk {
+	background: #e4dad7;
+}
+div.rmk div.block-header {
+	background: #ca9b97;
+}
 div.proof {
 	border-left: 2px dotted #888;
 }

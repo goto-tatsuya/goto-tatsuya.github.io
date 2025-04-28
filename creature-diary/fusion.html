@@ -48,6 +48,9 @@
         この記事では，Axiom Aを復習し，(線形な)creature forcingの定義を見て，その一つのパターン ($\mathrm{s}\infty$というノルム条件を入れたもの)がAxiom Aの条件の一部を満たしていることを示す．仮定を追加すればAxiom Aを全部満たすことも言えるが，それは次回に回す．
     </p>
     <p>
+        creature forcingの原論文 [RS99]と異なり、強制概念の小さい元ほど強いという流儀を採用する。
+    </p>
+    <p>
         最初にAxiom Aのことを復習する．
     </p>
 
@@ -192,7 +195,7 @@
         </p>
         <p>
             creatureの有限列$t_0, \dots, t_{m-1}$で$m_\mathrm{up}^{t_i} = m_\mathrm{down}^{t_{i+1}}$ for every $i < m-1$を満たしているものを考える．
-            $w \in \prod_{i < m_\mathrm{down}^{t_0}}$とする．
+            $w \in \prod_{i < m_\mathrm{down}^{t_0}} \H(i)$とする．
             これらについて，その可能性の集合を
             \begin{align*}
             \pos(w, t_0, \dots, t_{m-1}) = \{ u \in \prod_{i < m_\mathrm{up}^{t_{m-1}}} \H(i) : \,&\text{自然数列$0 < a_0 < \dots < a_l = m$があり，} \\
@@ -208,18 +211,6 @@
             $w$と$t_0, \dots, t_{m-1}$が仮定を満たしていないときには，$\pos(w, t_0, \dots, t_{m-1}) = \varnothing$とする．
         </p>
     </div>
-    
-    <!--
-    <div class="block def">
-        <div class="block-header">定義 (nice)</div>
-        <p>$(K, \Sigma)$をcreating pairとする．これがniceであるとは，
-        任意の$s \in \Sigma(\{t_0, \dots, t_{m-1}\})$ ($t_0, \dots, t_{m-1}$は上の定義のような枚挙)について$\basis(t_0) \subseteq \basis(s)$を満たすこととする．
-        </p>
-    </div>
-    <p>
-        以下，creating pairは常にniceだと仮定する．
-    </p>
-    -->
 
     <div class="block def">
         <div class="block-header">定義 (強制概念$\Q^*_{\Cnor}(K, \Sigma)$)</div>
