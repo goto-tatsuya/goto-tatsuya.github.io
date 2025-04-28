@@ -177,7 +177,7 @@
         <p>
             $t \in K$について
             $$
-            \basis(t) = \{ w \in \prod_{m_\mathrm{down}^t} : (\exists s \in \Sigma(\{t\}))(\exists u)((w, u) \in \val[s]) \}
+            \basis(t) = \{ w \in \prod_{i < m_\mathrm{down}^t} \H(i) : (\exists s \in \Sigma(\{t\}))(\exists u)((w, u) \in \val[s]) \}
             $$
             とおく．
         </p>
@@ -186,7 +186,7 @@
             $w \in \prod_{i < m_\mathrm{down}^{t_0}}$とする．
             このとき，
             $$
-            \pos^*(w, t_0, \dots, t_{m-1}) = \{ u \in \prod_{m_\mathrm{up}^{t_{m-1}}} : (\exists s \in \Sigma(\{t_1, \dots, t_{m-1} \}))((w, u) \in \val[s]) \}
+            \pos^*(w, t_0, \dots, t_{m-1}) = \{ u \in \prod_{i < m_\mathrm{up}^{t_{m-1}}} \H(i) : (\exists s \in \Sigma(\{t_1, \dots, t_{m-1} \}))((w, u) \in \val[s]) \}
             $$
             とおく．
         </p>
@@ -236,7 +236,7 @@
         <p>
             $\Q^*_{\Cnor}(K, \Sigma)$の順序関係$q \le p$を次で定める．
             $\omega$のfinal segmentの区間分割$(I_n : n \in \omega)$があって，
-            $w^q \in \pos(t^p_i : i \in I_0)$かつ$t^q_n \in \Sigma(t^p_i : i \in I_{n+1})$ (for every $n \in \omega$).
+            $w^q \in \pos(w^p, t^p_i : i \in I_0)$かつ$t^q_n \in \Sigma(t^p_i : i \in I_{n+1})$ (for every $n \in \omega$).
         </p>
     </div>
 
