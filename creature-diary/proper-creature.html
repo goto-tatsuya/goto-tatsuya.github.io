@@ -39,7 +39,6 @@
         let COUNT = {};
 
         function label(type, name) {
-            console.log([type, name]);
             let num = (COUNT[type] || 0) + 1;
             LABELS[type+"."+name] = num;
             COUNT[type] = num;
