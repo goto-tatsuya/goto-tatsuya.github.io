@@ -128,14 +128,26 @@
 
     <h2>[BJ95]の記述は[RS99]の記述でより一般に説明されているか？</h2>
     <p>
-        ところで$\Q^\mathrm{tree}_1(K, \Sigma)$の形のcreature forcingがproperかつ$\omega^\omega$-boundingなことを保証する条件として$2$-bigというのがある．
+        問1.ところで$\Q^\mathrm{tree}_1(K, \Sigma)$の形のcreature forcingがproperかつ$\omega^\omega$-boundingなことを保証する条件として$2$-bigというのがある．
         上記の強制法はこれを満たしているだろうか？
-    </p><p>
-        あと$\PTfg$が$\cov(\nul)$を保つことを示すのに，[BJ95]は$(f,g)$-boundingという条件を使っている．
+    </p>
+    
+
+    <p>問1の答えはYesだ。つまり上記の$\Q^\mathrm{tree}_1(K, \Sigma)$は$2$-bigである。</p>
+    <div class="proof">
+        <p>証明。$t \in K$とし、$\nor[t] > 1$とする。$\ran(\val[s])$を$A_0$と$A_1$という2つの部分集合の非交和で書けたとしよう。
+            $N = \nor[t]$とおく。
+            このとき$A_0$と$A_1$のうち要素数の多い方を$A$とする。
+            すると$|A| \ge \frac{g(|s|, N)}{2} \ge g(|s|, N-1)$となる。
+            よって、$\ran(\val[s])$を$A$に縮小したcreature $t'$は$\nor[t'] \ge \nor[t]-1$を満たす。 (証明終わり)
+        </p>
+    </div>
+    <p>
+        問2.$\PTfg$が$\cov(\nul)$を保つことを示すのに，[BJ95]は$(f,g)$-boundingという条件を使っている．
         $\Q^\mathrm{tree}_1(K, \Sigma)$の形のcreature forcingが$(f,g)$-boundingを満たす十分条件が[RS99]のTheorem 5.1.8にある．この十分条件は満たしているか？
     </p>
     <p>
-        同じく，$\non(\nul)$を保つ十分条件も[RS99]のTheorem 3.3.5にある．これもどうか？
+        問3.同じく，$\non(\nul)$を保つ十分条件も[RS99]のTheorem 3.3.5にある．これもどうか？
     </p>
 
     <h2>参考文献</h2>
