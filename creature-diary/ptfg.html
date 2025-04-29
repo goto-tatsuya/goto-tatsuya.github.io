@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>creature強制法勉強日記(4月29日): PT_{f,g}はcreature forcingの一例とみなせる</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                Pow: "\\mathcal{P}",
+                forces: "\\Vdash",
+                Fn: "\\mathrm{Fn}",
+                restricted: "\\upharpoonright",
+                support: "\\mathrm{support}",
+                H: "\\mathbf{H}",
+                dis: "\\mathbf{dis}",
+                nor: "\\mathbf{nor}",
+                val: "\\mathbf{val}",
+                TCR: "\\mathrm{TCR}",
+                CR: "\\mathrm{CR}",
+                root: "\\mathrm{root}",
+                append: "{}^\\frown",
+                Q: "\\mathbb{Q}",
+                QQ: "\\Q^*_{\\mathrm{s}\\infty}(K, \\Sigma)",
+                dom: "\\mathrm{dom}",
+                ran: "\\mathrm{ran}",
+                suc: "\\mathrm{succ}",
+                pos: "\\mathrm{pos}",
+                basis: "\\mathrm{basis}",
+                Cnor: "\\mathcal{C}(\\mathbf{nor})",
+                PTfg: "\\mathbf{PT}_{f,g}",
+                non: "\\mathrm{non}",
+                meager: "\\mathcal{M}",
+                cov: "\\mathrm{cov}",
+                nul: "\\mathcal{N}",
+                Seq: "\\mathrm{Seq}",
+                stem: "\\mathrm{stem}",
+            }
+          }
+        };
+    </script>
+</head>
+
+<body>
+    <h1>creature強制法勉強日記(4月29日): $\PTfg$はcreature forcingの一例とみなせる</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年4月29日
+    </p>
+    <p>
+        この記事ではBartoszynskiとJudahとShelahによって[BJS93]で考案された$\non(\meager)$を上げる強制法$\PTfg$がcreature forcingの一例とみなせることを軽く見る．
+        この強制法については[BJ95]の7.3.B節でも解説されているので参照されたし．
+    </p>
+    
+    <p>
+    $f \in \omega^\omega$と$g \in \omega^{\omega \times \omega}$は次の条件を満たす関数とする．
+    </p>
+	<ol>
+		<li>すべての$n \in \omega$に対して$f(n) > \prod_{j < n} f(j)$.</li>
+		<li>すべての$n, j \in \omega$に対して$g(n, j+1) > f(n) \cdot g(n, j)$.</li>
+	    <li>$\min \{ j \in \omega : g(n, j) > f(n+1) \} \to \infty$ (as $n \to \infty$).</li>
+    </ol>
+    <div class="block def">
+        <div class="block-header">定義 ($\PTfg$)</div>
+        <p>
+		集合$\Seq^f$を$\Seq^f  = \{ s \in \omega^{<\omega} : (\forall j < |s|) (s(j) \le f(j)) \}$と定める．
+		$\PTfg$を次で定められる強制概念とする．
+		$T \in \PTfg$であるのは次のとき：
+        </p>
+        <ol>
+            <li>$T$は$\Seq^f$の完全な部分木．</li>
+			<li>関数$r \in \omega^\omega$で$\lim_{n \to \infty} r(n) = \infty$なものが存在して，次を満たす：
+			\[
+			(\forall s \in T)(\stem(T) \subseteq s \rightarrow |\suc_T(s)| \ge g(|s|, r(|s|))).
+			\]
+            </li>
+        </ol>
+        <p>
+		    $\PTfg$の元の順序は包含で定められる：$S, T \in \PTfg$について$T \le S \Leftrightarrow T \subseteq S$.
+        </p>
+    </div>
+    <p>
+        適切に$\H$とcreating pair $(K, \Sigma)$を定めれば$\PTfg$とtree creature forcing $\Q^\mathrm{tree}_1(K, \Sigma)$が強制同値となることを見よう．
+    </p>
+    <p>
+        まず，$\H = f$とする．
+        そして，
+        \begin{align*}
+        K = \{ t \in \TCR[\H] :\,&(\exists s \in \omega^\omega) \\
+            &\ [\dom(\val[s]) = \{s\}, \\
+            &\ \ \ran(\val[s]) \subseteq \{ s \append (k) : k \le f(|s|) \}, \\
+            &\ \ \nor[s] = \max \{ m : |\ran(\val[s])| \ge g(|s|, m) \} \\
+            &\ \ \dis[s] = \varnothing] \}
+        \end{align*}
+        とおく．
+        $\Sigma(s) = \{ t \in K : \val[t] \subseteq \val[s] \}$とおく．
+    </p>
+    <p>
+        こう置けば$\PTfg$とtree creature forcing $\Q^\mathrm{tree}_1(K, \Sigma)$が強制同値なことはほぼ明らかだが，確認すべきことは$\PTfg$の条件$r \to \infty$と$\Q^\mathrm{tree}_1(K, \Sigma)$のノルム条件が同じことを言ってることである．
+    </p>
+    <p>
+        つまり，ノルム条件$(\mathrm{c})_1$は任意のpath $x \in [T]$について$\lim_{n \to \infty} \nor[t_{x \restricted n}] = \infty$であり，これと$\PTfg$の$r \to \infty$が同じことを言っているのは多少非自明．しかしこれは次を確認すれば良い．
+    </p>
+    <div class="block lem">
+        <div class="block-header">補題</div>
+        <p>$T \subseteq \omega^{<\omega}$を有限分岐な木とする．$f : [T] \to \mathbb{R}$を関数とする．このとき次の2つは同値．</p>
+        <ol>
+            <li>任意のpath $x \in [T]$について$\lim_{n \to \infty} f(x \restricted n) = \infty$.</li>
+            <li>$\lim_{n \to \infty} \min \{ f(s) : s \in T \cap \omega^n \} = \infty$.</li>
+        </ol>
+    </div>
+    <div class="proof">
+        <p>
+        (2)ならば(1)は明らか．
+        (2)の否定を仮定すると，
+        $$
+        (\exists M \in \mathbb{R})(\exists^\infty n) \min \{ f(s) : s \in T \cap \omega^n \} \le M.
+        $$
+        </p>
+        <p>
+            よってKőnigの補題より$x \in [T]$があり， $(\exists^\infty n)(f(x \restricted n) \le M)$となる．したがって，(1)の否定が示せた． (証明終わり)
+        </p>
+    </div>
+
+    <h2>[BJ95]の記述は[RS99]の記述でより一般に説明されているか？</h2>
+    <p>
+        ところで$\Q^\mathrm{tree}_1(K, \Sigma)$の形のcreature forcingがproperかつ$\omega^\omega$-boundingなことを保証する条件として$2$-bigというのがある．
+        上記の強制法はこれを満たしているだろうか？
+    </p><p>
+        あと$\PTfg$が$\cov(\nul)$を保つことを示すのに，[BJ95]は$(f,g)$-boundingという条件を使っている．
+        $\Q^\mathrm{tree}_1(K, \Sigma)$の形のcreature forcingが$(f,g)$-boundingを満たす十分条件が[RS99]のTheorem 5.1.8にある．この十分条件は満たしているか？
+    </p>
+    <p>
+        同じく，$\non(\nul)$を保つ十分条件も[RS99]のTheorem 3.3.5にある．これもどうか？
+    </p>
+
+    <h2>参考文献</h2>
+    <ul>    
+        <li>[BJ95] Bartoszynski, T., & Judah, H. (1995). Set Theory: on the structure of the real line. AK Peters/CRC Press.</li>
+        <li>[BJS93] Bartoszyński, T., Judah, H., & Shelah, S. (1993). The Cichoń diagram. The Journal of symbolic logic, 58(2), 401-423.</li>
+        <li>[RS99] Rosłanowski, A., & Shelah, S. (1999). Norms on possibilities. I. Forcing with trees and creatures. Mem. Amer. Math. Soc., 141(671), xii+167.</li>
+    </ul>
+</body>
+
+</html>
