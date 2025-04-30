@@ -84,6 +84,9 @@
         </p>
     </div>
     <p>
+        なお、$f$と$g$の仮定3番より最大の木$\Seq^f$がちゃんと$r \to \infty$を満たすこと、したがって、強制法が空でないことが保証される。
+    </p>
+    <p>
         適切に$\H$とcreating pair $(K, \Sigma)$を定めれば$\PTfg$とtree creature forcing $\Q^\mathrm{tree}_1(K, \Sigma)$が強制同値となることを見よう．
     </p>
     <p>
@@ -147,8 +150,149 @@
         $\Q^\mathrm{tree}_1(K, \Sigma)$の形のcreature forcingが$(f,g)$-boundingを満たす十分条件が[RS99]のTheorem 5.1.8にある．この十分条件は満たしているか？
     </p>
     <p>
+        問2の答えは残念ながら、Noかと思われる。というのも、その十分条件の一つの要項であるessentially $f$-bigというものは、ノルムの値が離散的な値しか取らない場合成り立ちえないと考えられるからだ。
+    </p>
+    <p>
         問3.同じく，$\non(\nul)$を保つ十分条件も[RS99]のTheorem 3.3.5にある．これもどうか？
     </p>
+    <p>問3の答えはYesである。次の節でこれを見よう。</p>
+
+    <h2>$\PTfg$はNNP-typeである</h2>
+    <p>$\non(\nul)$を保存するための条件が次のNNPである。</p>
+    <div class="block def">
+        <div class="block-header">定義 (NNP-type)</div>
+        <p>creating pair $(K, \Sigma)$がNNP-typeであるとは、実数列$(a_n : n \in \omega)$と自然数列$(k_n : n \in \omega)$が存在して、次を満たすことである。</p>
+        <ul>
+            <li>数列$(a_n : n \in \omega)$は$(0, 1)$の値を取り、単調増加で$\lim_{n \to \infty} a_n < 1$である。</li>
+            <li>
+                どんな$t \in K$で$\nor[t] > 2$なものと、$v \in \basis(t)$で$|v| \ge k_n$なものと$N \in \omega$と関数$h : \pos(v, t) \to \Pow(N)$について、
+                もし
+                $$
+                (\forall u \in \pos(v, t))(\frac{h(u)}{N} \ge a_{n+1})
+                $$
+                ならば、次の集合
+                \begin{align*}
+                A := \{ i \in N : (\exists s \in \Sigma(t))[&\nor[s] \ge \nor[t] - 1, \\
+                    & \basis(t) \subseteq \basis(s), (\forall u \in \pos(v, t))(i \in h(u))] \}
+                \end{align*}
+                について
+                $$
+                \frac{|A|}{N} \ge a_n
+                $$
+                となる。
+            </li>
+        </ul>
+    </div>
+
+    証明には次の補題を使う。
+
+    <div class="block lem">
+        <div class="block-header">補題</div>
+        <p>$(X, \mu)$を確率空間とする。</p>
+        <ol>
+            <li>
+                $(A_j : j < N)$を$\mu(A_j) \le a$ (for every $j < N$)なる$X$の部分集合の列とする。
+                このとき、$M \le N$について、
+                $$
+                \mu(\{ x \in X : |\{j < N : x \in A_j\}| \ge M \}) \le \frac{a N}{M}
+                $$
+                となる。
+            </li>
+            <li>
+                $(B_j : j < N)$を$\mu(B_j) \ge a$ (for every $j < N$)なる$X$の部分集合の列とする。
+                このとき、$M \le N$について、
+                $$
+                \mu(\{ x \in X : |\{j < N : x \in B_j\}| \ge M \}) \ge 1 - \frac{(1-a) N}{N-M}
+                $$
+                となる。
+            </li>
+        </ol>
+    </div>
+    <div class="proof">
+        <p>
+            証明。(1)。$\chi_{A_j}$を$A_j$の特性関数とすると、
+            $$
+            \int_X \sum_{j < N} \chi_{A_j} \le a N
+            $$
+            である。したがって、
+            $$
+            \mu(\{ x \in X : |\{j < N : x \in A_j\}| \ge M \}) = \mu(\{ x \in X : \sum_{j < N} \chi_{A_j} \ge M \}) \le \frac{a N}{M}
+            $$
+            となる。
+        </p>
+        <p>
+            (2)。$A_j = X \smallsetminus B_j$とおくと、$\mu(A_j) \le 1 - a$なので、(1)より
+            $$
+            \mu(\{ x \in X : |\{j < N : x \in A_j\}| \ge N-M \}) \le \frac{(1-a) N}{N-M}
+            $$
+            補集合を取ると、
+            $$
+            \mu(\{ x \in X : |\{j < N : x \in B_j\}| \ge M \}) \ge 1 - \frac{(1-a) N}{N-M}.
+            $$
+            (証明終わり)
+        </p>
+    </div>
+
+
+    <div class="block thm">
+        <div class="block-header">定理</div>
+        <p>
+            第一節の$\PTfg$と強制同値な$\Q^\mathrm{tree}_1(K, \Sigma)$について、この$(K, \Sigma)$はNNP-typeである。
+        </p>
+    </div>
+    <div class="proof">
+        <p>
+            証明。まず天下り的に$(a_n : n \in \omega)$と$(k_n : n \in \omega)$を与える。
+            $$
+            a_0 = \frac12,\hspace{8mm}
+            1 - a_{n+1} = \left(1 - \frac{1}{f(n)}\right)(1 - a_n)
+            $$
+            で定まる実数列$(a_n : n \in \omega)$と$k_n = n$で定まる自然数列$(k_n : n \in \omega)$でよい。
+        </p>
+        <p>
+            $\lim_{n \to \infty} a_n < 1$を確かめるには、$\prod_{n \to \infty} \left(1 - \frac{1}{f(n)}\right) > 0$を見ればよい。
+            よって、$\sum_{n \to \infty} \frac{1}{f(n)} = 0$を見ればよい。
+            しかし、$f$と$g$の仮定一番より$f(n) \ge n!$なのでこれは明らか。
+        </p>
+        <p>
+            NNPを確かめるために、 $t \in K$で$\nor[t] > 2$なものと、$v \in \basis(t)$で$|v| \ge n$なものと$N \in \omega$と関数$h : \pos(v, t) \to \Pow(N)$なものを取り、
+            $$
+            (\forall u \in \pos(v, t))(\frac{h(u)}{N} \ge a_{n+1})
+            $$
+            と仮定しよう。すると示すべきは
+            \begin{align*}
+            A := \{ i \in N : (\exists s \in \Sigma(t))[&\nor[s] \ge \nor[t] - 1, \\
+                & \basis(t) \subseteq \basis(s), (\forall u \in \pos(v, t))(i \in h(u))] \}
+            \end{align*}
+            について
+            $$
+            \frac{|A|}{N} \ge a_n
+            $$
+            となることである。
+        </p>
+        <p>
+            集合$A$を今の状況に合わせて簡単にすると
+            $$
+            A = \{ i \in N : \nor[\{ u \in \ran(\val[s]) : i \in h(u) \}] \ge \nor[t] - 1 \}
+            $$
+            である。さらに直すと
+            $$
+            A = \{ i \in N : |\{ u \in \ran(\val[s]) : i \in h(u) \}| \ge g(|v|, \nor[t] - 1) \}
+            $$
+            である。
+            自然数$N$上に一様確率測度を入れ、補題(2)を適用すると
+            \begin{align*}
+            \frac{|A|}{N} &\ge 1 - (1 - a_{n+1}) \frac{|\ran(\val[t])|}{|\ran(\val[t])| - g(|v|, \nor[t] - 1)} \\
+            &= 1 - (1 - a_{n+1}) \left(1 - \frac{g(|v|, \nor[t] - 1)}{|\ran(\val[t])|}\right)^{-1} \\
+            &\ge 1 - (1 - a_{n+1}) \left(1 - \frac{g(|v|, \nor[t] - 1)}{g(|v|, \nor[t])}\right)^{-1} \\
+            &\ge 1 - (1 - a_{n+1}) \left(1 - \frac{1}{f(|v|)}\right)^{-1} \\
+            &\ge 1 - (1 - a_{n+1}) \left(1 - \frac{1}{f(n)}\right)^{-1} \\
+            &= a_n
+            \end{align*}
+            となる。
+            (証明終わり)
+        </p>
+    </div>
 
     <h2>参考文献</h2>
     <ul>    
