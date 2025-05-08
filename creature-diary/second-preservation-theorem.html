@@ -82,11 +82,14 @@
         <div class="block-header">定義 (evidence)</div>
         <p>
             $p \in P, \dot{x} \in V^P$とする．
-            $p$があり$\dot{x}$に関する<em>$(N, P)$-evidenceを持つ</em>とは，ある反鎖$A \subseteq P \cap N$が存在し，$p \le \bigvee A$かつ任意の$r \in A$について$P$-name $\dot{y} \in N$が存在し$q \forces \dot{x} = \dot{y}$となること．
+            $p$が$\dot{x}$に関する<em>$(N, P)$-evidenceを持つ</em>とは，ある反鎖$A \subseteq P \cap N$が存在し，$p \le \bigvee A$かつ任意の$r \in A$について$P$-name $\dot{y} \in N$が存在し$q \forces \dot{x} = \dot{y}$となること．
         </p>
     </div>
     <p>
         $P$は完備ブール代数とは限らないため$p \le \bigvee A$は，$\{ q \le p : (\exists a \in A)(q \le a) \}$が$p$以下で稠密，と読み替える．
+    </p>
+    <p>
+        $p$が$\dot{x}$に関する$(N, P)$-evidenceを持つというのはラフに言えば，$\dot{x}$を$N$に属する名前に「近似的に」取り直せる状況のこと．つまり$\dot{x}$そのもの全体を$N$の元に取り直すことは不可能かもしれないが，反鎖をとってその元ごとに名前を$N$の元に取り直せる，ということである．
     </p>
     <div class="block lem">
         <div class="block-header">補題1</div>
