@@ -64,7 +64,7 @@
         </p>
         <ol>
             <li>各$x \in \omega$と$x \in \omega^\omega$について$\{ y \in \omega^\omega : x \sqsubseteq_n y \}$は$\ran(\sqsubseteq_n)$の閉集合である．</li>
-            <li>$A \sqsubseteq \dom(\sqsubseteq)$が可算ならば，ある$b \in \dom(\sqsubseteq)$が存在し，すべての$a \in A$について，無限個の$n$が存在し，すべての$y \in \omega^\omega$について$b \sqsubseteq_n y$ならば$a \sqsubseteq_n y$となる．</li>
+            <li>$A \subseteq \dom(\sqsubseteq)$が可算ならば，ある$b \in \dom(\sqsubseteq)$が存在し，すべての$a \in A$について，無限個の$n$が存在し，すべての$y \in \omega^\omega$について$b \sqsubseteq_n y$ならば$a \sqsubseteq_n y$となる．</li>
             <li>各$a, b \in \omega^\omega$について，自然数$n$についての条件$(\forall y \in \omega^\omega)(a \sqsubseteq_n y \rightarrow b \sqsubseteq_n y)$は推移的モデルの間で絶対的である．</li>
         </ol>
     </div>
@@ -139,12 +139,12 @@
             では構成を見ていこう．$n = 0$については$q_0 = \varnothing, \dot{p}_0 = p$でよい．$q_n, \dot{p}_n$まで構成が終わったと仮定して，$q_{n+1} \dot{p}_{n+1}$をこれから構成していく．
         </p>
         <p>
-            今，実数$\dot{y}$の解釈が$P_n$で存在する．すなわち実数の名前$\dot{y}$と条件の減少列$\seq{\dot{p}^m_n : n \in \omega}$が存在して，
+            今，実数$\dot{y}$の解釈が$P_n$で存在する．すなわち実数の名前$\dot{y}_n$と条件の減少列$\seq{\dot{p}^m_n : m \in \omega}$が存在して，
             $$
             q_n \forces_n (\forall m)[ \dot{p}^{m+1}_n \le \dot{p}^m_n \text{ かつ } \dot{p}^m_n \forces_{n,\omega} \dot{y} \restricted m = \dot{y}_n \restricted m ]
             $$
             となる．
-            そこで，補題2と$q_n$は$\dot{p_n}$に関する$(N, P_n)$-evidenceを持つことより，このような性質を満たす実数の名前$\dot{y}$と条件の減少列$\seq{\dot{p}^m_n : n \in \omega}$がとれて，$q_n$は$\dot{y}$と$\seq{\dot{p}^m_n : n \in \omega}$に関する$(N, P_n)$-evidenceとなる．
+            そこで，補題2と$q_n$は$\dot{p_n}$に関する$(N, P_n)$-evidenceを持つことより，このような性質を満たす実数の名前$\dot{y}_n$と条件の減少列$\seq{\dot{p}^m_n : m \in \omega}$がとれて，$q_n$は$\dot{y}$と$\seq{\dot{p}^m_n : m \in \omega}$に関する$(N, P_n)$-evidenceとなる．
         </p>
         <p>
             定理の仮定より，$\dot{y}_n$は$\sqsubseteq$-dominating realの名前ではないので，「ある$x \in V$について，$x \not \sqsubseteq \dot{y}_n$である」ことが$q_n$によって強制される．
@@ -168,7 +168,7 @@
             q_n \forces \dot{x} \not \sqsubseteq_{\dot{a}} \dot{y}_n   
             $$
             である．
-            そこで，$q_n \forces \text{“$\{ y \in \omega^\omega : \dot{x} \sqsubseteq_{\dot{a}} y \}$は開集合"}$なことより，自然数の名前$\dot{m}$が取れて，
+            そこで，$q_n \forces \text{“$\{ y \in \omega^\omega : \dot{x} \not \sqsubseteq_{\dot{a}} y \}$は開集合"}$なことより，自然数の名前$\dot{m}$が取れて，
             $$
             q_n \forces [\dot{y}_n \restricted \dot{m}] \subseteq \{ y : \dot{x} \not \sqsubseteq_{\dot{a}} y \}.
             $$
@@ -189,8 +189,8 @@
         </p>
         <p>
             また，$q_{n+1}$は$\dot{p}_{n+1}$に関する$(N, P_{n+1})$-evidenceである．
-            $q_n$が$\dot{y}$と$\seq{\dot{p}^m_n : n \in \omega}$と$\dot{a}$に関する$(N, P_{n})$-evidenceだからである．
-            ここから，antichain $A \subset P_n \cap N$で$q_n \le \bigvee A$ですべての$r \in A$について$\dot{S}, \dot{M} \in V^{P_n} \cap N$が存在し，$r \forces \seq{\dot{p}^m_n : n \in \omega} = \dot{S}, \dot{M} = \dot{m}$となる (２つのantichainを「合成」することになるがそれは可能)．
+            $q_n$が$\dot{y}$と$\seq{\dot{p}^m_n : m \in \omega}$と$\dot{a}$に関する$(N, P_{n})$-evidenceだからである．
+            ここから，antichain $A \subset P_n \cap N$で$q_n \le \bigvee A$ですべての$r \in A$について$\dot{S}, \dot{M} \in V^{P_n} \cap N$が存在し，$r \forces \seq{\dot{p}^m_n : m \in \omega} = \dot{S}, \dot{M} = \dot{m}$となる (２つのantichainを「合成」することになるがそれは可能)．
             このantichain $A$の各元に最大元$1$を末尾に追加して$P_{n+1}$のantichain $A'$を作れば，それが$q_{n+1}$は$\dot{p}_{n+1}$に関する$(N, P_{n+1})$-evidenceであることのwitnessとなる．
         </p>
         <p style="text-align:right">
