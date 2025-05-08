@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>creature強制法勉強日記(5月8日): Judah-Repickýの保存定理</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                Pow: "\\mathcal{P}",
+                forces: "\\Vdash",
+                Fn: "\\mathrm{Fn}",
+                restricted: "\\upharpoonright",
+                support: "\\mathrm{support}",
+                H: "\\mathbf{H}",
+                dis: "\\mathbf{dis}",
+                nor: "\\mathbf{nor}",
+                val: "\\mathbf{val}",
+                TCR: "\\mathrm{TCR}",
+                CR: "\\mathrm{CR}",
+                root: "\\mathrm{root}",
+                append: "{}^\\frown",
+                Q: "\\mathbb{Q}",
+                QQ: "\\Q^*_{\\mathrm{s}\\infty}(K, \\Sigma)",
+                dom: "\\mathrm{dom}",
+                ran: "\\mathrm{ran}",
+                suc: "\\mathrm{succ}",
+                pos: "\\mathrm{pos}",
+                basis: "\\mathrm{basis}",
+                Cnor: "\\mathcal{C}(\\mathbf{nor})",
+                PTfg: "\\mathbf{PT}_{f,g}",
+                non: "\\mathrm{non}",
+                meager: "\\mathcal{M}",
+                cov: "\\mathrm{cov}",
+                nul: "\\mathcal{N}",
+                Seq: "\\mathrm{Seq}",
+                stem: "\\mathrm{stem}",
+                seq: ["\\langle #1 \\rangle", 1],
+            }
+          }
+        };
+    </script>
+</head>
+
+<body>
+    <h1>creature強制法勉強日記(4月29日): Judah-Repickýの保存定理</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年5月8日
+    </p>
+    <p>
+        [BJ95]のTheorem 6.1.18 ([JR95]のTheorem 3)の行間埋め．
+        この定理は[BJ95]ではSecond Preservation Theoremと呼ばれている．
+    </p>
+    <div class="block def">
+        <div class="block-header">仮定</div>
+        <p>
+            $\seq{\sqsubseteq_n : n \in \omega}$を$\omega^\omega$上の二項関係の単調増加列とし，$\sqsubseteq = \bigcup_n \sqsubseteq_n$とおく．
+            以下を仮定する．
+        </p>
+        <ol>
+            <li>各$x \in \omega$と$x \in \omega^\omega$について$\{ y \in \omega^\omega : x \sqsubseteq_n y \}$は$\ran(\sqsubseteq_n)$の閉集合である．</li>
+            <li>$A \sqsubseteq \dom(\sqsubseteq)$が可算ならば，ある$b \in \dom(\sqsubseteq)$が存在し，すべての$a \in A$について，無限個の$n$が存在し，すべての$y \in \omega^\omega$について$b \sqsubseteq_n y$ならば$a \sqsubseteq_n y$となる．</li>
+            <li>各$a, b \in \omega^\omega$について，自然数$n$についての条件$(\forall y \in \omega^\omega)(a \sqsubseteq_n y \rightarrow b \sqsubseteq_n y)$は推移的モデルの間で絶対的である．</li>
+        </ol>
+    </div>
+    <div class="block thm">
+        <div class="block-header">定理 (Judah-Repický)</div>
+        <p>
+            $\seq{P_\alpha, \dot{Q}_\alpha : \alpha < \delta}$ ($\delta$は極限順序数)をproper強制法の可算台反復とする．
+            各$\alpha < \delta$について$P_\alpha$が$\sqsubseteq$-dominating realを追加しないならば，$P_\delta$も$\sqsubseteq$-dominating realを追加しない．
+        </p>
+    </div>
+    <p>
+        定理の証明の前に必要な定義と2つの補題を用意する．
+    </p>
+    <div class="block def">
+        <div class="block-header">定義 (evidence)</div>
+        <p>
+            $p \in P, \dot{x} \in V^P$とする．
+            $p$があり$\dot{x}$に関する<em>$(N, P)$-evidenceを持つ</em>とは，ある反鎖$A \subseteq P \cap N$が存在し，$p \le \bigvee A$かつ任意の$r \in A$について$P$-name $\dot{y} \in N$が存在し$q \forces \dot{x} = \dot{y}$となること．
+        </p>
+    </div>
+    <p>
+        $P$は完備ブール代数とは限らないため$p \le \bigvee A$は，$\{ q \le p : (\exists a \in A)(q \le a) \}$が$p$以下で稠密，と読み替える．
+    </p>
+    <div class="block lem">
+        <div class="block-header">補題1</div>
+        <p>
+            $P \ast \dot{Q}$をproper強制法の2ステップ反復とする．
+            $p$を$(N, P)$-ジェネリックな条件とし，$p \forces \dot{q} \in \dot{Q} \cap N[\dot{G}]$と仮定する．
+            このとき，$P$-name $\dot{q}'$が存在し，$(p, \dot{q}') \le (p, \dot{q})$かつ$(p, \dot{q}')$は$(N, P\ast \dot{Q})$ジェネリック条件である．
+        </p>
+    </div>
+    <div class="block lem">
+        <div class="block-header">補題2</div>
+        <p>
+            $\varphi$を強制言語の論理式で$N$の元のみをパラメータに持つものとする．
+            $\dot{y} \in V^P$とする．
+            $p$を$(N, P)$ジェネリックな条件とする．
+            $p$は$\dot{y}$に関する$(N, P)$-evidenceを持つものとする．
+            $p \forces (\exists x) \varphi(x, \dot{y})$を仮定する．
+            このとき$\dot{x} \in V^P$があって，$p \forces \varphi(\dot{x}, \dot{y})$かつ$p$は$\dot{x}$に関する$(N, P)$-evidenceを持つ．
+        </p>
+    </div>
+    <p>
+        2つの補題の証明は省略する．
+    </p>
+    <div class="proof">
+        <p>
+            定理の証明．$\delta = \omega$の場合を証明すれば十分．
+            $\dot{y}$を実数の$P_\omega$-nameとし，$p \in P_\omega$とする．
+            示すべきことは$q \le p$と$x \in \omega^\omega$が存在して，$q \forces x \not \sqsubseteq \dot{y}$となることである．
+        </p>
+        <p>
+            $\theta$を十分大きな正則基数とし，$N \prec H_\theta$を可算初等部分構造で$\dot{y}, p, \seq{P_n, \dot{Q}_n : n < \omega} \in N$なものとする． 
+        </p>
+        <p>
+            仮定の(2)より，$x^* \in \omega^\omega$がとれて，
+            すべての$x \in N$について，無限個の$n$が存在し，すべての$y \in \omega^\omega$について$x^* \sqsubseteq_n y$ならば$x \sqsubseteq_n y$となる．
+        </p>
+        <p>
+            $n$についての帰納法で次を満たす列$\seq{q_n, \dot{p_n} : n \in \omega}$を構成していく．
+        </p>
+        <ol type="A">
+            <li>$q_n$は$(N, P_n)$ジェネリックな条件</li>
+            <li>$\dot{p}_n$は$P_{n,\omega}$に属する条件の$P_n$-name</li>
+            <li>$q_n$は$\dot{p_n}$に関する$(N, P_n)$-evidenceを持つ</li>
+            <li>$q_{n+1} \restricted n = q_n$かつ$(q_{n+1}, \dot{p}_{n+1}) \le (q_n, \dot{p}_n)$かつ$(q_{n+1}, \dot{p}_{n+1}) \forces x^* \not \sqsubseteq_n \dot{y}$</li>
+        </ol>
+        <p>
+            もしこれらを構成し終えたら，$q = \bigcup_{n \in \omega} q_n$が明らかに所望の条件となる．
+        </p>
+        <p>
+            では構成を見ていこう．$n = 0$については$q_0 = \varnothing, \dot{p}_0 = p$でよい．$q_n, \dot{p}_n$まで構成が終わったと仮定して，$q_{n+1} \dot{p}_{n+1}$をこれから構成していく．
+        </p>
+        <p>
+            今，実数$\dot{y}$の解釈が$P_n$で存在する．すなわち実数の名前$\dot{y}$と条件の減少列$\seq{\dot{p}^m_n : n \in \omega}$が存在して，
+            $$
+            q_n \forces_n (\forall m)[ \dot{p}^{m+1}_n \le \dot{p}^m_n \text{ かつ } \dot{p}^m_n \forces_{n,\omega} \dot{y} \restricted m = \dot{y}_n \restricted m ]
+            $$
+            となる．
+            そこで，補題2と$q_n$は$\dot{p_n}$に関する$(N, P_n)$-evidenceを持つことより，このような性質を満たす実数の名前$\dot{y}$と条件の減少列$\seq{\dot{p}^m_n : n \in \omega}$がとれて，$q_n$は$\dot{y}$と$\seq{\dot{p}^m_n : n \in \omega}$に関する$(N, P_n)$-evidenceとなる．
+        </p>
+        <p>
+            定理の仮定より，$\dot{y}_n$は$\sqsubseteq$-dominating realの名前ではないので，「ある$x \in V$について，$x \not \sqsubseteq \dot{y}_n$である」ことが$q_n$によって強制される．
+            そこで，再び補題2より，グラウンドモデルの実数の名前$\dot{x}$が取れて，この性質を満たし，$q_n$は$\dot{x}$に関する$(N, P_n)$-evidenceとなる．
+        </p>
+        <p>
+            $q_n$が$\dot{x}$に関する$(N, P_n)$-evidenceとなることのwitness $A$を取る．
+            すなわち，antichain $A \subseteq P_n \cap N$かつ$q_n \le \bigvee A$かつ，すべての$r \in A$で$\dot{x}_r \in N$があり$q \forces \dot{x} = \dot{x}_r$となる．
+            antichain $A$を細分することにより，各$\dot{x}_r$は名前でなくて本当のグラウンドモデルの実数$x_r \in N$だとしてよい．
+            すると$x^*$の取り方より各$r \in A$ごとに自然数$k_r \ge n$が取れて，$(\forall y \in \omega^\omega)(x^* \sqsubseteq_{k_r} y \rightarrow x_r \sqsubseteq_{k_r} y)$となる．
+            $P_n$-name $\dot{a}$を$r \forces k_r = \dot{a}$ for each $r \in A$と定める．
+            すると絶対性の条件(3)より
+            $$
+            q_n \forces (\forall y \in \omega^\omega)(x^* \sqsubseteq_{\dot{a}} y \rightarrow \dot{x} \sqsubseteq_{\dot{a}} y) \tag{$\ast$}
+            $$
+            が分かる．加えて補題2より，$q_n$は$\dot{a}$に関する$(N, P_n)$-evidenceとなると仮定してよい．
+            </p>
+            <p> 
+            他方で，
+            $$
+            q_n \forces \dot{x} \not \sqsubseteq_{\dot{a}} \dot{y}_n   
+            $$
+            である．
+            そこで，$q_n \forces \text{“$\{ y \in \omega^\omega : \dot{x} \sqsubseteq_{\dot{a}} y \}$は開集合"}$なことより，自然数の名前$\dot{m}$が取れて，
+            $$
+            q_n \forces [\dot{y}_n \restricted \dot{m}] \subseteq \{ y : \dot{x} \not \sqsubseteq_{\dot{a}} y \}.
+            $$
+            補題2より，$q_n$は$\dot{m}$に関する$(N, P_n)$-evidenceとなると仮定してよい．すると($\ast$)を使うと，
+            $$
+            q_n \forces [\dot{y}_n \restricted \dot{m}] \subseteq \{ y : x^* \not \sqsubseteq_{\dot{a}} y \} \subseteq \{ y : x^* \not \sqsubseteq_{n} y \}.
+            $$
+            となる．
+        </p>
+        <p>
+            $\dot{p}_{n+1} = \dot{p}_n^{\dot{m}} \restricted [n+1, \omega)$とおき，補題1より，ジェネリックな条件$q_{n+1} \in P_{n+1}$を取り，$q_{n+1} \restricted n = q_n$かつ$q_n \forces q_{n+1}(n) \le \dot{p}_n^{\dot{m}}(n)$なように取る．
+        </p>
+        <p>
+            $$
+            (q_{n+1}, \dot{p}_{n+1}) \le (q_n, \dot{p}^\dot{m}_n) \forces \dot{y} \in [\dot{y}_n \restricted \dot{m}] \subseteq  \{ y : x^* \not \sqsubseteq_{n} y \}.
+            $$
+            であることに注意する．
+        </p>
+        <p>
+            また，$q_{n+1}$は$\dot{p}_{n+1}$に関する$(N, P_{n+1})$-evidenceである．
+            $q_n$が$\dot{y}$と$\seq{\dot{p}^m_n : n \in \omega}$と$\dot{a}$に関する$(N, P_{n})$-evidenceだからである．
+            ここから，antichain $A \subset P_n \cap N$で$q_n \le \bigvee A$ですべての$r \in A$について$\dot{S}, \dot{M} \in V^{P_n} \cap N$が存在し，$r \forces \seq{\dot{p}^m_n : n \in \omega} = \dot{S}, \dot{M} = \dot{m}$となる (２つのantichainを「合成」することになるがそれは可能)．
+            このantichain $A$の各元に最大元$1$を末尾に追加して$P_{n+1}$のantichain $A'$を作れば，それが$q_{n+1}$は$\dot{p}_{n+1}$に関する$(N, P_{n+1})$-evidenceであることのwitnessとなる．
+        </p>
+        <p style="text-align:right">
+            (証明終わり)
+        </p>
+    </div>
+    <p>
+        この定理は，proper強制法の可算台反復の文脈で，たとえば「($\omega^\omega$の)dominating realを追加しないこと」の保存，したがって$\mathfrak{b}$の保存などに有効である．
+    </p>
+
+    <h2>参考文献</h2>
+    <ul>    
+        <li>[BJ95] Bartoszynski, T., & Judah, H. (1995). Set Theory: on the structure of the real line. AK Peters/CRC Press.</li>
+        <li>[JR95] Judah, H., & Repický, M. (1995). No random reals in countable support iterations. Israel Journal of Mathematics, 92(1), 349-359.</li>
+    </ul>
+</body>
+
+</html>
