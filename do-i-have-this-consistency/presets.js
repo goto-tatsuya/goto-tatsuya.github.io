@@ -156,19 +156,18 @@ models:
 - prediction;p,b,s;e
 - Miller;u,a,non(M);d,g
 - Hechler;g,s,cov(N),e;add(M)
-- Blass-Shelah;u;s
-- Shelah1984;b;a
-- Shelah1990;r;u
-- Shelah1992;i;u
-- Shelah2000;d,u,i;a
-- Brendle-Fischer;a;s
+- BS87;u,g;s
+- She84;b;a
+- GS90;r;u
+- Sh92;i;u
+- She04;d,u;a
+- BF21;a;s
 - small cofinality iteration of amoeba;g;add(N)
-- Blass1999;g;s
 - amoeba;s;add(N)
 - MA-sigma-centered;cov(N);p
 - Sgg*;cof(M);non(N)
-- Switzer;i;non(N)
+- Hechler-type forcing;i;non(N)
 - GKMS2021;cof(N);r
-- Brendle;cof(N);a
-- Brendle-Cardona-Mejía;a;e`]
+- Bre03;cof(N);a
+- BCM21;a;e`]
 ];
