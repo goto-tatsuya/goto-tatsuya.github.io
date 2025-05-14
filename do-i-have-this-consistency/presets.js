@@ -27,15 +27,12 @@ theorems:
 - cov(M)<=non(N)
 - cov(N)<=non(M)
 
-consistency:
-- non(N)<cov(N) ; random
-- d<cov(N) ; random
-- non(M)<cov(M) ; Cohen
-- cov(N)<b ; Laver
-- cov(M)<b ; Laver
-- non(N)<b ; Laver
-- cof(M)<non(N) ; dual Hechler
-- cov(N)<add(M) ; Hechler`],
+models:
+- Cohen;non(M);cov(M)
+- random;non(N),d;cov(N)
+- Laver;cov(N),non(N);b
+- dual Hechler;cof(M);non(N)
+- Hechler;cov(N);add(M)`],
 ["Blass", `invariants:
 - p
 - h
@@ -74,15 +71,14 @@ models:
 - prediction;p,b,s;e
 - Miller;u,a;d,g
 - Hechler;g;b
-- Blass-Shelah;u;s
-- Shelah1984;b;a
-- Shelah1990;r;u
-- Shelah1992;i;u
-- Shelah2000;d,u,i;a
-- Brendle-Fischer;a;s
+- BS87;u,g;s
+- She84;b;a
+- GS90;r;u
+- She92;i;u
+- She04;d,u;a
+- BF21;a;s
 - small cofinality iteration of amoeba;g;e
-- Blass1999;g;s
-- Brendle-Cardona-Mejía;a;e
+- BCM21;a;e
 `],
 ["Blass-Cichoń",`invariants:
 - p
