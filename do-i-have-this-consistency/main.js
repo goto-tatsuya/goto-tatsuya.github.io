@@ -60,11 +60,11 @@ window.addEventListener("load", () => {
             $tbody.append($tr);
             $tr.append($("<td />").text(x));
             invariants.forEach((y, j) => {
-                let [ans, opt] = table[i][j];
+                let [ans, opt] = table[j][i];
                 let $td = $("<td />").text(cell_text(ans)).addClass(class_name(ans));
                 $tr.append($td);
                 tippy($td[0], {
-                    content: tooltip_html(x, y, ans, opt),
+                    content: tooltip_html(y, x, ans, opt),
                     allowHTML: true,
                     trigger: "mouseenter click"
                 });
@@ -72,7 +72,7 @@ window.addEventListener("load", () => {
         });
         $table.append($thead);
         $table.append($tbody);
-        $(right).empty().append("<p>Table of Con(y < x)</p>").append($table);
+        $(right).empty().append("<p>Table of Con(x < y)</p>").append($table);
         let $graph = $("<div id=graph></div>")
         $(right).append($graph);
         d3.select("#graph").graphviz()
