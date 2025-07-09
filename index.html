@@ -15,7 +15,16 @@
         <p>I am a <a href="https://www.jsps.go.jp/">JSPS</a> researcher at <a href="https://dmg.tuwien.ac.at/fb8/ST.html">TU Wien (The Set Theory Group)</a> and study set theory of reals.</p>
         </div>
     </div>
+
+    <nav>
+        <ul>
+            <li><a href="#aboutme">About me</a></li>
+            <li><a href="#publications">Publications</a></li>
+            <li><a href="#others">Others</a></li>
+        </ul>
+    </nav>
     
+    <section id="aboutme">
     <h2>Contact Information</h2>
     <div class="box">
         <p>
@@ -67,7 +76,9 @@
             <li>September 2-5: Giving a talk at <a href="https://sites.google.com/view/brendle60/">Conference on the occasion of Jörg Brendle's 60th birthday</a>.</li>
         </ul>
     </div>
+    </section>
 
+    <section id="publications">
     <h2>Reviewed Publications</h2>
     <div class="box">
         <ul>
@@ -141,7 +152,9 @@
             <li><a href="slides/wakate2018.pdf">Vaught予想と記述集合論</a> (Nov. 2018; 数学基礎論若手の会2018)</li>
         </ul>
     </div>
+    </section>
 
+    <section id="others">
     <h2 id="subpages">Sub pages</h2>
 
     <div class="box">
@@ -179,7 +192,35 @@
             <li><a href="articles/davies-rogers.pdf">Davies-Rogersによる奇妙なHausdorff測度の構成</a> (Dec. 2024)</li>
         </ul>
     </div>
-
+    </section>
+    <script>
+        function showSection(id) {
+            let sections = document.querySelectorAll("section");
+            for (let section of sections) {
+                if (section.id == id) {
+                    section.style.display = "";
+                } else {
+                    section.style.display = "none";
+                }
+            }
+            let anchors = document.querySelectorAll("nav a");
+            for (let anchor of anchors) {
+                if (anchor.href.indexOf("#" + id) >= 0) {
+                    anchor.className = "selected";
+                } else {
+                    anchor.className = "";
+                }
+            }
+        }
+        for (let anchor of document.querySelectorAll("nav a")) {
+            let id = anchor.href.match(/#(\w+)/)[1];
+            anchor.addEventListener("click", (e) => {
+                showSection(id);
+                e.preventDefault();
+            });
+        }
+        showSection(location.hash != "" ? location.hash.slice(1) : "aboutme");
+    </script>
 </body>
 
 </html>

@@ -53,3 +53,37 @@ dl {
 p  {
 	margin: 1.5em 1em;
 }
+
+nav {
+	background-color: #666;
+    max-width: 50em;
+}
+
+nav ul {
+	overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+nav li {
+	float: left;
+	text-align: center;
+	list-style: none;
+}
+
+nav li a.selected {
+	background: rgb(195, 157, 157);
+}
+
+nav li a:link,
+nav li a:visited,
+nav li a:hover {
+	display: inline-block;
+	color: #f2f2f2;
+	text-decoration: none;
+	font-size: 17px;
+	padding: 0.5rem 1rem;
+}
+
+nav li a:hover {
+	background: #999;
+}
