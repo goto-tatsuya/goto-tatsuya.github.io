@@ -228,3 +228,14 @@ div.figure {
 ul, ol {
 	margin-left: 3em;
 }
+
+
+/* https://pa-tu.work/t/6960 */
+.comment {
+	position: relative;
+	margin: 2rem;
+	padding: 0.5rem;
+	box-shadow: 0 0 0 0.5rem #dfcfab;
+	background-color: #dfcfab;
+	border-left: 10px dotted white;
+}

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>creature強制法勉強日記(11月5日): Cohen実数を追加しない十分条件</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                Pow: "\\mathcal{P}",
+                forces: "\\Vdash",
+                Fn: "\\mathrm{Fn}",
+                restricted: "\\upharpoonright",
+                support: "\\mathrm{support}",
+                H: "\\mathbf{H}",
+                dis: "\\mathbf{dis}",
+                nor: "\\mathbf{nor}",
+                val: "\\mathbf{val}",
+                TCR: "\\mathrm{TCR}",
+                CR: "\\mathrm{CR}",
+                root: "\\mathrm{root}",
+                append: "{}^\\frown",
+                Q: "\\mathbb{Q}",
+                QQ: "\\Q^*_{\\mathrm{s}\\infty}(K, \\Sigma)",
+                dom: "\\mathrm{dom}",
+                ran: "\\mathrm{ran}",
+                suc: "\\mathrm{succ}",
+                pos: "\\mathrm{pos}",
+                basis: "\\mathrm{basis}",
+                Cnor: "\\mathcal{C}(\\mathbf{nor})",
+                PTfg: "\\mathbf{PT}_{f,g}",
+                non: "\\mathrm{non}",
+                meager: "\\mathcal{M}",
+                cov: "\\mathrm{cov}",
+                nul: "\\mathcal{N}",
+                Seq: "\\mathrm{Seq}",
+                stem: "\\mathrm{stem}",
+                seq: ["\\langle #1 \\rangle", 1],
+                PC: "\\mathrm{PC}",
+                add: "\\mathbf{add}",
+            }
+          }
+        };
+    </script>
+    <script>
+        let LABELS = {};
+        let COUNT = {};
+
+        function label(type, name) {
+            let num = (COUNT[type] || 0) + 1;
+            LABELS[type+"."+name] = num;
+            COUNT[type] = num;
+            document.write(num);
+        }
+
+        function ref(type, name) {
+            document.write("<span class='ref' data-type='"+type+"'' data-name='"+name+"'>??</span>");
+        }
+
+        window.addEventListener("load", () => {
+            for (let span of document.querySelectorAll("span.ref")) {
+                let type = span.getAttribute("data-type");
+                let name = span.getAttribute("data-name");
+                if (LABELS[type+"."+name]) {
+                    span.textContent = LABELS[type+"."+name];
+                }
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <h1>creature強制法勉強日記(11月5日): Cohen実数を追加しない十分条件</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2025年11月5日
+    </p>
+    <p>
+        [RS99]をただまとめただけの記事で新規性はないことを注記しておく．
+    </p>
+    <h2>モチベーション</h2>
+    <p>
+        Cohen実数を追加しない強制法は(2回)反復したら，Cohen実数が付け加わりうる．
+        そこで反復強制法でCohen実数が付け加わらないことを保証するには，反復で保たれる，より強い条件が必要となる．それが本記事で紹介するものである．
+    </p>
+    <p>
+        この記事では，「creature強制法」は登場しないものの，creating pairやcreatureのようなcreature強制法の材料となるものは登場する．それらの概念を使ってCohen実数を付け加えない十分条件を与えるのである．
+    </p>
+    <h2>$(\bar{t}, \bar{\mathcal{F}})$-bounding</h2>
+    <p>
+        十分大きな正則基数$\chi$を固定しておく．また，$\H = \seq{H(i) : i \in \omega}$は$H_\chi$に属する$\omega$列である．
+    </p>
+
+    <div class="block def">
+        <div class="block-header">定義 (creature)</div>
+        <p>
+            $\H$のcreatureとは3つ組$t = (\nor[t], \val[t], \dis[t])$であって次を満たすもののことである．
+        </p>
+        <ul>
+            <li>$\nor[t]$は$0$以上の実数</li>
+            <li>ある$m_0 < m_1 < \omega$があって，
+                $\val[t] \subseteq \{ (x, y) : x \in \prod_{i < m_0} H(i), y \in \prod_{i < m_1} H(i), x \subseteq y \}$.
+            </li>
+            <li>$\dis[t] \in H_\chi$</li>
+        </ul>
+        <p>
+            $\val[t]$が非空なら2番目の条件の$m_0, m_1$は一意なので，それらを$m_{\mathrm{down}}^t$と$m_{\mathrm{up}}^t$と書く．   
+        </p>
+        <p>
+            $\CR[\H]$で$\H$のcreature全体のなす集合を表す．
+        </p>
+    </div>
+    <div class="comment">
+        <p>
+            creatureの絵を描くのは，色々情報を捨てないと難しい．$\nor[t]$と$\dis[t]$の情報を捨てて，$\val[t]$の情報の一部だけを絵にするとこんな感じか：
+        </p>
+        <p align="center">
+            <img src="creature.jpg" alt="creatureのイメージ図" width="300">
+        </p>
+    </div>
+
+    <div class="block def">
+        <div class="block-header">定義 (composition)</div>
+        <p>$K \subseteq \CR[\H]$とする．</p>
+        <p>
+            $\Sigma \colon [K]^{\le \omega} \to \Pow(K)$が$K$上のcomposition operationであるとは，次の4条件を満たすことである
+        </p>
+        <ul>
+            <li>全ての$r \in K$について，$r \in \Sigma(\{r\})$.</li>
+            <li>$\Sigma(\varnothing) = \varnothing$.</li>
+            <li>(推移性) 任意の$S \in [K]^{\le \omega}$と$(S_s : s \in S)$で$S_s \in [K]^{\le \omega}$ (for every $s \in S$)なものについて，もし$s \in \Sigma(S_s)$ (for every $s \in S$)ならば，$\Sigma(S) \subseteq \Sigma(\bigcup_{s \in S} S_s)$.</li>
+            <li>任意の$S \in [K]^{\le \omega}$について，もし$\Sigma(S) \ne \varnothing$ならば，$S$は有限集合であり，ある枚挙$S = \{ t_0, \dots, t_{m-1} \}$について，$m_\mathrm{up}^{t_i} = m_\mathrm{down}^{t_{i+1}}$ for every $i < m-1$である．</li>
+            <li>
+                $s \in \Sigma(\{t_0, \dots, t_{m-1}\})$ ($t_0, \dots, t_{m-1}$は上のような枚挙)のとき$m_\mathrm{down}^s = m_\mathrm{down}^{t_0}$かつ$m_\mathrm{up}^s = m_\mathrm{up}^{t_{m-1}}$.
+            </li>
+        </ul>
+        <p>
+            このときペア$(K, \Sigma)$をcreating pairという．
+        </p>
+    </div>
+
+    <div class="comment">
+        <p>
+            $s \in \Sigma(t_0, \dots, t_{n-1})$ということの意味は，「$t_0, \dots, t_{n-1}$を繋げて中身を薄めたものの一つが$s$である」と解釈できる．
+        </p>
+    </div>
+
+    <div class="block def">
+        <div class="block-header">定義 ($\basis, \pos$)</div>
+        <p>$(K, \Sigma)$をcreating pairとする．</p>
+        <p>
+            $t \in K$について
+            $$
+            \basis(t) = \{ w \in \prod_{i < m_\mathrm{down}^t} \H(i) : (\exists s \in \Sigma(\{t\}))(\exists u)((w, u) \in \val[s]) \}
+            $$
+            とおく．
+        </p>
+        <p>
+            creatureの有限列$t_0, \dots, t_{m-1}$で$m_\mathrm{up}^{t_i} = m_\mathrm{down}^{t_{i+1}}$ for every $i < m-1$を満たしているものを考える．
+            $w \in \prod_{i < m_\mathrm{down}^{t_0}} \H(i)$とする．
+            このとき，
+            $$
+            \pos^*(w, t_0, \dots, t_{m-1}) = \{ u \in \prod_{i < m_\mathrm{up}^{t_{m-1}}} \H(i) : (\exists s \in \Sigma(\{t_1, \dots, t_{m-1} \}))((w, u) \in \val[s]) \}
+            $$
+            とおく．
+        </p>
+        <p>
+            creatureの有限列$t_0, \dots, t_{m-1}$で$m_\mathrm{up}^{t_i} = m_\mathrm{down}^{t_{i+1}}$ for every $i < m-1$を満たしているものを考える．
+            $w \in \prod_{i < m_\mathrm{down}^{t_0}} \H(i)$とする．
+            これらについて，その可能性 (possibility)の集合を
+            \begin{align*}
+            \pos(w, t_0, \dots, t_{m-1}) = \{ u \in \prod_{i < m_\mathrm{up}^{t_{m-1}}} \H(i) : \,&\text{自然数列$0 < a_0 < \dots < a_l = m$があり，} \\
+            & u \restricted m_{\mathrm{down}}^{t_{a_0}} \in \pos^*(w, \{t_i\}_{i \in [0, a_0)}), \\
+            & u \restricted m_{\mathrm{down}}^{t_{a_1}} \in \pos^*(u \restricted m_{\mathrm{down}}^{t_{a_0}}, \{t_i\}_{i \in [a_0, a_1)}), \\
+            & \dots \\
+            & u \in \pos^*(u \restricted m_{\mathrm{down}}^{t_{a_{l-1}}}, \{t_i\}_{i \in [a_{l-1}, a_{l})})
+            \}
+            \end{align*}
+            と定める．
+        </p>
+        <p>
+            $w$と$t_0, \dots, t_{m-1}$が仮定を満たしていないときには，$\pos(w, t_0, \dots, t_{m-1}) = \varnothing$とする．
+        </p>
+    </div>
+
+    <div class="block def">
+        <div class="block-header">定義 (nice)</div>
+        <p>
+            $(K, \Sigma)$がniceであるとは，任意の$t_0, \dots, t_{n-1} \in K$と$s \in \Sigma(t_0, \dots, t_{n-1})$について$\basis(t_0) \subseteq \basis(s)$であることを言う．
+        </p>
+    </div>
+    <p>
+        以後creating pairは常にniceであることを仮定する．
+    </p>
+
+    <div class="comment">
+        <p>
+            niceとは，creatureをshrinkしても，もともとあったbasisは減らない，という要請である．
+        </p>
+    </div>
+
+    <div class="block def">
+        <div class="block-header">定義 (pure candidate)</div>
+        <p>
+            creatureの列$\seq{t_0, t_1, \dots}$がpure candidateであるとは
+            $$
+            \forall i\ (m^{t_i}_\mathrm{up} = m^{t_{i+1}}_\mathrm{down})
+            $$
+            かつ
+            $$
+            \exists w \in \basis(t_0)\ \forall i\ (\pos(w, t_0, \dots, t_i) \subseteq \basis(t_{i+1}))
+            $$
+            を満たすときをいう．
+        </p>
+        <p>
+            $(K, \Sigma)$に関するpure candidate全部の集合を$\PC(K, \Sigma)$と書き，この集合の元であってノルムが無限大に発散するもの全部の集合を$\PC_\infty(K, \Sigma)$と書く．
+        </p>
+
+        <p>
+            $\PC(K, \Sigma)$の順序関係$\bar{t} \le \bar{s}$を次で定める．
+            $\bar{t} \le \bar{s}$なのは次のとき：
+            $\omega$のfinal segmentの区間分割$(I_n : n \in \omega)$があって，
+            $t_n \in \Sigma(s_i : i \in I_{n+1})$ (for every $n \in \omega$).
+        </p>
+    </div>
+    </div>
+
+
+    <div class="block def">
+        <div class="block-header">定義 ($(\bar{t},h_1,h_2)$-bounding)</div>
+        <p>
+            $(K, \Sigma)$をcreating pairとして，$\bar{t} = \seq{t_n : n \in \omega} \in \PC(K, \Sigma)$とする．
+        </p>
+        <p>
+            <ol>
+                <li>
+                    $h \in \omega^\omega$に対して，
+                    $$
+                    U_h(\bar{t}) = \{ \bar{s} = \seq{s_n : n \in \omega} \in \PC(K, \Sigma) : \bar{s} \le \bar{t} \text{ and } \forall n \in \omega\ (\nor[s_n] \le h(m^{s_n}_\mathrm{down}))  \}
+                    $$
+                    とおく．
+                    <!--
+                    また，$n \in \omega$と$h \in \omega^\omega$に対して
+                    $$
+                    V^n_h(\bar{t}) = \{ s \in \Sigma(t_n) : \nor[s] \le h(m^s_\mathrm{down}) \}
+                    $$
+                    とおく．
+                    -->
+                </li>
+                <li>
+                    $h_1, h_2 \in \omega^\omega$とする．
+                    強制概念$P$が$(\bar{t}, h_1, h_2)$-boundingとは，
+                    $$
+                    P \forces \forall s \in U_{h_1}(\bar{t})\ \exists s^* \in U_{h_2}(\bar{t}) \cap V\ (\bar{s} \le \bar{s}^*)
+                    $$
+                    を満たすこと．
+                </li>
+            </ol>
+        </p>
+    </div>
+    <div class="comment">
+        <p>
+            $(\bar{t}, h_1, h_2)$-boundingはざっくり言うと，ノルムの増加度合いが$h_1$程度なジェネリック拡大の中のpure candidateをノルムの増加度合いが$h_2$程度なグラウンドモデルのpure candidateで覆えるということ．
+        </p>
+    </div>
+
+    <div class="block def">
+        <div class="block-header">定義 (strictly monotonicとspread)</div>
+        <p>
+            creating pair $(K, \Sigma)$ on $\H$について次を定義する．
+        </p>
+        <ol>
+            <li>
+                $(K, \Sigma)$はmonotonicである iff 各$t \in K$と$s \in \Sigma(t)$について，$\val[s] \subseteq \val[t]$.
+            </li>
+            <li>
+                $(K, \Sigma)$はstrictly monotonicである iff それはmonotonicであって，かつ，すべての$n \in \omega$と
+                $t_0, \dots, t_n \in K$と$s \in \Sigma(t_0, \dots, t_n)$であって，
+                $\nor[s] \le \max \{ \nor[t_l] - 1 : l \le n\}$なものについて，
+                $$
+                \forall u \in \basis(t_0)\ (\pos(u, s) \subsetneq \pos(u, t_0, \dots, t_n)).
+                $$
+            </li>
+            <li>
+                $(K, \Sigma)$はspreadである iff 各$t \in K$と$u \in \basis(t)$と$v \in \pos(u, t)$について，$s \in \Sigma(t)$があり，
+                $$
+                \nor[s] \le \frac{1}{2} \nor[t] \text{ and } v \in \pos(u, s).
+                $$
+            </li>
+        </ol>
+    </div>
+    <div class="block lem">
+        <div class="block-header">命題<script>label("prop", "nocohen")</script></div>
+        <p>
+            $(K, \Sigma)$をstrictly monotonicかつspreadなcreating pair for $\H$とする．
+            $\bar{t} = \seq{t_n : n \in \omega} \in \PC_\infty(K, \Sigma)$かつ$h_1, h_2 \in \omega^\omega$として次を仮定する．
+            $$
+            \forall n\ (0 < h_1(m^{t_n}_\mathrm{down}) \le h_2(m^{t_n}_\mathrm{down}) \le \nor[t_n])
+            $$
+            かつ
+            $$
+            \forall^\infty n\ (h_2(m^{t_n}_\mathrm{down}) \le \nor[t_n] - 1).
+            $$
+            このとき，$(\bar{t}, h_1, h_2)$-boundingな強制概念はCohen実数を追加しない．
+        </p>
+    </div>
+    <div class="proof">
+        <p>
+            証明．
+        </p>
+        <p>
+            $w \in \basis(t_0)$で$\forall n\ \pos(w, t_0, \dots, t_{n-1}) \subseteq \basis(t_n)$なものを取る ($\PC$の定義より取れる)．
+            次の空間$\mathcal{X}$を考える．
+            $$
+            \mathcal{X} = \{ x \in \prod_{m \in \omega} H(m) : \forall n\ (x \restricted m^{t_n}_\mathrm{up} \in \pos(w, t_0, \dots, t_n)) \}.
+            $$
+            これは完全ポーランド空間である．
+            孤立点がないことは次の観察より従う：$(K, \Sigma)$がstrictly monotonicかつspreadかつ$\lim_n \nor[t_n] = \infty$なので，十分大きな$n$と各$u \in \basis(t_n)$について2つの異なる$v_1, v_2 \in \pos(u, t_n)$が見つかる．
+        </p>
+        <p>
+            よって$P$がCohen実数を追加するなら，Cohen実数$c \in \mathcal{X}$も追加する．
+            $V[c]$において，帰納的に次のような$\bar{s} = \seq{s_n : n \in \omega} \in U_{h_1}(\bar{t})$であって，
+            $$
+            \forall n\ (s_n \in \Sigma(t_n) \text{ and } c \restricted m^{s_n}_\mathrm{down} \in \pos(w, s_0, \dots, s_{n-1}) \subseteq \basis(s_n))
+            $$
+            を満たすものを取る．これはspread性より取れる (spread一回ではノルムを半分にしかできないが，繰り返し使うといくらでもノルムを小さくできる)．また$(K, \Sigma)$がniceであることも使う．
+        </p>
+        <p>
+            $\bar{s}^* \in U_{h_2}(\bar{t}) \cap V$であって，$\bar{s} \le \bar{s}^*$を満たすものがないことを証明すればよい．
+            そのために$\bar{s}^* \in U_{h_2}(\bar{t}) \cap V$とする．
+            $V$で働いて，次の集合を考える：
+            $$
+            \mathcal{O} = \{ x \in \mathcal{X} : \exists n\ (x \restricted m^{s^*_n}_\mathrm{down} \not \in \pos(w, s^*_0, \dots, s^*_{n-1})) \}.
+            $$
+            これは$\mathcal{X}$の稠密開集合である．
+            稠密性を示すのにstrict monotononictyを使って示す．
+            ここでは，十分大きな$n$について，$\nor[s^*_n] \le h_2(m^{s^*_n}_\mathrm{down}) \le \nor[t_m]$であることを使う．ただし$m$は$m^{t_m}_\mathrm{down} = m^{s^*_n}_\mathrm{down}$となる一意な自然数．
+        </p>
+        <p>
+            したがって，$V[c]$において，$c$はCohen実数 over $V$だから，$c \in \mathcal{O}$となり，$\bar{s} \not \le \bar{s}^*$が従う． (証明終了)
+        </p>
+    </div>
+
+    <div class="block def">
+        <div class="block-header">定義 (additive)</div>
+        <p>
+            $(K, \Sigma)$をcreating pairとする．
+        </p>
+        <ol>
+            <li>
+                $t \in K$が$(n, m)$-additiveであるとは，どの$t_0, \dots, t_{n-1} \in \Sigma(t)$で，$\nor[t_i] \le m$ (for every $i < m$)なものについても，
+                ある$s \in \Sigma(t)$があり，
+                $t_0, \dots, t_{n-1} \in \Sigma(s)$かつ
+                $\nor[s] \le \max \{ \nor[t_l] : l < n \} + 1$を満たすときを言う．
+            </li>
+            <li>
+                $t \in K$の$m$-additivityとは，
+                $$
+                \add_m(t) = \sup \{ k < \omega : t \text{ is } (k, m) \text{-additive} \}
+                $$
+                で定義される量．
+            </li>
+            <li>
+                $g, h \in \omega^\omega$とする．
+                $(K, \Sigma)$が$(g, h)$-additiveであるとは，全ての$t \in K$について$\add_{h(m^t_\mathrm{down})}(t) \ge g(m^t_\mathrm{down})$を満たすこと．
+                同様に$\bar{t} \in \PC(K, \Sigma)$について，$\bar{t}$が$(g, h)$-additiveであるとは，全ての$n$で$\add_{h(m^{t_n}_\mathrm{down})}(t_n) \ge g(m^{t_n}_\mathrm{down})$を満たすこと．
+            </li>
+        </ol>
+    </div>
+    <div class="block def">
+        <div class="block-header">定義 ($\bar{t}$-good, $(\bar{t}, \bar{\mathcal{F}})$-bounding)</div>
+        <p>
+            $(K, \Sigma)$をcreating pairとし，$\bar{t} = \seq{t_n : n \in \omega} \in \PC_\infty(K, \Sigma)$とする．
+        </p>
+        <ol>
+            <li>
+                半順序集合$\bar{\mathcal{F}} = (\mathcal{F}, <^*_\mathcal{F})$ on $\mathcal{F} \subseteq \omega^\omega$が$\bar{t}$-goodであるとは，次の条件を満たすこと：
+                <ol>
+                    <li>$\bar{\mathcal{F}}$が自己稠密かつ極大元，極小元を持たない</li>
+                    <li>各$f \in \mathcal{F}$について
+                        $\forall n\ (1 < h(m^{t_n}_\mathrm{down}) \le \nor[t_n])$かつ
+                        $\lim_{n \to \infty} (\nor[t_n] - h(m^{t_n}_\mathrm{down})) = \infty$
+                    </li>
+                    <li>
+                        もし$h_1, h_2 \in \mathcal{F}$かつ$h_1 <^*_\mathcal{F} h_2$ならば，
+                        $\forall n\ (h_1(m^{t_n}_\mathrm{down}) \le h_2(m^{t_n}_\mathrm{down}))$かつ
+                        $\lim_{n \to \infty} (h_2(m^{t_n}_\mathrm{down}) - h_1(m^{t_n}_\mathrm{down})) = \infty$
+                    </li>
+                </ol>
+            </li>
+            <li>
+                $\bar{\mathcal{F}}$が$\bar{t}$-goodだとする．
+                強制概念$P$が$(\bar{t}, \bar{\mathcal{F}})$-boundingであるとは，任意の$h_1, h_2 \in \mathcal{F}$で$h_1 <^*_\mathcal{F} h_2$なものについて，$P$が$(\bar{t}, f_1, f_2)$-boundingなことを言う．
+            </li>
+        </ol>
+    </div>
+
+    <div class="block def">
+        <div class="block-header">定義 (simple)</div>
+        <p>
+            creating pair $(K, \Sigma)$がsimpleであるとは，$\Sigma(S) \ne \varnothing$ならば$S$は一点集合となることを言う．
+        </p>
+    </div>
+    <div class="comment">
+        <p>
+            simpleであることを仮定すると，この文書の前半のcreating pairに関する概念の多くは非常にすっきりする．
+        </p>
+    </div>
+    <div class="block def">
+        <div class="block-header">定義 (reducible)</div>
+        <p>
+            creating pair $(K, \Sigma)$がreducibleであるとは，どの$t \in K$で$\nor[t] > 3$であるものについても，ある$s \in \Sigma(t)$が存在し，$\nor[t] / 2 \le \nor[s] \le \nor[t] - 1$を満たすことを言う．
+        </p>
+    </div>
+    <div class="block thm">
+        <div class="block-header">定理 (Roslanowski-Shelah, Theorem 5.2.9 of [RS99])</div>
+        <p>
+            $(K, \Sigma)$はsimpleかつreducibleなcreating pairとする．
+            $\bar{t} = \seq{t_n : n \in \omega} \in \PC_\infty(K, \Sigma)$を$\nor[t_n] \ge 2$なるpure candidateとする．
+            $\bar{\mathcal{F}} = (\mathcal{F}, <^*_\mathcal{F})$を$\bar{t}$-goodな半順序集合で$\bar{t}$が$(2, h)$-additive for every $h \in \mathcal{F}$なものとする．
+            $\seq{P_\alpha, \dot{Q}_\alpha : \alpha < \beta}$をproper forcingのcountable support iterationで各$\alpha < \beta$について
+            $$
+            P_\alpha \forces \dot{Q_\alpha} \text{ is } (\bar{t}, \bar{\mathcal{F}})\text{-bounding}
+            $$
+            と仮定する．
+            このとき$P_\beta$も$(\bar{t}, \bar{\mathcal{F}})$-boundingである．
+        </p>
+    </div>
+    <p>
+        証明はここでは省略する．
+    </p>
+    <p>
+        結論として，上記定理の仮定および命題<script>ref("prop", "nocohen")</script>の仮定を満たす$(\bar{t}, \bar{\mathcal{F}})$について，各iterandがproperかつ$(\bar{t}, \bar{\mathcal{F}})$-boundingなcountable support iterationにおいて，最終モデルはグラウンドモデル上のCohen実数を追加しない．
+    </p>
+    <h2>Bartoszynski-Judah本の$(F, g)$-preservingについて</h2>
+    <p>
+        執筆中．
+    </p>
+    <h2>参考文献</h2>
+    <ul>
+        <li>[BJ95] Bartoszynski, T., & Judah, H. (1995). Set Theory: on the structure of the real line. AK Peters/CRC Press.</li>
+        <li> [RS99] Rosłanowski, A., & Shelah, S. (1999). Norms on possibilities. I. Forcing with trees and creatures. Mem. Amer. Math. Soc., 141(671), xii+167.</li>
+    </ul>
+</body>
+
+</html>
