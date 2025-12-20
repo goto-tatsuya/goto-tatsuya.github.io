@@ -55,6 +55,7 @@ window.addEventListener("load", () => {
         for (let y of invariants) {
             $tr.append($("<td />").text(y));
         }
+        let tips = {};
         invariants.forEach((x, i) => {
             let $tr = $("<tr />");
             $tbody.append($tr);
@@ -63,41 +64,192 @@ window.addEventListener("load", () => {
                 let [ans, opt] = table[j][i];
                 let $td = $("<td />").text(cell_text(ans)).addClass(class_name(ans));
                 $tr.append($td);
-                tippy($td[0], {
+                tips[y+"-"+x] = tippy($td[0], {
                     content: tooltip_html(y, x, ans, opt),
                     allowHTML: true,
-                    trigger: "mouseenter click"
+                    trigger: "mouseenter"
+                });
+                $td[0].addEventListener("mouseenter", () => {
+                    changeColor(cy, x, y);
                 });
             });
+        });
+        $table[0].addEventListener("mouseleave", () => {
+            revertColor(cy);
+            clearAllTooltip(tips);
         });
         $table.append($thead);
         $table.append($tbody);
         $(right).empty().append("<p>Table of Con(x < y)</p>").append($table);
-        let $graph = $("<div id=graph></div>")
+        let $graph = $("<div id=graph style='width:600px;height:600px'></div>")
         $(right).append($graph);
-        d3.select("#graph").graphviz()
-        .fade(false)
-        .renderDot(dot_text(invariants, theorems, consistency));
+        let cy = make_graph(invariants, theorems, consistency, tips);
     });
 });
 
-function dot_text(invariants, theorems, consistency) {
-    let hash = {};
+function clearAllTooltip(tips) {
+    for (let x in tips) {
+        tips[x].hide();
+    }
+}
+
+let prev_inv1, prev_inv2;
+
+function changeColor(cy, inv1, inv2) {
+    revertColor(cy);
+    cy.getElementById(inv1).style('background-color', 'rgba(144, 160, 209, 1)');
+    cy.getElementById(inv2).style('background-color', 'rgba(144, 160, 209, 1)');
+    prev_inv1 = inv1;
+    prev_inv2 = inv2;
+}
+
+function revertColor(cy) {
+    if (prev_inv1) cy.getElementById(prev_inv1).style('background-color', '#444');
+    if (prev_inv2) cy.getElementById(prev_inv2).style('background-color', '#444');
+}
+
+function make_graph(invariants, theorems, consistency, tips) {
+    let elements = [];
+
     invariants.forEach((invariant, i) => {
-        hash[invariant] = i;
-    });
-    let str = "digraph { rankdir=\"LR\"";
-    invariants.forEach((invariant, i) => {
-        str += "v"+i+" [label=\""+invariant+"\"];";
+        elements.push({data: {id: invariant}});
     });
     theorems.forEach(([a, b]) => {
-        str += "v"+hash[a]+"->v"+hash[b]+" weight = 10;";
+        elements.push({data: {id: a+"-"+b, source: a, target: b}});
     });
-    /* consistency.forEach(([a, b]) => {
-        str += "v"+hash[a]+"->v"+hash[b]+" [style=\"dashed\",color=\"#cccccc\"];";
-    }); */
-    str += "}";
-    return str;
+    const cy = cytoscape({
+        container: document.getElementById('graph'),
+        elements: elements,
+        style: [
+            {
+                selector: 'node',
+                style: {
+                    'background-color': '#444',
+                    'width': 'label',
+                    'height': 'label',
+                    'padding': '8px',
+                    'color': '#fff',
+                    'label': 'data(id)',
+                    'text-valign': 'center',
+                    'text-halign': 'center',
+                    'font-size': 12,
+                    'text-wrap': 'wrap'
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                    'width': 3,
+                    'line-color': '#ccc',
+                    'target-arrow-color': '#ccc',
+                    'target-arrow-shape': 'triangle',
+                    'curve-style': 'bezier' 
+                }
+            },
+            {
+                selector: 'edge.hover',
+                style: {
+                    'line-color': 'red',
+                    'target-arrow-color': 'red',
+                    'width': 5
+                }
+            }
+        ],
+        layout: { name: 'dagre', rankDir: 'LR' }
+    });
+    rotateGraph(cy, -30);
+    cy.edges().on('mouseover', (evt) => {
+        const edge = evt.target;
+        edge.addClass('hover')
+        let tip = tips[edge.id()];
+        let ts = []
+        if (tip) { tip.show(); ts.push(tip); }
+        let tip2 = tips[swapId(edge.id())];
+        if (tip2) { tip2.show(); ts.push(tip2); }
+        adjustOffsets(ts);
+        
+    });
+    cy.edges().on('mouseout', (evt) => {
+        const edge = evt.target;
+        edge.removeClass('hover');
+        clearAllTooltip(tips);
+    });
+    return cy;
+}
+
+
+function adjustOffsets(tippyInstances) {
+    const tooltipRects = [];
+
+    tippyInstances.forEach((inst, index) => {
+    const btn = inst.reference;
+
+    // ボタンの位置
+    const btnRect = btn.getBoundingClientRect();
+    let offsetY = 10; // 基本の上方向オフセット
+
+    // 上にあるツールチップと重なりそうなら調整
+    tooltipRects.forEach(prevRect => {
+        if (btnRect.top - offsetY < prevRect.bottom) {
+        offsetY += (prevRect.bottom - (btnRect.top - offsetY)) + 5; // 5pxの余白
+        }
+    });
+
+    // インスタンスにoffsetを適用
+    inst.setProps({
+        offset: [0, offsetY],
+    });
+
+    // 仮にツールチップの高さを50pxとして矩形保存
+    // ※ TippyはまだDOMに描画されていないので高さが不明な場合は仮定値
+    const tooltipHeight = 50;
+    tooltipRects.push({
+        top: btnRect.top - offsetY - tooltipHeight,
+        bottom: btnRect.top - offsetY,
+    });
+    });
+}
+
+function swapId(id) {
+    let matched = id.match(/^(.+)-(.+)$/);
+    return matched[2] + "-" + matched[1];
+}
+
+function rotateGraph(cy, deg) {
+  const rad = deg * Math.PI / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+
+  // ① グラフのバウンディングボックス中心を取得
+  const bb = cy.elements().boundingBox();
+  const cx = (bb.x1 + bb.x2) / 2;
+  const cyCenter = (bb.y1 + bb.y2) / 2;
+
+  // ② 各ノードを中心基準で回転
+  cy.nodes().forEach(node => {
+    const p = node.position();
+
+    // 中心を原点に移動
+    const x = p.x - cx;
+    const y = p.y - cyCenter;
+
+    // 回転
+    const rx = x * cos - y * sin;
+    const ry = x * sin + y * cos;
+
+    // 鏡映
+    rrx = (rx - ry) / 2;
+    rry = - (rx + ry) / 2;
+
+    // 元の中心に戻す
+    node.position({
+      x: rrx + cx,
+      y: rry + cyCenter
+    });
+  });
+
+  // ③ ビューを自動調整
+  cy.fit(undefined, 30);
 }
 
 function check(invariants, invariant) {
