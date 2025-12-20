@@ -1,107 +1,167 @@
+let USER_WRITTEN_INPUT = [];
+
 window.addEventListener("load", () => {
-    const $select = $("select");
     const source = document.querySelector("#source");
+    const $select = $("#select");
+    const $optgroup = $("<optgroup label='Preset' />");
+    const $optgroup2 = $("<optgroup label='User-Written Inputs' id='user-group' />");
+    $select.append($optgroup).append($optgroup2);
     for (let [name, text] of PRESETS) {
         let $option = $("<option/>").text(name);
-        $select.append($option);
+        $optgroup.append($option);
         if (name === DEFAULT) {
             $option[0].selected = true;
             source.value = text;
         }
     }
     $select[0].addEventListener("change", (e) => {
-        source.value = PRESETS.find(x => x[0] == e.target.value)[1];
+        let value = e.target.value;
+        if (!isNaN(parseInt(value))) {
+            let {name, text} = USER_WRITTEN_INPUT[value];
+            $("#name")[0].value = name;
+            source.value = text;
+        } else {
+            source.value = PRESETS.find(x => x[0] == value)[1];
+        }
     });
-    const run = document.querySelector("#run");
-    const right = document.querySelector("#right");
-    run.addEventListener("click", () => {
-        let invariants, theorems, consistency;
-        try {
-            [invariants, theorems, consistency] = parse(source.value);
-        } catch(e) {
-            if (e instanceof ParseError) {
-                alert("Parse error on the "+(e.lineno+1)+"-th line.");
-                return;
-            } else {
-                throw e;
-            }
+    loadUserWrittenInput();
+    showUserWrittenInput();
+    $("#save")[0].addEventListener("click", () => {
+        let name = $("#name")[0].value;
+        let index = USER_WRITTEN_INPUT.findIndex(({name: n, text: t}) => n == name);
+        if (index >= 0) {
+            USER_WRITTEN_INPUT[index] = {name: name, text: source.value};
+        } else {
+            USER_WRITTEN_INPUT.push({name: name, text: source.value});
         }
-        for (let [a, b] of theorems) {
-            if (check(invariants, a)) return;
-            if (check(invariants, b)) return;
+        saveUserWrittenInput();
+        showUserWrittenInput();
+    });
+    $("#delete")[0].addEventListener("click", () => {
+        let name = $("#name")[0].value;
+        let index = USER_WRITTEN_INPUT.findIndex(({name: n, text: t}) => n == name);
+        if (index >= 0) {
+            USER_WRITTEN_INPUT.splice(index, 1);
         }
-        for (let [a, b, method] of consistency) {
-            if (check(invariants, a)) return;
-            if (check(invariants, b)) return;
-        }
+        saveUserWrittenInput();
+        showUserWrittenInput();
+    });
+    const runButton = document.querySelector("#run");
+    runButton.addEventListener("click", run);
+});
 
-        let table;
-        try {
-            table = create_table(invariants, theorems, consistency);
-        } catch (e) {
-            if (e instanceof InconsistentError) {
-                $(right).empty().append("<p>There are inconsistencies in what you have inputted.</p>");
-                return;
-            } else {
-                throw e;
-            }
+function saveUserWrittenInput() {
+    localStorage.setItem("userWrittenInputs", JSON.stringify(USER_WRITTEN_INPUT));
+}
+
+function loadUserWrittenInput() {
+    let json = localStorage.getItem("userWrittenInputs");
+    if (json) {
+        USER_WRITTEN_INPUT = JSON.parse(json);
+    } else {
+        USER_WRITTEN_INPUT = [];
+    }
+}
+
+function showUserWrittenInput() {
+    let optgroup = $("#user-group")[0];
+    optgroup.innerHTML = "";
+    let index = 0;
+    for (let {name, text} of USER_WRITTEN_INPUT) {
+        optgroup.appendChild($("<option />").text(name).val(index)[0]);
+        index ++;
+    }
+}
+
+function run() {
+    const source = document.querySelector("#source");
+    const right = document.querySelector("#right");
+    let invariants, theorems, consistency;
+    try {
+        [invariants, theorems, consistency] = parse(source.value);
+    } catch(e) {
+        if (e instanceof ParseError) {
+            alert("Parse error on the "+(e.lineno+1)+"-th line.");
+            return;
+        } else {
+            throw e;
         }
-        let $table = $("<table />");
-        let $thead = $("<thead />");
-        let $tbody = $("<tbody />");
+    }
+    for (let [a, b] of theorems) {
+        if (check(invariants, a)) return;
+        if (check(invariants, b)) return;
+    }
+    for (let [a, b, method] of consistency) {
+        if (check(invariants, a)) return;
+        if (check(invariants, b)) return;
+    }
+
+    let table;
+    try {
+        table = create_table(invariants, theorems, consistency);
+    } catch (e) {
+        if (e instanceof InconsistentError) {
+            $(right).empty().append("<p>There are inconsistencies in what you have inputted.</p>");
+            return;
+        } else {
+            throw e;
+        }
+    }
+    let $table = $("<table />");
+    let $thead = $("<thead />");
+    let $tbody = $("<tbody />");
+    let $tr = $("<tr />");
+    $thead.append($tr);
+    $tr.append($("<td>x＼y</td>"));
+    for (let y of invariants) {
+        $tr.append($("<td />").text(y));
+    }
+    let tips = {};
+    invariants.forEach((x, i) => {
         let $tr = $("<tr />");
-        $thead.append($tr);
-        $tr.append($("<td>x＼y</td>"));
-        for (let y of invariants) {
-            $tr.append($("<td />").text(y));
-        }
-        let tips = {};
-        invariants.forEach((x, i) => {
-            let $tr = $("<tr />");
-            $tbody.append($tr);
-            $tr.append($("<td />").text(x));
-            invariants.forEach((y, j) => {
-                let [ans, opt] = table[j][i];
-                let $td = $("<td />").text(cell_text(ans)).addClass(class_name(ans));
-                $td[0].id = y+"-"+x;
-                $tr.append($td);
-                tips[y+"-"+x] = tippy($td[0], {
-                    content: tooltip_html(y, x, ans, opt),
-                    allowHTML: true,
-                    trigger: "manual"
-                });
-                $td[0].addEventListener("mouseenter", () => {
-                    changeColor(cy, x, y);
-                    $td.addClass("outlined");
-                    tips[x+"-"+y].reference.classList.add("outlined");
-                    if (x != y) {
-                        adjustOffsets([tips[y+"-"+x], tips[x+"-"+y]]);
-                    } else {
-                        adjustOffsets([tips[y+"-"+x]]);
-                    }
-                    tips[y+"-"+x].show();
-                    tips[x+"-"+y].show();
-                });
-                $td[0].addEventListener("mouseleave", () => {
-                    $td.removeClass("outlined");
-                    tips[x+"-"+y].reference.classList.remove("outlined");
-                    tips[y+"-"+x].hide();
-                    tips[x+"-"+y].hide();
-                });
+        $tbody.append($tr);
+        $tr.append($("<td />").text(x));
+        invariants.forEach((y, j) => {
+            let [ans, opt] = table[j][i];
+            let $td = $("<td />").text(cell_text(ans)).addClass(class_name(ans));
+            $td[0].id = y+"-"+x;
+            $tr.append($td);
+            tips[y+"-"+x] = tippy($td[0], {
+                content: tooltip_html(y, x, ans, opt),
+                allowHTML: true,
+                trigger: "manual"
+            });
+            $td[0].addEventListener("mouseenter", () => {
+                changeColor(cy, x, y);
+                $td.addClass("outlined");
+                tips[x+"-"+y].reference.classList.add("outlined");
+                if (x != y) {
+                    adjustOffsets([tips[y+"-"+x], tips[x+"-"+y]]);
+                } else {
+                    adjustOffsets([tips[y+"-"+x]]);
+                }
+                tips[y+"-"+x].show();
+                tips[x+"-"+y].show();
+            });
+            $td[0].addEventListener("mouseleave", () => {
+                $td.removeClass("outlined");
+                tips[x+"-"+y].reference.classList.remove("outlined");
+                tips[y+"-"+x].hide();
+                tips[x+"-"+y].hide();
             });
         });
-        $table[0].addEventListener("mouseleave", () => {
-            revertColor(cy);
-            clearAllTooltip(tips);
-        });
-        $table.append($thead);
-        $table.append($tbody);
-        $(right).empty().append("<p>Table of Con(x < y)</p>").append($table);
-        let $graph = $("<div id=graph style='width:600px;height:600px'></div>")
-        $(right).append($graph);
-        let cy = make_graph(invariants, theorems, consistency, tips);
     });
-});
+    $table[0].addEventListener("mouseleave", () => {
+        revertColor(cy);
+        clearAllTooltip(tips);
+    });
+    $table.append($thead);
+    $table.append($tbody);
+    $(right).empty().append("<p>Table of Con(x < y)</p>").append($table);
+    let $graph = $("<div id=graph style='width:600px;height:600px'></div>")
+    $(right).append($graph);
+    let cy = make_graph(invariants, theorems, consistency, tips);
+}
 
 function clearAllTooltip(tips) {
     for (let x in tips) {
@@ -346,7 +406,7 @@ function chain_to_string(chain) {
 
 function cell_text(value) {
     if (value === true) {
-        return "INCON";
+        return "INC";
     } else if (value === false) {
         return "CON";
     } else {
