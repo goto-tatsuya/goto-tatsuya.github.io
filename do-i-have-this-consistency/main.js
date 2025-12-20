@@ -63,14 +63,30 @@ window.addEventListener("load", () => {
             invariants.forEach((y, j) => {
                 let [ans, opt] = table[j][i];
                 let $td = $("<td />").text(cell_text(ans)).addClass(class_name(ans));
+                $td[0].id = y+"-"+x;
                 $tr.append($td);
                 tips[y+"-"+x] = tippy($td[0], {
                     content: tooltip_html(y, x, ans, opt),
                     allowHTML: true,
-                    trigger: "mouseenter"
+                    trigger: "manual"
                 });
                 $td[0].addEventListener("mouseenter", () => {
                     changeColor(cy, x, y);
+                    $td.addClass("outlined");
+                    tips[x+"-"+y].reference.classList.add("outlined");
+                    if (x != y) {
+                        adjustOffsets([tips[y+"-"+x], tips[x+"-"+y]]);
+                    } else {
+                        adjustOffsets([tips[y+"-"+x]]);
+                    }
+                    tips[y+"-"+x].show();
+                    tips[x+"-"+y].show();
+                });
+                $td[0].addEventListener("mouseleave", () => {
+                    $td.removeClass("outlined");
+                    tips[x+"-"+y].reference.classList.remove("outlined");
+                    tips[y+"-"+x].hide();
+                    tips[x+"-"+y].hide();
                 });
             });
         });
@@ -161,53 +177,74 @@ function make_graph(invariants, theorems, consistency, tips) {
     cy.edges().on('mouseover', (evt) => {
         const edge = evt.target;
         edge.addClass('hover')
+        let ts = [];
         let tip = tips[edge.id()];
-        let ts = []
-        if (tip) { tip.show(); ts.push(tip); }
+        if (tip) {
+            tip.reference.classList.add("outlined");
+            ts.push(tip);
+        }
         let tip2 = tips[swapId(edge.id())];
-        if (tip2) { tip2.show(); ts.push(tip2); }
+        if (tip2) {
+            tip2.reference.classList.add("outlined");
+            ts.push(tip2);
+        }
         adjustOffsets(ts);
+        ts.forEach(t => { t.show() });
         
     });
     cy.edges().on('mouseout', (evt) => {
         const edge = evt.target;
         edge.removeClass('hover');
+        $("td").removeClass("outlined");
         clearAllTooltip(tips);
     });
     return cy;
 }
 
 
-function adjustOffsets(tippyInstances) {
-    const tooltipRects = [];
+async function adjustOffsets(tippyInstances) {
+  // 1. 画面上の Y 座標順にソート（下にある要素から順に処理すると計算しやすい）
+  const sorted = tippyInstances.slice().sort(
+    (a, b) => b.reference.getBoundingClientRect().top - a.reference.getBoundingClientRect().top
+  );
 
-    tippyInstances.forEach((inst, index) => {
-    const btn = inst.reference;
+  let lastTooltipTop = Infinity; // 一つ前のツールチップの上端位置を記録
 
-    // ボタンの位置
-    const btnRect = btn.getBoundingClientRect();
-    let offsetY = 10; // 基本の上方向オフセット
+  for (const inst of sorted) {
+    // 一旦表示して DOM を確定させる
+    inst.show();
+    
+    // ブラウザの描画を待つ（重要！）
+    await new Promise(resolve => requestAnimationFrame(resolve));
 
-    // 上にあるツールチップと重なりそうなら調整
-    tooltipRects.forEach(prevRect => {
-        if (btnRect.top - offsetY < prevRect.bottom) {
-        offsetY += (prevRect.bottom - (btnRect.top - offsetY)) + 5; // 5pxの余白
-        }
-    });
+    const popper = inst.popper;
+    const tooltipRect = popper.getBoundingClientRect();
+    const refRect = inst.reference.getBoundingClientRect();
 
-    // インスタンスにoffsetを適用
-    inst.setProps({
-        offset: [0, offsetY],
-    });
+    // デフォルトのオフセット（要素からの距離）
+    let currentOffsetY = 10; 
 
-    // 仮にツールチップの高さを50pxとして矩形保存
-    // ※ TippyはまだDOMに描画されていないので高さが不明な場合は仮定値
-    const tooltipHeight = 50;
-    tooltipRects.push({
-        top: btnRect.top - offsetY - tooltipHeight,
-        bottom: btnRect.top - offsetY,
-    });
-    });
+    // ツールチップの現在の上端
+    let currentTop = tooltipRect.top;
+
+    // 前のツールチップの下端と重なっているかチェック
+    // ※ ここでは「上」に積み上げる計算例
+    if (tooltipRect.bottom > lastTooltipTop) {
+      const overlap = tooltipRect.bottom - lastTooltipTop;
+      currentOffsetY += overlap + 5; // 重なり分 + 余白5px
+      
+      inst.setProps({
+        offset: [0, currentOffsetY],
+      });
+      
+      // 再計算後の位置を更新
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      const updatedRect = popper.getBoundingClientRect();
+      lastTooltipTop = updatedRect.top;
+    } else {
+      lastTooltipTop = tooltipRect.top;
+    }
+  }
 }
 
 function swapId(id) {
