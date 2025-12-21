@@ -426,6 +426,9 @@ function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv) {
 }
 
 async function adjustOffsets(tippyInstances) {
+    tippyInstances.forEach(inst => {
+        inst.setProps({ offset: [0, 10] });
+    });
     // 1. 画面上の Y 座標順にソート（下にある要素から順に処理すると計算しやすい）
     const sorted = tippyInstances.slice().sort(
         (a, b) => b.reference.getBoundingClientRect().top - a.reference.getBoundingClientRect().top
