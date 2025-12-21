@@ -257,6 +257,7 @@ function createModelButtons(models, cy, canvas, invariants, theorems) {
     }
     let none_button = $("<button class='tab-btn active' data-target='none'>None</button>");
     none_button[0].addEventListener("click", () => {
+        active_model = null;
         resetActive();
         none_button.addClass("active");
         clearVoronoi(canvas);
@@ -277,11 +278,14 @@ function createModelButtons(models, cy, canvas, invariants, theorems) {
         });
     }
     cy.on('dragfree', 'node', () => {
-        drawVoronoi(canvas, cy, invariants, theorems, active_model[1], active_model[2]);
+        let small_inv, large_inv;
+        if (active_model) [, small_inv, large_inv] = active_model;
+        drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv);
     });
     cy.on('pan', () => {
-        console.log("pan"); 
-        drawVoronoi(canvas, cy, invariants, theorems, active_model[1], active_model[2]);
+        let small_inv, large_inv;
+        if (active_model) [, small_inv, large_inv] = active_model;
+        drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv);
     });
     return div;
 }
@@ -395,9 +399,10 @@ function clearVoronoi(canvas) {
 
 function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv) {
     let pan = cy.pan();
-    let values = partition_by_model(invariants, theorems, small_inv, large_inv);
     let ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    if (!small_inv) return;
+    let values = partition_by_model(invariants, theorems, small_inv, large_inv);
     let points = [];
     let ids = [];
     cy.nodes().forEach(node => {
