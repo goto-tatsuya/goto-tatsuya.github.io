@@ -17,7 +17,7 @@ window.addEventListener("load", () => {
     $select[0].addEventListener("change", (e) => {
         let value = e.target.value;
         if (!isNaN(parseInt(value))) {
-            let {name, text} = USER_WRITTEN_INPUT[value];
+            let { name, text } = USER_WRITTEN_INPUT[value];
             $("#name")[0].value = name;
             source.value = text;
         } else {
@@ -28,27 +28,105 @@ window.addEventListener("load", () => {
     showUserWrittenInput();
     $("#save")[0].addEventListener("click", () => {
         let name = $("#name")[0].value;
-        let index = USER_WRITTEN_INPUT.findIndex(({name: n, text: t}) => n == name);
+        let index = USER_WRITTEN_INPUT.findIndex(({ name: n, text: t }) => n == name);
         if (index >= 0) {
-            USER_WRITTEN_INPUT[index] = {name: name, text: source.value};
+            USER_WRITTEN_INPUT[index] = { name: name, text: source.value };
         } else {
-            USER_WRITTEN_INPUT.push({name: name, text: source.value});
+            USER_WRITTEN_INPUT.push({ name: name, text: source.value });
         }
         saveUserWrittenInput();
         showUserWrittenInput();
     });
     $("#delete")[0].addEventListener("click", () => {
         let name = $("#name")[0].value;
-        let index = USER_WRITTEN_INPUT.findIndex(({name: n, text: t}) => n == name);
+        let index = USER_WRITTEN_INPUT.findIndex(({ name: n, text: t }) => n == name);
         if (index >= 0) {
             USER_WRITTEN_INPUT.splice(index, 1);
         }
         saveUserWrittenInput();
         showUserWrittenInput();
     });
+
+
+
     const runButton = document.querySelector("#run");
-    runButton.addEventListener("click", run);
+    runButton.addEventListener("click", () => {
+        // アニメーション用クラスを付与
+        leftPane.classList.add("is-collapsing");
+
+        // 幅を変更（これがメインの動き）
+        leftPane.style.width = "20%";
+
+        // 少し遅れてクラスを外す（余韻）
+        setTimeout(() => {
+            leftPane.classList.remove("is-collapsing");
+        }, 350);
+
+        contentsSwitch("result");
+
+        run();
+    });
+
+
+    const divider = document.getElementById("divider");
+    const leftPane = document.querySelector("#left");
+    const container = document.querySelector("#container");
+
+    let isDragging = false;
+
+    divider.addEventListener("mousedown", () => {
+        isDragging = true;
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+    });
+
+    document.addEventListener("mouseup", () => {
+        isDragging = false;
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+
+        const containerRect = container.getBoundingClientRect();
+        const offsetX = e.clientX - containerRect.left;
+        const percentage = (offsetX / containerRect.width) * 100;
+
+        if (percentage > 20 && percentage < 80) {
+            leftPane.style.width = percentage + "%";
+        }
+    });
+
+    const tabs = document.querySelectorAll(".tab-btn");
+    const contents = document.querySelectorAll(".tab-content");
+
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const targetId = tab.dataset.target;
+            contentsSwitch(targetId);
+        });
+    });
 });
+
+function contentsSwitch(targetId) {
+    const tabs = document.querySelectorAll(".tab-btn");
+    tabs.forEach(tab => {
+        if (tab.dataset.target === targetId) {
+            tab.classList.add("active");
+        } else {
+            tab.classList.remove("active");
+        }
+    });
+    const contents = document.querySelectorAll(".tab-content");
+    contents.forEach(c => {
+        if (c.id === targetId) {
+            c.style.display = "block";
+        } else {
+            c.style.display = "none";
+        }
+    });
+}
 
 function saveUserWrittenInput() {
     localStorage.setItem("userWrittenInputs", JSON.stringify(USER_WRITTEN_INPUT));
@@ -67,21 +145,21 @@ function showUserWrittenInput() {
     let optgroup = $("#user-group")[0];
     optgroup.innerHTML = "";
     let index = 0;
-    for (let {name, text} of USER_WRITTEN_INPUT) {
+    for (let { name, text } of USER_WRITTEN_INPUT) {
         optgroup.appendChild($("<option />").text(name).val(index)[0]);
-        index ++;
+        index++;
     }
 }
 
 function run() {
     const source = document.querySelector("#source");
-    const right = document.querySelector("#right");
+    const right = document.querySelector("#result-area");
     let invariants, theorems, consistency;
     try {
         [invariants, theorems, consistency] = parse(source.value);
-    } catch(e) {
+    } catch (e) {
         if (e instanceof ParseError) {
-            alert("Parse error on the "+(e.lineno+1)+"-th line.");
+            alert("Parse error on the " + (e.lineno + 1) + "-th line.");
             return;
         } else {
             throw e;
@@ -124,9 +202,9 @@ function run() {
         invariants.forEach((y, j) => {
             let [ans, opt] = table[j][i];
             let $td = $("<td />").text(cell_text(ans)).addClass(class_name(ans));
-            $td[0].id = y+"-"+x;
+            $td[0].id = y + "-" + x;
             $tr.append($td);
-            tips[y+"-"+x] = tippy($td[0], {
+            tips[y + "-" + x] = tippy($td[0], {
                 content: tooltip_html(y, x, ans, opt),
                 allowHTML: true,
                 trigger: "manual"
@@ -134,20 +212,20 @@ function run() {
             $td[0].addEventListener("mouseenter", () => {
                 changeColor(cy, x, y);
                 $td.addClass("outlined");
-                tips[x+"-"+y].reference.classList.add("outlined");
+                tips[x + "-" + y].reference.classList.add("outlined");
                 if (x != y) {
-                    adjustOffsets([tips[y+"-"+x], tips[x+"-"+y]]);
+                    adjustOffsets([tips[y + "-" + x], tips[x + "-" + y]]);
                 } else {
-                    adjustOffsets([tips[y+"-"+x]]);
+                    adjustOffsets([tips[y + "-" + x]]);
                 }
-                tips[y+"-"+x].show();
-                tips[x+"-"+y].show();
+                tips[y + "-" + x].show();
+                tips[x + "-" + y].show();
             });
             $td[0].addEventListener("mouseleave", () => {
                 $td.removeClass("outlined");
-                tips[x+"-"+y].reference.classList.remove("outlined");
-                tips[y+"-"+x].hide();
-                tips[x+"-"+y].hide();
+                tips[x + "-" + y].reference.classList.remove("outlined");
+                tips[y + "-" + x].hide();
+                tips[x + "-" + y].hide();
             });
         });
     });
@@ -157,9 +235,10 @@ function run() {
     });
     $table.append($thead);
     $table.append($tbody);
-    $(right).empty().append("<p>Table of Con(x < y)</p>").append($table);
-    let $graph = $("<div id=graph style='width:600px;height:600px'></div>")
+    $(right).empty();
+    let $graph = $("<div id=graph style='width:600px;height:300px'></div>")
     $(right).append($graph);
+    $(right).append("<p>Table of Con(x < y)</p>").append($table);
     let cy = make_graph(invariants, theorems, consistency, tips);
 }
 
@@ -188,10 +267,10 @@ function make_graph(invariants, theorems, consistency, tips) {
     let elements = [];
 
     invariants.forEach((invariant, i) => {
-        elements.push({data: {id: invariant}});
+        elements.push({ data: { id: invariant } });
     });
     theorems.forEach(([a, b]) => {
-        elements.push({data: {id: a+"-"+b, source: a, target: b}});
+        elements.push({ data: { id: a + "-" + b, source: a, target: b } });
     });
     const cy = cytoscape({
         container: document.getElementById('graph'),
@@ -219,7 +298,7 @@ function make_graph(invariants, theorems, consistency, tips) {
                     'line-color': '#ccc',
                     'target-arrow-color': '#ccc',
                     'target-arrow-shape': 'triangle',
-                    'curve-style': 'bezier' 
+                    'curve-style': 'bezier'
                 }
             },
             {
@@ -231,7 +310,8 @@ function make_graph(invariants, theorems, consistency, tips) {
                 }
             }
         ],
-        layout: { name: 'dagre', rankDir: 'LR' }
+        layout: { name: 'dagre', rankDir: 'LR' },
+        zoomingEnabled: false,
     });
     rotateGraph(cy, -30);
     cy.edges().on('mouseover', (evt) => {
@@ -250,7 +330,7 @@ function make_graph(invariants, theorems, consistency, tips) {
         }
         adjustOffsets(ts);
         ts.forEach(t => { t.show() });
-        
+
     });
     cy.edges().on('mouseout', (evt) => {
         const edge = evt.target;
@@ -263,48 +343,48 @@ function make_graph(invariants, theorems, consistency, tips) {
 
 
 async function adjustOffsets(tippyInstances) {
-  // 1. 画面上の Y 座標順にソート（下にある要素から順に処理すると計算しやすい）
-  const sorted = tippyInstances.slice().sort(
-    (a, b) => b.reference.getBoundingClientRect().top - a.reference.getBoundingClientRect().top
-  );
+    // 1. 画面上の Y 座標順にソート（下にある要素から順に処理すると計算しやすい）
+    const sorted = tippyInstances.slice().sort(
+        (a, b) => b.reference.getBoundingClientRect().top - a.reference.getBoundingClientRect().top
+    );
 
-  let lastTooltipTop = Infinity; // 一つ前のツールチップの上端位置を記録
+    let lastTooltipTop = Infinity; // 一つ前のツールチップの上端位置を記録
 
-  for (const inst of sorted) {
-    // 一旦表示して DOM を確定させる
-    inst.show();
-    
-    // ブラウザの描画を待つ（重要！）
-    await new Promise(resolve => requestAnimationFrame(resolve));
+    for (const inst of sorted) {
+        // 一旦表示して DOM を確定させる
+        inst.show();
 
-    const popper = inst.popper;
-    const tooltipRect = popper.getBoundingClientRect();
-    const refRect = inst.reference.getBoundingClientRect();
+        // ブラウザの描画を待つ（重要！）
+        await new Promise(resolve => requestAnimationFrame(resolve));
 
-    // デフォルトのオフセット（要素からの距離）
-    let currentOffsetY = 10; 
+        const popper = inst.popper;
+        const tooltipRect = popper.getBoundingClientRect();
+        const refRect = inst.reference.getBoundingClientRect();
 
-    // ツールチップの現在の上端
-    let currentTop = tooltipRect.top;
+        // デフォルトのオフセット（要素からの距離）
+        let currentOffsetY = 10;
 
-    // 前のツールチップの下端と重なっているかチェック
-    // ※ ここでは「上」に積み上げる計算例
-    if (tooltipRect.bottom > lastTooltipTop) {
-      const overlap = tooltipRect.bottom - lastTooltipTop;
-      currentOffsetY += overlap + 5; // 重なり分 + 余白5px
-      
-      inst.setProps({
-        offset: [0, currentOffsetY],
-      });
-      
-      // 再計算後の位置を更新
-      await new Promise(resolve => requestAnimationFrame(resolve));
-      const updatedRect = popper.getBoundingClientRect();
-      lastTooltipTop = updatedRect.top;
-    } else {
-      lastTooltipTop = tooltipRect.top;
+        // ツールチップの現在の上端
+        let currentTop = tooltipRect.top;
+
+        // 前のツールチップの下端と重なっているかチェック
+        // ※ ここでは「上」に積み上げる計算例
+        if (tooltipRect.bottom > lastTooltipTop) {
+            const overlap = tooltipRect.bottom - lastTooltipTop;
+            currentOffsetY += overlap + 5; // 重なり分 + 余白5px
+
+            inst.setProps({
+                offset: [0, currentOffsetY],
+            });
+
+            // 再計算後の位置を更新
+            await new Promise(resolve => requestAnimationFrame(resolve));
+            const updatedRect = popper.getBoundingClientRect();
+            lastTooltipTop = updatedRect.top;
+        } else {
+            lastTooltipTop = tooltipRect.top;
+        }
     }
-  }
 }
 
 function swapId(id) {
@@ -313,45 +393,45 @@ function swapId(id) {
 }
 
 function rotateGraph(cy, deg) {
-  const rad = deg * Math.PI / 180;
-  const cos = Math.cos(rad);
-  const sin = Math.sin(rad);
+    const rad = deg * Math.PI / 180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
 
-  // ① グラフのバウンディングボックス中心を取得
-  const bb = cy.elements().boundingBox();
-  const cx = (bb.x1 + bb.x2) / 2;
-  const cyCenter = (bb.y1 + bb.y2) / 2;
+    // ① グラフのバウンディングボックス中心を取得
+    const bb = cy.elements().boundingBox();
+    const cx = (bb.x1 + bb.x2) / 2;
+    const cyCenter = (bb.y1 + bb.y2) / 2;
 
-  // ② 各ノードを中心基準で回転
-  cy.nodes().forEach(node => {
-    const p = node.position();
+    // ② 各ノードを中心基準で回転
+    cy.nodes().forEach(node => {
+        const p = node.position();
 
-    // 中心を原点に移動
-    const x = p.x - cx;
-    const y = p.y - cyCenter;
+        // 中心を原点に移動
+        const x = p.x - cx;
+        const y = p.y - cyCenter;
 
-    // 回転
-    const rx = x * cos - y * sin;
-    const ry = x * sin + y * cos;
+        // 回転
+        const rx = x * cos - y * sin;
+        const ry = x * sin + y * cos;
 
-    // 鏡映
-    rrx = (rx - ry) / 2;
-    rry = - (rx + ry) / 2;
+        // 鏡映
+        rrx = (rx - ry) / 2;
+        rry = - (rx + ry) / 2;
 
-    // 元の中心に戻す
-    node.position({
-      x: rrx + cx,
-      y: rry + cyCenter
+        // 元の中心に戻す
+        node.position({
+            x: rrx + cx,
+            y: rry + cyCenter
+        });
     });
-  });
 
-  // ③ ビューを自動調整
-  cy.fit(undefined, 30);
+    // ③ ビューを自動調整
+    cy.fit(undefined, 30);
 }
 
 function check(invariants, invariant) {
     if (invariants.indexOf(invariant) < 0) {
-        alert("The invariant "+invariant+" does not apper in the list.");
+        alert("The invariant " + invariant + " does not apper in the list.");
         return true;
     }
     return false;
@@ -364,32 +444,32 @@ function tn(text) {
 function tooltip_html(x, y, value, opt) {
     let $elem = $("<div />");
     if (value === true) {
-        $elem.append($("<b />").text(x+"≦"+y));
+        $elem.append($("<b />").text(x + "≦" + y));
         $elem.append(" is a theorem.");
-        if (opt.length > 2) { 
+        if (opt.length > 2) {
             $elem.append($("<br />"));
             $elem.append(tn("Reason: "));
             $elem.append(tn(chain_to_string(opt)));
         }
     } else if (value === false) {
-        $elem.append($("<b />").text(y+"<"+x));
+        $elem.append($("<b />").text(y + "<" + x));
         $elem.append(tn(" is consistent."));
         $elem.append($("<br />"));
-        $elem.append(tn("Reason 1: Using method of "+opt[0]+", we can get a model of "+opt[2][opt[2].length - 1]+"<"+opt[1][0]));
+        $elem.append(tn("Reason 1: Using method of " + opt[0] + ", we can get a model of " + opt[2][opt[2].length - 1] + "<" + opt[1][0]));
         let reason = 2;
         if (opt[2].length > 1) {
             $elem.append($("<br />"));
-            $elem.append(tn("Reason "+(reason++)+": "+chain_to_string(opt[2])+" is a theorem"));
+            $elem.append(tn("Reason " + (reason++) + ": " + chain_to_string(opt[2]) + " is a theorem"));
         }
         if (opt[1].length > 1) {
             $elem.append($("<br />"));
-            $elem.append(tn("Reason "+(reason++)+": "+chain_to_string(opt[1])+" is a theorem"));
+            $elem.append(tn("Reason " + (reason++) + ": " + chain_to_string(opt[1]) + " is a theorem"));
         }
     } else {
         $elem.append(tn("Whether "));
-        $elem.append($("<b />").text("Con("+y+"<"+x+")"));
+        $elem.append($("<b />").text("Con(" + y + "<" + x + ")"));
         $elem.append(tn(" or "));
-        $elem.append($("<b />").text("⊢ "+x+"≦"+y));
+        $elem.append($("<b />").text("⊢ " + x + "≦" + y));
         $elem.append(tn(" is unknown."));
     }
     return $elem[0].innerHTML;
@@ -397,7 +477,7 @@ function tooltip_html(x, y, value, opt) {
 
 function chain_to_string(chain) {
     let str = chain[0];
-    for (let i = 1; i < chain.length; i ++) {
+    for (let i = 1; i < chain.length; i++) {
         str += "≦";
         str += chain[i];
     }
@@ -438,7 +518,7 @@ function parse(text) {
     let theorems = [];
     let consistency = [];
     const num_lines = lines.length;
-    for (let i = 0; i < num_lines; i ++) {
+    for (let i = 0; i < num_lines; i++) {
         let line = lines[i];
         line = line.replace(/\s+$/, "");
         if (line === "") {
@@ -518,7 +598,7 @@ function merge_chain(a, b) {
 }
 
 
-class InconsistentError {}
+class InconsistentError { }
 
 function create_table(invariants, theorems, consistency) {
     let graph = new Graph(invariants);
@@ -544,7 +624,7 @@ function create_table(invariants, theorems, consistency) {
                 if (f) {
                     let merged = merge_chain(chain, opt2);
                     queue.push([a, c, true, merged]);
-               }
+                }
             }
             for (let [c, [f, opt2]] of key_and_val(graph.in[a])) {
                 if (f) {
@@ -605,6 +685,6 @@ function create_table(invariants, theorems, consistency) {
             }
         }
         table.push(row);
-    }   
+    }
     return table;
 }

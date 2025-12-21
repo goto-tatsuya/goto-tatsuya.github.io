@@ -1,173 +1,450 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Do I have this consistency?</title>
-        <meta property="og:url" content="https://t-goto.jp/do-i-have-this-consistency/" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Do I have this consistency?" />
-        <meta property="og:image" content="https://t-goto.jp/do-i-have-this-consistency/og-image-2.png" />
-        <meta property="og:site_name" content="Do I have this consistency?" />
-        <script src="https://unpkg.com/jquery@3.7.1/dist/jquery.js"></script>
-        <script src="https://unpkg.com/@popperjs/core@2"></script>
-        <script src="https://unpkg.com/tippy.js@6"></script>
-        <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
-        <script src="https://unpkg.com/dagre/dist/dagre.min.js"></script>
-        <script src="https://unpkg.com/cytoscape-dagre/cytoscape-dagre.js"></script>
-        <script src="presets.js?20250202"></script>
-        <script src="main.js?20251220-3"></script>
-        <style>
-            #container {
-                overflow: auto;
-            }
 
-            #left, #right {
-                float: left;
-            }
+<head>
+    <meta charset="utf-8">
+    <title>Do I have this consistency?</title>
+    <meta property="og:url" content="https://t-goto.jp/do-i-have-this-consistency/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Do I have this consistency?" />
+    <meta property="og:image" content="https://t-goto.jp/do-i-have-this-consistency/og-image-2.png" />
+    <meta property="og:site_name" content="Do I have this consistency?" />
+    <script src="https://unpkg.com/jquery@3.7.1/dist/jquery.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/dagre/dist/dagre.min.js"></script>
+    <script src="https://unpkg.com/cytoscape-dagre/cytoscape-dagre.js"></script>
+    <script src="presets.js?20250202"></script>
+    <script src="main.js?20251220-3"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap">
+    <style>
+        .emoji {
+            font-size: 0.9em;
+            vertical-align: middle;
+        }
 
-            #left {
-                width: 30rem;
-            }
+        .form-card {
+            max-width: 720px;
+            margin: 0 auto 64px;
+            padding: 32px;
 
-            #right {
-                margin-left: 20px;
-                width: calc(100% - 30rem - 20px);
-            }
+            background: #ffffff;
+            border-radius: 16px;
 
-            #source {   
-                width: 100%;
-            }
+            /* モダンな影 */
+            box-shadow:
+                0 10px 25px rgba(0, 0, 0, 0.06),
+                0 4px 10px rgba(0, 0, 0, 0.04);
+        }
 
-            #run {
-                font-size: 200%;
-            }
+        .form-card h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #1f2937;
+        }
 
-            table {
-	            border-collapse: collapse;
-            }
-            td {
-                border: 1px grey solid;
-            }
+        .form-card input,
+        .form-card textarea,
+        .form-card select {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 16px;
 
-            td.consistent {
-                background: rgb(197, 227, 197);
-            }
+            font-size: 1rem;
+            font-family: inherit;
 
-            td.inconsistent {
-                background: rgb(251, 182, 177);
-            }
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+        }
 
-            td.unknown {
-                background: rgb(235, 235, 235);
-            }
+        .form-card input:focus,
+        .form-card textarea:focus,
+        .form-card select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
+        }
 
-            td.outlined {
-                outline: 3px solid red;
-            }
+        .form-card button {
+            margin-top: 8px;
+            padding: 12px 20px;
+
+            font-size: 1rem;
+            font-weight: 600;
+
+            color: #ffffff;
+            background: #4c89ea;
+            border: none;
+            border-radius: 10px;
+
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .form-card button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+        }
+
+        .form-card button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 8px rgba(59, 130, 246, 0.25);
+        }
+
+        .hero {
+            padding: 20px 32px 40px;
+            margin-bottom: 48px;
+            text-align: center;
+
+            /* 淡い背景グラデーション */
+            background: linear-gradient(135deg,
+                    #f5f7fa 0%,
+                    #eef2f7 100%);
+
+            border-radius: 16px;
+        }
+
+        .hero h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            color: #1f2937;
+            /* ダークグレー */
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #4b5563;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1,
+        h2 {
+            font-weight: 700;
+            font-size: 2rem;
+        }
+
+        a {
+            color: #4A90E2;
+        }
+
+        a:hover {
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        body {
+            margin: auto;
+            padding: 32px;
+            line-height: 1.6;
+        }
+
+        #source {
+            width: 100%;
+        }
+
+        #run {
+            font-size: 200%;
+        }
+
+        td.consistent {
+            background: rgb(197, 227, 197);
+        }
+
+        td.inconsistent {
+            background: rgb(251, 182, 177);
+        }
+
+        td.unknown {
+            background: rgb(235, 235, 235);
+        }
+
+        td.outlined {
+            outline: 3px solid rgb(212, 22, 22);
+        }
 
 
-            small {
-	            color: #999;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Do I have this consistency?</h1>
-        <div id="contanier">
-        <div id="left">
-            <select id="select"></select><br>
-            <textarea id="source" cols="50" rows="30"></textarea><br>
-            <button id="run">Run!</button><br>
-            <input type="text" id="name" placeholder="Name"> <button id="save">Save</button> <button id="delete">Delete</button>
+        small {
+            color: #999;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 14px 16px;
+
+            font-weight: 600;
+            color: #374151;
+
+            background: #f3f4f6;
+        }
+
+        tbody td {
+            padding: 7px 8px;
+            color: #1f2937;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        #container {
+            display: flex;
+            width: 100%;
+            min-height: 400px;
+        }
+
+        .pane {
+            padding: 24px;
+            overflow: auto;
+        }
+
+        #left {
+            width: 50%;
+        }
+
+        #left.is-collapsing {
+            opacity: 0.92;
+            transform: scaleX(0.98);
+            transform-origin: right center;
+            transition:
+                width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease,
+                transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #right {
+            flex: 1;
+        }
+
+        .divider {
+            width: 6px;
+            cursor: col-resize;
+
+            background: transparent;
+            position: relative;
+        }
+
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 3px;
+            transform: translateX(-50%);
+            background: #e5e7eb;
+        }
+
+        .divider:hover::before {
+            background: #60a5fa;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #f3f4f6;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .tab-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .tab-content {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 16px;
+            transition: opacity 0.25s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="hero">
+        <h1><span class="emoji">🔍</span> Do I have this consistency?</h1>
+        <p>Cardinal invariants consistency checker</p>
+    </header>
+    <div id="container">
+        <div id="left" class="pane">
+            <section class="form-card">
+                <h2>✏️ Input</h2>
+                <select id="select"></select><br>
+                <textarea id="source" cols="50" rows="30"></textarea><br>
+                <p><button id="run">▶️ Run!</button></p>
+                <p><input type="text" id="name" placeholder="Name"> <button id="save">💾 Save</button> <button
+                        id="delete">🗑️ Delete</button></p>
+            </section>
         </div>
-        <div id="right">
-            <h2>Explanation:</h2>
-            <p>
-                This program tells you whether consistency of x &lt; y for cardinal invariants x and y can be deduced or not using transitivity from known theorems of inequality and known consistency results.
-            </p>
-            <p>
-                I don't explain the syntax of the input. Imitate the preset inputs.
-            </p>
-            <p>
-                If you are not familiar with cardinal invariants of the continuum, see <a href="https://en.wikipedia.org/wiki/Cardinal_characteristic_of_the_continuum">Wikipedia's article</a>.
-            </p>
-            <p>
-                This program was created by <a href="/">Tatsuya Goto</a> in 2025.
-            </p>
-            <h2>References</h2>
-            <ul>
-                <li>Regarding the definitions of all cardinal invariants written in presets, see [Bla10].</li>
-                <li>To know the proof of p<=h, see Proposition 6.8 of [Bla10].</li>
-                <li>To know the proof of p<=e, see Theorem 10.4 of [Bla10].</li>
-                <li>To know the proof of h<=b, see Theorem 6.9 of [Bla10].</li>
-                <li>To know the proof of h<=g, see Proposition 6.27 of [Bla10].</li>
-                <li>To know the proof of h<=s, see Theorem 6.9 of [Bla10].</li>
-                <li>To know the proof of b<=a, see Proposition 8.4 of [Bla10].</li>
-                <li>To know the proof of b<=r, see Theorem 3.8 of [Bla10].</li>
-                <li>To know the proof of e<=r, see Theorem 10.4 of [Bla10].</li>
-                <li>b<=d is clear.</li>
-                <li>To know the proof of e<=r, see Theorem 10.4 of [Bla10].</li>
-                <li>To know the proof of g<=d, see Proposition 6.27 of [Bla10].</li>
-                <li>To know the proof of s<=d, see Theorem 3.3 of [Bla10].</li>
-                <li>To know the proof of r<=u, see Proposition 9.7 of [Bla10].</li>
-                <li>To know the proof of r<=i, see Proposition 8.12 of [Bla10].</li>
-                <li>To know the proof of d<=i, see Theorem 8.13 of [Bla10].</li>
-                <li>add(N)<=cov(N), non(N)<=cof(N) are trivial.</li>
-                <li>To know the proof of add(N)<=add(M) and cof(M)<=cof(N), see Section 2.3 of [BJ95].</li>
-                <li>To know the proof of add(M)<=b and d<=cof(M), see Corollary 5.4 of [Bla10].</li>
-                <li>To know the proof of b<=non(M) and cov(M)<=d, see Proposition 5.5 of [Bla10].</li>
-                <li>add(M)<=cov(M) and non(M)<=cof(M) are trivial.</li>
-                <li>To know the proof of cov(M)<=non(N) and cov(N)<=non(M), see Theorem 5.11 of [Bla10].</li>
-                <li>To know the proof of s<=non(M), s<=non(N), cov(M)<=r and cov(N)<=r see Theorem 5.19 of [Bla10].</li>
-                <li>p<=add(M) can be derived from p<=b and p<=cov(M) using add(M) = min{b, cov(M)} (see Theorem 5.6 of [Bla10]).</li>
-                <li>To know the proof of cof(M)<=i, see [BHH04].</li>
+        <div class="divider" id="divider"></div>
+        <div id="right" class="pane">
+            <!-- タブボタン -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-target="about">About</button>
+                <button class="tab-btn" data-target="result">Result</button>
+            </div>
 
-            </ul>
-            <h3>Reference List (for the ZFC theorems)</h3>
-            <ul>
-                <li>[Bla10] Blass, A. (2010). Combinatorial cardinal characteristics of the continuum. In <i>Handbook of set theory</i> (pp. 395–489). Springer.</li>
-                <li>[BHH04] Balcar, B., Hernández-Hernández, F., & Hrušák, M. (2004). Combinatorics of dense subsets of the rationals. Fund. Math, 183(1), 59-80.</li>
-                <li>[BJ95] Bartoszynski, T., &#38; Judah, H. (1995). <i>Set Theory: on the structure of the real line</i>. CRC Press.</li>
-            </ul>
-            <h3>Reference List (for the consistency theorems)</h3>
-            <ul>
-                <li>
-                    [Bre03] Brendle, J. (2003). The almost-disjointness number may have countable cofinality. Transactions of the American Mathematical Society, 2633-2649.
-                </li>
-                <li>
-                    [BCM21] Brendle, J., Cardona, M. A., & Mejía, D. A. (2021). Filter-linkedness and its effect on preservation of cardinal characteristics. Annals of Pure and Applied Logic, 172(1), 102856.
-                </li>
-                <li>
-                    [BF11] Brendle, J., & Fischer, V. (2011). Mad families, splitting families and large continuum. The Journal of Symbolic Logic, 76(1), 198-208.
-                </li>
-                <li>
-                    [BS87] Blass, A., & Shelah, S. (1987). There may be simple Pℵ1 and Pℵ2-points and the Rudin-Keisler ordering may be downward directed. Annals of pure and applied logic, 33, 213-243.
-                </li>
-                <li>
-                    [BM99] Blass, A., & Mildenberger, H. (1999). On the cofinality of ultrapowers. The Journal of Symbolic Logic, 64(2), 727-736.
-                    <br><small>(This article mentions g is small in the Blass-Shelah model.)</small>
-                </li>
-                <li>
-                    [GK21] Guzmán, O., & Kalajdzievski, D. (2021). The ultrafilter and almost disjointness numbers. Advances in Mathematics, 386, 107805.
-                    <br><small>(This article removed the measurable cardinal assumption from [She04].)</small>
-                </li>
-                <li>
-                    [GKMS21] Goldstern, M., Kellner, J., Mejía, D. A., & Shelah, S. (2021). Preservation of splitting families and cardinal characteristics of the continuum. Israel Journal of Mathematics, 246(1), 73-129.
-                </li>
-                <li>
-                    [GS90] Goldstern, M., & Shelah, S. (1990). Ramsey ultrafilters and the reaping number—Con (r< u). Annals of Pure and Applied Logic, 49(2), 121-142.
-                </li>
-                <li>
-                    [She84] Shelah, S. (1984). On cardinal invariants of the continuum. Axiomatic set theory (Boulder, Colo., 1983), Contemp. Math. 31, 183--207.
-                </li>
-                <li>
-                    [She92] Shelah, S. (1992). 𝐶𝑂𝑁 (𝔲> 𝔦). Arch. Math. Logic, 31(6), 433-443.
-                </li>
-                <li>
-                    [She04] Shelah, S. (2004). Two cardinal invariants of the continuum (∂< a) and FS linearly ordered iterated forcing. Acta Mathematica, 192(2), 187-223.
-                </li>
-            </ul>
+            <!-- タブコンテンツ -->
+            <div class="tab-content" id="about">
+                <h2>Explanation:</h2>
+                <p>
+                    This program tells you whether consistency of x &lt; y for cardinal invariants x and y can be
+                    deduced or
+                    not using transitivity from known theorems of inequality and known consistency results.
+                </p>
+                <p>
+                    I don't explain the syntax of the input. Imitate the preset inputs.
+                </p>
+                <p>
+                    If you are not familiar with cardinal invariants of the continuum, see <a
+                        href="https://en.wikipedia.org/wiki/Cardinal_characteristic_of_the_continuum">Wikipedia's
+                        article</a>.
+                </p>
+                <p>
+                    This program was created by <a href="/">Tatsuya Goto</a> in 2025.
+                </p>
+                <h2>References</h2>
+                <ul>
+                    <li>Regarding the definitions of all cardinal invariants written in presets, see [Bla10].</li>
+                    <li>To know the proof of p<=h, see Proposition 6.8 of [Bla10].</li>
+                    <li>To know the proof of p<=e, see Theorem 10.4 of [Bla10].</li>
+                    <li>To know the proof of h<=b, see Theorem 6.9 of [Bla10].</li>
+                    <li>To know the proof of h<=g, see Proposition 6.27 of [Bla10].</li>
+                    <li>To know the proof of h<=s, see Theorem 6.9 of [Bla10].</li>
+                    <li>To know the proof of b<=a, see Proposition 8.4 of [Bla10].</li>
+                    <li>To know the proof of b<=r, see Theorem 3.8 of [Bla10].</li>
+                    <li>To know the proof of e<=r, see Theorem 10.4 of [Bla10].</li>
+                    <li>b<=d is clear.</li>
+                    <li>To know the proof of e<=r, see Theorem 10.4 of [Bla10].</li>
+                    <li>To know the proof of g<=d, see Proposition 6.27 of [Bla10].</li>
+                    <li>To know the proof of s<=d, see Theorem 3.3 of [Bla10].</li>
+                    <li>To know the proof of r<=u, see Proposition 9.7 of [Bla10].</li>
+                    <li>To know the proof of r<=i, see Proposition 8.12 of [Bla10].</li>
+                    <li>To know the proof of d<=i, see Theorem 8.13 of [Bla10].</li>
+                    <li>add(N)<=cov(N), non(N)<=cof(N) are trivial.</li>
+                    <li>To know the proof of add(N)<=add(M) and cof(M)<=cof(N), see Section 2.3 of [BJ95].</li>
+                    <li>To know the proof of add(M)<=b and d<=cof(M), see Corollary 5.4 of [Bla10].</li>
+                    <li>To know the proof of b<=non(M) and cov(M)<=d, see Proposition 5.5 of [Bla10].</li>
+                    <li>add(M)<=cov(M) and non(M)<=cof(M) are trivial.</li>
+                    <li>To know the proof of cov(M)<=non(N) and cov(N)<=non(M), see Theorem 5.11 of [Bla10].</li>
+                    <li>To know the proof of s<=non(M), s<=non(N), cov(M)<=r and cov(N)<=r see Theorem 5.19 of
+                            [Bla10].</li>
+                    <li>p<=add(M) can be derived from p<=b and p<=cov(M) using add(M)=min{b, cov(M)} (see Theorem 5.6 of
+                            [Bla10]).</li>
+                    <li>To know the proof of cof(M)<=i, see [BHH04].</li>
+
+                </ul>
+                <h3>Reference List (for the ZFC theorems)</h3>
+                <ul>
+                    <li>[Bla10] Blass, A. (2010). Combinatorial cardinal characteristics of the continuum. In
+                        <i>Handbook of
+                            set theory</i> (pp. 395–489). Springer.</li>
+                    <li>[BHH04] Balcar, B., Hernández-Hernández, F., & Hrušák, M. (2004). Combinatorics of dense subsets
+                        of
+                        the rationals. Fund. Math, 183(1), 59-80.</li>
+                    <li>[BJ95] Bartoszynski, T., &#38; Judah, H. (1995). <i>Set Theory: on the structure of the real
+                            line</i>. CRC Press.</li>
+                </ul>
+                <h3>Reference List (for the consistency theorems)</h3>
+                <ul>
+                    <li>
+                        [Bre03] Brendle, J. (2003). The almost-disjointness number may have countable cofinality.
+                        Transactions of the American Mathematical Society, 2633-2649.
+                    </li>
+                    <li>
+                        [BCM21] Brendle, J., Cardona, M. A., & Mejía, D. A. (2021). Filter-linkedness and its effect on
+                        preservation of cardinal characteristics. Annals of Pure and Applied Logic, 172(1), 102856.
+                    </li>
+                    <li>
+                        [BF11] Brendle, J., & Fischer, V. (2011). Mad families, splitting families and large continuum.
+                        The
+                        Journal of Symbolic Logic, 76(1), 198-208.
+                    </li>
+                    <li>
+                        [BS87] Blass, A., & Shelah, S. (1987). There may be simple Pℵ1 and Pℵ2-points and the
+                        Rudin-Keisler
+                        ordering may be downward directed. Annals of pure and applied logic, 33, 213-243.
+                    </li>
+                    <li>
+                        [BM99] Blass, A., & Mildenberger, H. (1999). On the cofinality of ultrapowers. The Journal of
+                        Symbolic Logic, 64(2), 727-736.
+                        <br><small>(This article mentions g is small in the Blass-Shelah model.)</small>
+                    </li>
+                    <li>
+                        [GK21] Guzmán, O., & Kalajdzievski, D. (2021). The ultrafilter and almost disjointness numbers.
+                        Advances in Mathematics, 386, 107805.
+                        <br><small>(This article removed the measurable cardinal assumption from [She04].)</small>
+                    </li>
+                    <li>
+                        [GKMS21] Goldstern, M., Kellner, J., Mejía, D. A., & Shelah, S. (2021). Preservation of
+                        splitting
+                        families and cardinal characteristics of the continuum. Israel Journal of Mathematics, 246(1),
+                        73-129.
+                    </li>
+                    <li>
+                        [GS90] Goldstern, M., & Shelah, S. (1990). Ramsey ultrafilters and the reaping number—Con (r<
+                            u). Annals of Pure and Applied Logic, 49(2), 121-142. </li>
+                    <li>
+                        [She84] Shelah, S. (1984). On cardinal invariants of the continuum. Axiomatic set theory
+                        (Boulder,
+                        Colo., 1983), Contemp. Math. 31, 183--207.
+                    </li>
+                    <li>
+                        [She92] Shelah, S. (1992). 𝐶𝑂𝑁 (𝔲> 𝔦). Arch. Math. Logic, 31(6), 433-443.
+                    </li>
+                    <li>
+                        [She04] Shelah, S. (2004). Two cardinal invariants of the continuum (∂< a) and FS linearly
+                            ordered iterated forcing. Acta Mathematica, 192(2), 187-223. </li>
+                </ul>
+            </div>
+
+            <div class="tab-content" id="result" style="display:none;">
+                <h2>Result</h2>
+                <div id="result-area">
+                    <p>Consistency results will appear here.</p>
+                </div>
+            </div>
         </div>
     </div>
-    </body>
+</body>
+
 </html>
