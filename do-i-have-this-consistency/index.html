@@ -15,8 +15,9 @@
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script src="https://unpkg.com/dagre/dist/dagre.min.js"></script>
     <script src="https://unpkg.com/cytoscape-dagre/cytoscape-dagre.js"></script>
+    <script src="https://unpkg.com/d3-delaunay@6"></script>
     <script src="presets.js?20250202"></script>
-    <script src="main.js?20251221"></script>
+    <script src="main.js?20251221-2"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap">
     <style>
         .emoji {
@@ -266,6 +267,7 @@
 
         .tab-buttons {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 16px;
         }
@@ -325,7 +327,7 @@
 
             <!-- タブコンテンツ -->
             <div class="tab-content" id="about">
-                <h2>Explanation:</h2>
+                <h2>Explanation</h2>
                 <p>
                     This program tells you whether consistency of x &lt; y for cardinal invariants x and y can be
                     deduced or
@@ -377,7 +379,8 @@
                 <ul>
                     <li>[Bla10] Blass, A. (2010). Combinatorial cardinal characteristics of the continuum. In
                         <i>Handbook of
-                            set theory</i> (pp. 395–489). Springer.</li>
+                            set theory</i> (pp. 395–489). Springer.
+                    </li>
                     <li>[BHH04] Balcar, B., Hernández-Hernández, F., & Hrušák, M. (2004). Combinatorics of dense subsets
                         of
                         the rationals. Fund. Math, 183(1), 59-80.</li>
@@ -438,7 +441,6 @@
             </div>
 
             <div class="tab-content" id="result" style="display:none;">
-                <h2>Result</h2>
                 <div id="result-area">
                     <p>Consistency results will appear here.</p>
                 </div>

@@ -1,5 +1,8 @@
 let USER_WRITTEN_INPUT = [];
 
+let CANVAS_WIDTH = 600;
+let CANVAS_HEIGHT = 300;
+
 window.addEventListener("load", () => {
     const source = document.querySelector("#source");
     const $select = $("#select");
@@ -154,9 +157,9 @@ function showUserWrittenInput() {
 function run() {
     const source = document.querySelector("#source");
     const right = document.querySelector("#result-area");
-    let invariants, theorems, consistency;
+    let invariants, theorems, consistency, models;
     try {
-        [invariants, theorems, consistency] = parse(source.value);
+        [invariants, theorems, consistency, models] = parse(source.value);
     } catch (e) {
         if (e instanceof ParseError) {
             alert("Parse error on the " + (e.lineno + 1) + "-th line.");
@@ -173,7 +176,6 @@ function run() {
         if (check(invariants, a)) return;
         if (check(invariants, b)) return;
     }
-
     let table;
     try {
         table = create_table(invariants, theorems, consistency);
@@ -236,10 +238,52 @@ function run() {
     $table.append($thead);
     $table.append($tbody);
     $(right).empty();
-    let $graph = $("<div id=graph style='width:600px;height:300px'></div>")
+    let $buttons = $("<div>");
+    $(right).append($buttons);
+    let $graph = $("<div id=graph style='width:" + CANVAS_WIDTH + "px;height:" + CANVAS_HEIGHT + "px'></div>");
     $(right).append($graph);
+    let [cy, canvas] = make_graph(invariants, theorems, consistency, tips);
+    $buttons.append(createModelButtons(models, cy, canvas, invariants, theorems));
     $(right).append("<p>Table of Con(x < y)</p>").append($table);
-    let cy = make_graph(invariants, theorems, consistency, tips);
+}
+
+function createModelButtons(models, cy, canvas, invariants, theorems) {
+    let div = $("<div class='tab-buttons'/>");
+    let buttons = [];
+    function resetActive() {
+        for (let button of buttons) {
+            button.removeClass("active");
+        }
+    }
+    let none_button = $("<button class='tab-btn active' data-target='none'>None</button>");
+    none_button[0].addEventListener("click", () => {
+        resetActive();
+        none_button.addClass("active");
+        clearVoronoi(canvas);
+    });
+    buttons.push(none_button);
+    div.append(none_button);
+    let active_model;
+    for (let model of models) {
+        let [model_name, small_inv, large_inv] = model;
+        let button = $("<button class='tab-btn' />").attr("data-target", model_name).text(model_name);
+        buttons.push(button);
+        div.append(button);
+        button[0].addEventListener("click", () => {
+            active_model = model;
+            resetActive();
+            button.addClass("active");
+            drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv);
+        });
+    }
+    cy.on('dragfree', 'node', () => {
+        drawVoronoi(canvas, cy, invariants, theorems, active_model[1], active_model[2]);
+    });
+    cy.on('pan', () => {
+        console.log("pan"); 
+        drawVoronoi(canvas, cy, invariants, theorems, active_model[1], active_model[2]);
+    });
+    return div;
 }
 
 function clearAllTooltip(tips) {
@@ -338,9 +382,43 @@ function make_graph(invariants, theorems, consistency, tips) {
         $("td").removeClass("outlined");
         clearAllTooltip(tips);
     });
-    return cy;
+    let elem = document.getElementById('graph').childNodes[0];
+    let canvas = $("<canvas />").attr("width", CANVAS_WIDTH).attr("height", CANVAS_HEIGHT).css("position", "absolute").css("z-index", 0)[0];
+    elem.appendChild(canvas);
+    return [cy, canvas];
 }
 
+function clearVoronoi(canvas) {
+    let ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+}
+
+function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv) {
+    let pan = cy.pan();
+    let values = partition_by_model(invariants, theorems, small_inv, large_inv);
+    let ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    let points = [];
+    let ids = [];
+    cy.nodes().forEach(node => {
+        const p = node.position();
+        points.push([p.x + pan.x, p.y + pan.y]);
+        ids.push(node.id());
+    });
+    const delaunay = d3.Delaunay.from(points);
+    const voronoi = delaunay.voronoi([0, 0, CANVAS_WIDTH, CANVAS_HEIGHT]);
+    for (let i = 0; i < points.length; i++) {
+        ctx.beginPath();
+        voronoi.renderCell(i, ctx);
+        if (values[ids[i]] == 1) {
+            ctx.fillStyle = '#a2a3b7ff';
+            ctx.fill();
+        } else if (values[ids[i]] == 0) {
+            ctx.fillStyle = '#d7d8e6ff';
+            ctx.fill();
+        }
+    }
+}
 
 async function adjustOffsets(tippyInstances) {
     // 1. 画面上の Y 座標順にソート（下にある要素から順に処理すると計算しやすい）
@@ -517,6 +595,7 @@ function parse(text) {
     let invariants = [];
     let theorems = [];
     let consistency = [];
+    let models = [];
     const num_lines = lines.length;
     for (let i = 0; i < num_lines; i++) {
         let line = lines[i];
@@ -555,6 +634,7 @@ function parse(text) {
                         consistency.push([sm, la, model_name]);
                     }
                 }
+                models.push([model_name, small_invariants, large_invariants]);
             } else {
                 throw new ParseError(i);
             }
@@ -562,7 +642,7 @@ function parse(text) {
             throw new ParseError(i);
         }
     }
-    return [invariants, theorems, consistency];
+    return [invariants, theorems, consistency, models];
 }
 
 class Graph {
@@ -595,6 +675,38 @@ function merge_chain(a, b) {
         throw "cannot merge";
     }
     return [...a, ...b.slice(1)];
+}
+
+function partition_by_model(invariants, theorems, small_invariants, large_invariants) {
+    let graph = new Graph(invariants);
+
+    for (let [a, b] of theorems) {
+        graph.add_edge(a, b, null);
+    }
+
+    let queue = [];
+    for (let invariant of small_invariants) {
+        queue.push([invariant, 0]);
+    }
+    for (let invariant of large_invariants) {
+        queue.push([invariant, 1]);
+    }
+    let values = {};
+    while (queue.length > 0) {
+        let [inv, val] = queue.shift();
+        if (values[inv] !== undefined) continue;
+        values[inv] = val;
+        if (val == 1) {
+            for (let inv2 of Object.keys(graph.out[inv])) {
+                queue.push([inv2, 1]);
+            }
+        } else {
+            for (let inv2 of Object.keys(graph.in[inv])) {
+                queue.push([inv2, 0]);
+            }
+        }
+    }
+    return values;
 }
 
 
