@@ -15,11 +15,17 @@
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script src="https://unpkg.com/dagre/dist/dagre.min.js"></script>
     <script src="https://unpkg.com/cytoscape-dagre/cytoscape-dagre.js"></script>
+    <script src="cytoscape-node-html-label.min.js"></script>
     <script src="https://unpkg.com/d3-delaunay@6"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css" integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js" integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ" crossorigin="anonymous"></script>
     <script src="presets.js?20250202"></script>
-    <script src="main.js?20251221-3"></script>
+    <script src="main.js?20251221-4"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap">
     <style>
+        .node {
+            color: white;
+        }
         .emoji {
             font-size: 0.9em;
             vertical-align: middle;
@@ -315,17 +321,21 @@
                 <p><button id="run">▶️ Run!</button></p>
                 <p><input type="text" id="name" placeholder="Name"> <button id="save">💾 Save</button> <button
                         id="delete">🗑️ Delete</button></p>
+                <details>
+                    <summary>TeX replacement</summary>
+                    <textarea id="tex-replacement" cols="50" rows="10">^(\w)$:\mathfrak{$1}
+(add|cof|non|cov):\mathsf{$1}
+(N|M):\mathcal{$1}</textarea>
+                </details>
             </section>
+
         </div>
         <div class="divider" id="divider"></div>
         <div id="right" class="pane">
-            <!-- タブボタン -->
             <div class="tab-buttons">
                 <button class="tab-btn active" data-target="about">About</button>
                 <button class="tab-btn" data-target="result">Result</button>
             </div>
-
-            <!-- タブコンテンツ -->
             <div class="tab-content" id="about">
                 <h2>Explanation</h2>
                 <p>

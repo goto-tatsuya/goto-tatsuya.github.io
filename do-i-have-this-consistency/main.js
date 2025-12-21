@@ -154,8 +154,29 @@ function showUserWrittenInput() {
     }
 }
 
+class TeXReplacement {
+    constructor(string) {
+        this.instructions = [];
+        let lines = string.split("\n");
+        for (let line of lines) {
+            if (line == "") continue;
+            let [from, to] = line.split(":");
+            from = new RegExp(from);
+            this.instructions.push([from, to]);
+        }
+    }
+
+    replace(str) {
+        for (let [from, to] of this.instructions) {
+            str = str.replace(from, to);
+        }
+        return str;
+    }
+}
+
 function run() {
     const source = document.querySelector("#source");
+    const tex_replacement = new TeXReplacement(document.querySelector("#tex-replacement").value);
     const right = document.querySelector("#result-area");
     let invariants, theorems, consistency, models;
     try {
@@ -194,13 +215,17 @@ function run() {
     $thead.append($tr);
     $tr.append($("<td>x＼y</td>"));
     for (let y of invariants) {
-        $tr.append($("<td />").text(y));
+        let $td = $("<td />");
+        katex.render(tex_replacement.replace(y), $td[0]);
+        $tr.append($td);
     }
     let tips = {};
     invariants.forEach((x, i) => {
         let $tr = $("<tr />");
         $tbody.append($tr);
-        $tr.append($("<td />").text(x));
+        let $td = $("<td />");
+        katex.render(tex_replacement.replace(x), $td[0]);
+        $tr.append($td);
         invariants.forEach((y, j) => {
             let [ans, opt] = table[j][i];
             let $td = $("<td />").text(cell_text(ans)).addClass(class_name(ans));
@@ -242,7 +267,7 @@ function run() {
     $(right).append($buttons);
     let $graph = $("<div id=graph style='width:" + CANVAS_WIDTH + "px;height:" + CANVAS_HEIGHT + "px'></div>");
     $(right).append($graph);
-    let [cy, canvas] = make_graph(invariants, theorems, consistency, tips);
+    let [cy, canvas] = make_graph(invariants, theorems, consistency, tips, tex_replacement);
     $buttons.append(createModelButtons(models, cy, canvas, invariants, theorems));
     $(right).append("<p>Table of Con(x < y)</p>").append($table);
 }
@@ -311,11 +336,18 @@ function revertColor(cy) {
     if (prev_inv2) cy.getElementById(prev_inv2).style('background-color', '#444');
 }
 
-function make_graph(invariants, theorems, consistency, tips) {
+function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
     let elements = [];
 
     invariants.forEach((invariant, i) => {
-        elements.push({ data: { id: invariant } });
+        let html = katex.renderToString(tex_replacement.replace(invariant));
+        let size = getHtmlSize(html);
+        elements.push({ data: {
+            id: invariant,
+            html: html,
+            width: size.width + 20,
+            height: size.height + 10
+        } });
     });
     theorems.forEach(([a, b]) => {
         elements.push({ data: { id: a + "-" + b, source: a, target: b } });
@@ -328,13 +360,10 @@ function make_graph(invariants, theorems, consistency, tips) {
                 selector: 'node',
                 style: {
                     'background-color': '#444',
-                    'width': 'label',
-                    'height': 'label',
-                    'padding': '8px',
-                    'color': '#fff',
-                    'label': 'data(id)',
                     'text-valign': 'center',
                     'text-halign': 'center',
+                    'width': 'data(width)',
+                   'height': 'data(height)',
                     'font-size': 12,
                     'text-wrap': 'wrap'
                 }
@@ -386,10 +415,39 @@ function make_graph(invariants, theorems, consistency, tips) {
         $("td").removeClass("outlined");
         clearAllTooltip(tips);
     });
+    cy.nodeHtmlLabel([
+        {
+            query: 'node',
+            halign: 'center',
+            valign: 'center',
+            halignBox: 'center',
+            valignBox: 'center',
+            cssClass: 'node',
+            tpl: (data) => {
+                return data.html;
+            }
+        }]);
     let elem = document.getElementById('graph').childNodes[0];
     let canvas = $("<canvas />").attr("width", CANVAS_WIDTH).attr("height", CANVAS_HEIGHT).css("position", "absolute").css("z-index", 0)[0];
     elem.appendChild(canvas);
     return [cy, canvas];
+}
+
+function getHtmlSize(htmlContent) {
+    const tempDiv = document.createElement('div');
+    tempDiv.style.visibility = 'hidden';
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.display = 'inline-block';
+    tempDiv.innerHTML = htmlContent;
+    document.body.appendChild(tempDiv);
+
+    const size = {
+        width: tempDiv.offsetWidth,
+        height: tempDiv.offsetHeight
+    };
+
+    document.body.removeChild(tempDiv);
+    return size;
 }
 
 function clearVoronoi(canvas) {
