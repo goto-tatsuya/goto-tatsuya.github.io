@@ -428,8 +428,10 @@ function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
             }
         }]);
     let elem = document.getElementById('graph').childNodes[0];
-    let canvas = $("<canvas />").attr("width", CANVAS_WIDTH).attr("height", CANVAS_HEIGHT).css("position", "absolute").css("z-index", 0)[0];
-    elem.appendChild(canvas);
+    let div = $("<div />").css("position", "absolute").css("z-index", 0)[0];
+    let canvas = $("<canvas />").attr("width", CANVAS_WIDTH).attr("height", CANVAS_HEIGHT)[0];
+    div.append(canvas)
+    elem.appendChild(div);
     return [cy, canvas];
 }
 
@@ -455,10 +457,13 @@ function clearVoronoi(canvas) {
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
-function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv) {
+async function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv) {
     let pan = cy.pan();
-    let ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const ctx = tempCanvas.getContext('2d');
+    ctx.filter = "blur(20px)";
     if (!small_inv) return;
     let values = partition_by_model(invariants, theorems, small_inv, large_inv);
     let points = [];
@@ -474,13 +479,52 @@ function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv) {
         ctx.beginPath();
         voronoi.renderCell(i, ctx);
         if (values[ids[i]] == 1) {
-            ctx.fillStyle = '#a2a3b7ff';
+            ctx.fillStyle = 'black';
             ctx.fill();
         } else if (values[ids[i]] == 0) {
-            ctx.fillStyle = '#d7d8e6ff';
+            ctx.fillStyle = 'white';
             ctx.fill();
         }
     }
+    await applyBlurToCanvas(canvas, tempCanvas, 30);
+    binarizeCanvas(canvas, 170, 128, [215, 216, 230], [163, 163, 181]);
+}
+
+async function applyBlurToCanvas(canvas, sourceCanvas, radius) {
+  const width = canvas.width;
+  const height = canvas.height;
+  const snapshot = await createImageBitmap(sourceCanvas);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, width, height);
+  ctx.drawImage(snapshot, 0, 0);
+}
+
+
+function binarizeCanvas(canvas, threshold, thresholdAlpha, white, black) {
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const data = imageData.data;
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    if (data[i + 3] <= 128) {
+        data[i + 3] = 0;   
+    } else if (r >= threshold) {
+        data[i] = white[0];
+        data[i + 1] = white[1];
+        data[i + 2] = white[2];
+        data[i + 3] = 255;
+    } else {
+        data[i] = black[0];
+        data[i + 1] = black[1];
+        data[i + 2] = black[2];
+        data[i + 3] = 255;
+    }
+  }
+
+  // 4. 加工したデータをCanvasに戻す
+  ctx.putImageData(imageData, 0, 0);
 }
 
 async function adjustOffsets(tippyInstances) {
