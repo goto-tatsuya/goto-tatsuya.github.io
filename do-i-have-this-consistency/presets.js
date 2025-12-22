@@ -69,7 +69,7 @@ models:
 - Mathias;e;h
 - Laver;e,s;b,g
 - prediction;p,b,s;e
-- Miller;u,a;d,g
+- Miller;u,a,s;d,g
 - Hechler;g;b
 - BS87;u,g;s
 - She84;b;a

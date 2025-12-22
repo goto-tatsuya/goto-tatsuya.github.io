@@ -325,15 +325,15 @@ let prev_inv1, prev_inv2;
 
 function changeColor(cy, inv1, inv2) {
     revertColor(cy);
-    cy.getElementById(inv1).style('background-color', 'rgba(144, 160, 209, 1)');
-    cy.getElementById(inv2).style('background-color', 'rgba(144, 160, 209, 1)');
+    cy.getElementById(inv1).addClass("focused");
+    cy.getElementById(inv2).addClass("focused");
     prev_inv1 = inv1;
     prev_inv2 = inv2;
 }
 
 function revertColor(cy) {
-    if (prev_inv1) cy.getElementById(prev_inv1).style('background-color', '#444');
-    if (prev_inv2) cy.getElementById(prev_inv2).style('background-color', '#444');
+    if (prev_inv1) cy.getElementById(prev_inv1).removeClass("focused");
+    if (prev_inv2) cy.getElementById(prev_inv2).removeClass("focused");
 }
 
 function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
@@ -342,12 +342,14 @@ function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
     invariants.forEach((invariant, i) => {
         let html = katex.renderToString(tex_replacement.replace(invariant));
         let size = getHtmlSize(html);
-        elements.push({ data: {
-            id: invariant,
-            html: html,
-            width: size.width + 20,
-            height: size.height + 10
-        } });
+        elements.push({
+            data: {
+                id: invariant,
+                html: html,
+                width: size.width + 20,
+                height: size.height + 10
+            }
+        });
     });
     theorems.forEach(([a, b]) => {
         elements.push({ data: { id: a + "-" + b, source: a, target: b } });
@@ -363,7 +365,7 @@ function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
                     'text-valign': 'center',
                     'text-halign': 'center',
                     'width': 'data(width)',
-                   'height': 'data(height)',
+                    'height': 'data(height)',
                     'font-size': 12,
                     'text-wrap': 'wrap'
                 }
@@ -379,6 +381,18 @@ function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
                 }
             },
             {
+                selector: 'node.focused',
+                style: {
+                    'background-color': 'rgba(144, 160, 209, 1)'
+                }
+            },
+            {
+                selector: 'node.selected',
+                style: {
+                    'background-color': 'rgba(113, 130, 181, 1)'
+                }
+            },
+            {
                 selector: 'edge.hover',
                 style: {
                     'line-color': 'red',
@@ -391,30 +405,6 @@ function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
         zoomingEnabled: false,
     });
     rotateGraph(cy, -30);
-    cy.edges().on('mouseover', (evt) => {
-        const edge = evt.target;
-        edge.addClass('hover')
-        let ts = [];
-        let tip = tips[edge.id()];
-        if (tip) {
-            tip.reference.classList.add("outlined");
-            ts.push(tip);
-        }
-        let tip2 = tips[swapId(edge.id())];
-        if (tip2) {
-            tip2.reference.classList.add("outlined");
-            ts.push(tip2);
-        }
-        adjustOffsets(ts);
-        ts.forEach(t => { t.show() });
-
-    });
-    cy.edges().on('mouseout', (evt) => {
-        const edge = evt.target;
-        edge.removeClass('hover');
-        $("td").removeClass("outlined");
-        clearAllTooltip(tips);
-    });
     cy.nodeHtmlLabel([
         {
             query: 'node',
@@ -427,12 +417,80 @@ function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
                 return data.html;
             }
         }]);
+    cy.edges().on('mouseover', (evt) => {
+        const edge = evt.target;
+        edge.addClass('hover');
+        $("td").removeClass("outlined");
+        showTips(tips, edge.id());
+    });
+    cy.edges().on('mouseout', (evt) => {
+        const edge = evt.target;
+        edge.removeClass('hover');
+        $("td").removeClass("outlined");
+        clearAllTooltip(tips);
+    });
+    cy.nodes().on('mouseover', (evt) => {
+        const node = evt.target;
+        if (selectedNodeId) {
+            $("td").removeClass("outlined");
+            node.addClass("focused");
+            showTips(tips, node.id()+"-"+selectedNodeId);
+        }
+    });
+    cy.nodes().on('mouseout', (evt) => {
+            evt.target.removeClass("focused");
+            clearAllTooltip(tips);
+        
+    });
+    let dragged = false;
+    let selectedNodeId = null;
+    cy.on('mousedown', 'node', function () {
+        dragged = false;
+    });
+    cy.on('drag', 'node', function () {
+        dragged = true;
+    });
+    cy.on('mouseup', 'node', function (evt) {
+        if (!dragged) {
+            if (selectedNodeId === evt.target.id()) {
+                evt.target.removeClass("selected");
+                selectedNodeId = null;
+            } else {
+                if (selectedNodeId) {
+                    cy.getElementById(selectedNodeId).removeClass("selected");
+                }
+                selectedNodeId = evt.target.id();
+                evt.target.addClass("selected");
+            }
+        }
+    });
+    cy.edges().on('mouseover', (evt) => {
+        const edge = evt.target;
+        edge.addClass('hover');
+
+    });
     let elem = document.getElementById('graph').childNodes[0];
     let div = $("<div />").css("position", "absolute").css("z-index", 0)[0];
     let canvas = $("<canvas />").attr("width", CANVAS_WIDTH).attr("height", CANVAS_HEIGHT)[0];
     div.append(canvas)
     elem.appendChild(div);
     return [cy, canvas];
+}
+
+function showTips(tips, id) {
+    let ts = [];
+    let tip = tips[id];
+    if (tip) {
+        tip.reference.classList.add("outlined");
+        ts.push(tip);
+    }
+    let tip2 = tips[swapId(id)];
+    if (tip2) {
+        tip2.reference.classList.add("outlined");
+        ts.push(tip2);
+    }
+    adjustOffsets(ts);
+    ts.forEach(t => { t.show() });
 }
 
 function getHtmlSize(htmlContent) {
@@ -491,40 +549,40 @@ async function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_in
 }
 
 async function applyBlurToCanvas(canvas, sourceCanvas, radius) {
-  const width = canvas.width;
-  const height = canvas.height;
-  const snapshot = await createImageBitmap(sourceCanvas);
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, width, height);
-  ctx.drawImage(snapshot, 0, 0);
+    const width = canvas.width;
+    const height = canvas.height;
+    const snapshot = await createImageBitmap(sourceCanvas);
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(snapshot, 0, 0);
 }
 
 
 function binarizeCanvas(canvas, threshold, thresholdAlpha, white, black) {
-  const ctx = canvas.getContext('2d');
-  const width = canvas.width;
-  const height = canvas.height;
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    if (data[i + 3] <= 128) {
-        data[i + 3] = 0;   
-    } else if (r >= threshold) {
-        data[i] = white[0];
-        data[i + 1] = white[1];
-        data[i + 2] = white[2];
-        data[i + 3] = 255;
-    } else {
-        data[i] = black[0];
-        data[i + 1] = black[1];
-        data[i + 2] = black[2];
-        data[i + 3] = 255;
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        if (data[i + 3] <= 128) {
+            data[i + 3] = 0;
+        } else if (r >= threshold) {
+            data[i] = white[0];
+            data[i + 1] = white[1];
+            data[i + 2] = white[2];
+            data[i + 3] = 255;
+        } else {
+            data[i] = black[0];
+            data[i + 1] = black[1];
+            data[i + 2] = black[2];
+            data[i + 3] = 255;
+        }
     }
-  }
 
-  // 4. 加工したデータをCanvasに戻す
-  ctx.putImageData(imageData, 0, 0);
+    // 4. 加工したデータをCanvasに戻す
+    ctx.putImageData(imageData, 0, 0);
 }
 
 async function adjustOffsets(tippyInstances) {
