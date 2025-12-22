@@ -64,8 +64,8 @@ theorems:
 - d<=i
 
 models:
-- Cohen;b,a,g,s;d,r
-- random;d;r
+- Cohen;b,a,g,s,e;d,r
+- random;d,a;r
 - Mathias;e;h
 - Laver;e,s;b,g
 - prediction;p,b,s;e
