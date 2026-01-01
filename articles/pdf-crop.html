@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>「見開き2ページが1枚の画像としてスキャンされているPDF」をコマンドラインツールでいい感じに整える方法</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+</head>
+
+<body>
+    <h1>「見開き2ページが1枚の画像としてスキャンされているPDF」をコマンドラインツールでいい感じに整える方法</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2026年1月1日
+    </p>
+    <p>
+        Fundamenta Mathematicaeの古い論文などは見開き2ページが1枚の画像としてスキャンされていて、閲覧に不便だ。
+        これをコマンドラインツールで分割して整える方法を紹介する。
+    </p>
+    <div style="overflow:hidden">
+        <div style="float:left;width:50%">
+            入力PDF<br>
+            <img src="crop-pdf-input.png" alt="入力PDFの例" width="100%">
+        </div>
+        <div style="float:left;width:50%">
+            出力PDF<br>
+            <img src="crop-pdf-output.png" alt="出力PDFの例" width="100%">
+        </div>
+    </div>
+    <h2>使用ツール</h2>
+    <ul>
+        <li><a href-"https://mupdf.com/">MuPDF</a></li>
+        <li><a href-"https://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/">PDFtk</a></li>
+    </ul>
+    <p>
+        Mac + Homebrewではそれぞれ以下でインストールできる。
+    </p>
+    <pre>
+brew install mupdf-tools
+brew install pdftk-java
+</pre>
+    <h2>手順</h2>
+    <p>
+        もとのファイルがfile.pdfという名前だとする。途中のファイルfile2.pdf、file3.pdfを経由して最終的にfile4.pdfに書き込む。
+        適宜ファイル名は変えてよい。
+    </p>
+    <h3>MuPDFで１ページを左右に分割する</h3>
+    <p>
+        以下のコマンドを実行する。
+    </p>
+    <pre>
+mutool poster -x 2 file.pdf file2.pdf
+</pre>
+    <h3>PDFtkで偶数ページと奇数ページを入れ替える</h3>
+    <p>
+        このままだと偶数ページと奇数ページが互い違いになってしまう。そこで以下のコマンドを実行する。
+    </p>
+    <pre>
+pdftk A=file2.pdf shuffle Aeven Aodd output file3.pdf
+</pre>
+    <h3>必要に応じてPDFtkで最初のページと最後のページを削る</h3>
+    <p>最初のページと最後のページを両方削るコマンド</p>
+    <pre>
+pdftk file3.pdf cat 2-r2 output file4.pdf
+</pre>
+    <p>最初のページだけを削るコマンド</p>
+    <pre>
+pdftk file3.pdf cat 2-r1 output file4.pdf
+</pre>
+    <p>最後のページだけを削るコマンド</p>
+    <pre>
+pdftk file3.pdf cat 1-r2 output file4.pdf
+</pre>
+    <p>
+        これで完成である。
+    </p>
+</body>
+
+</html>
