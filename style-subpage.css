@@ -228,10 +228,13 @@ div.figure {
 ul, ol {
 	margin-left: 3em;
 }
+p.comment {
+	color: #999;
+}
 
 
 /* https://pa-tu.work/t/6960 */
-.comment {
+div.comment {
 	position: relative;
 	margin: 2rem;
 	padding: 0.5rem;

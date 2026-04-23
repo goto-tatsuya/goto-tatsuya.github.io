@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../style-subpage.css">
+    <title>Hechler拡大の任意の新しい実数はCohen実数を生成する</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$']],
+            macros: {
+                forces: "\\Vdash",
+                Hechler: "\\mathbb{D}",
+                restrict: "\\upharpoonright",
+                stem: "\\operatorname{stem}",
+                dom: "\\operatorname{dom}",
+                ran: "\\operatorname{ran}",
+                append: "{}^\\frown",
+                seq: ["\\langle #1 \\rangle", 1],
+            }
+          }
+        };
+    </script>
+</head>
+
+<body>
+    <h1>Hechler拡大の任意の新しい実数はCohen実数を生成する</h1>
+    <p style="text-align: right;">
+        執筆者: <a href="https://t-goto.jp">後藤 達哉</a>, 執筆日: 2026年4月22日
+    </p>
+    <p>
+        この記事ではJustin Palumboの博士論文 [Pal13]に従って、「Hechler拡大の任意の新しい実数はCohen実数を生成する」という命題の証明を行う。
+        この記事の新規性は一切ない。
+    </p>
+    <div class="block def">
+        <div class="block-header">定義1</div>
+        <p>
+            Hechler強制法$\Hechler$を次で定める：
+            $T \in \Hechler$なのは$T$が$\omega^{<\omega}$の部分木であり、その幹$\stem(T)$以上のノードは全て補有限分岐するときである。
+            $\Hechler$の順序は包含関係である。
+        </p>
+        <p>
+           $s \in \omega^{<\omega}$が論理式$\varphi$を強制するとは、ある条件$T \in \Hechler$で幹が$s$なものが存在し、$T \forces \varphi$となることとして定める。
+        </p>
+        <p>
+           $s \in \omega^{<\omega}$が論理式$\varphi$を好むとは、$s$が$\neg \varphi$を強制しないことを意味する。
+        </p>
+    </div>
+    <div class="block lem">
+        <div class="block-header">補題1</div>
+        <p>
+            任意の$\sigma$-centeredなatomless強制法は、unbounded realを加える。
+        </p>
+    </div>
+    <div class="block thm">
+        <div class="block-header">定理1</div>
+        <p>$\Hechler$は次を強制する： 任意の実数$x \in \omega^\omega \setminus V$について、ある$c \in \omega^\omega \cap V[x]$があって、$c$は$V$上のCohen実数である。
+    </div>
+    <div class="proof">
+        <div class="block-header">定理1の証明</div>
+        <p>
+            $\dot{x}$を新しい実数の$\Hechler$-名前とする。
+            補題1 (とJech本 [Jec03]のCorollary 15.42)より、$\dot{x}$はunbounded realの名前だと仮定してよい。
+        </p>
+        <p><b><u>場合1</u></b>: densely manyに$s \in \omega^{<\omega}$があって、$u \in \omega^{<\omega}$が存在し、また無限個の$k \in \omega$が存在し、$s$は$u \append k \subseteq \dot{x}$を好む</p>
+        <p class="comment">
+            コメント： 場合1は証明するのに都合の良い場合である。
+            直観的に言うと、「$\dot{x}$のある桁に無限通りの値を書き込めうるタイミングがたくさんある」場合である。このような場合にはCohen実数を作りやすいことはイメージしやすいと思う。
+        </p>
+        <p>
+            $\phi \colon \omega \to \omega^{<\omega}$を次を満たすように取る。
+            もし、$A_{s,u} := \{ k : \text{$s$は$u \append k \subseteq \dot{x}$を好む} \}$が無限集合なら、全ての$t \in \omega^{<\omega}$について無限個の$k \in A_{s,u}$が存在し、$\phi(k) = t$となる。
+        </p>
+        <p>
+            これは無限集合である$A_{s,u}$たちのdisjoint refinementを取ることにより存在がわかる。
+        </p>
+        <p>$c \in \omega^\omega \cap V[x]$を次で定める:
+            $$
+            \dot{c} = \phi(\dot{x}(0)) \append \phi(\dot{x}(1)) \append \phi(\dot{x}(2)) \dots.
+            $$
+        </p>
+        <p>
+            $\dot{c}$がCohen realなことを示そう。
+            $D \subseteq \omega^{<\omega}$を稠密集合 (in $V$)とする。
+            $T \in \Hechler, s = \stem(T)$とする。
+            場合1の仮定より、必要に応じて$s$を伸ばして条件$T$を縮めることにより、$u \in \omega^{<\omega}$がとれて、$A_{s,u}$は無限集合である。
+            $D$が稠密なので、$t \in \omega^{<\omega}$が取れて、
+            $$
+            \phi(u(0)) \append \dots \append \phi(u(|u|-1)) \append t \in D
+            $$
+            となる。
+            $\phi$の取り方よりある$k \in A_{s,u}$があって、$\phi(k) = t$となる。
+            $k \in A_{s,u}$より$s$は$u \append k \subseteq \dot{x}$を好む。 
+            「好む」の定義より、ある$T' \le T$があって$T' \forces u \append k \subseteq \dot{x}$となる。
+            これは、$T'$が$c$のある始切片が$D$に属すことを強制することを意味する。よって$\dot{c}$がCohen realなことの証明ができた。
+            場合1の証明終了。
+        </p>
+        <p>
+            以後、場合1を否定しよう。
+            するとある$s^* \in \omega$がとれて、任意の延長$s \supseteq s^*$と$u$について、 $\{ k : \text{$s $は$u \append k \subseteq \dot{x}$を好む} \}$は有限集合である。
+            簡単のため、$s^* = \varnothing$とする。
+        </p>
+        <p><b><u>場合2</u></b>: densely manyに$s \in \omega^{<\omega}$があって、$u \in \omega^{<\omega}$が存在し、また無限個の$k \in \omega$が存在し、ある$m \in \omega$について、$s \append m$は$u \append k \subseteq \dot{x}$を好む</p>
+        <p class="comment">
+            場合2の条件は場合1とよく似ている。
+        </p>
+        <p>
+            場合2でdenseであることが仮定された$s$の集合を$S$と置く。
+            $s \in S$に対して、その証拠$u$の一つを$u(s)$とする。
+            $k \in \omega$で「ある$m \in \omega$について、$s \append m$は$u(s) \append k \subseteq \dot{x}$を好む」もの全部の集合を$B_s$としよう。 
+        </p>
+        <p>
+            $s \in S$と$k \in B_s$を固定する。
+            $m_s(k)$を$k \in B_s$の証拠の一つとする。
+        </p>
+        <p>
+            ここで写像$k \mapsto m_s(k)$は有限対一であることを主張する。
+            もしそうでなければ、$m \in \omega$を固定することができて、無限個の$k$について$m = m_s(k)$となる。
+            すると無限個の$k$について、$s \append m$は$u(s) \append k \subseteq \dot{x}$を好む。
+            これは場合1を否定したことに矛盾する。よって、写像$k \mapsto m_s(k)$は有限対一。
+        </p>
+        <p>
+            $k \mapsto m_s(k)$は有限対一なので、定義域が無限集合の部分関数$f^s \colon \omega \rightharpoonup \omega$がとれて、
+            $$
+            \forall k \in \dom(f^s)\ s \append f^s(k) \text{は} u(s) \append k \subseteq \dot{x} \text{を好む}
+            $$
+            となる。
+        </p>
+        <p>
+            $\phi \colon \omega \to \omega^{<\omega}$を次を満たす関数とする：
+            任意の$s \in S$と$t \in \omega^\omega$について、無限個の$k \in \dom(f_s)$があって$\phi(k) = t$となる。
+        </p>
+        <p>$c \in \omega^\omega \cap V[x]$を次で定める:
+            $$
+            \dot{c} = \phi(\dot{x}(0)) \append \phi(\dot{x}(1)) \append \phi(\dot{x}(2)) \dots.
+            $$
+        </p>
+        <p>
+            $\dot{c}$がCohen realなことを示そう。
+            $D \subseteq \omega^{<\omega}$を稠密集合 (in $V$)とする。
+            $T \in \Hechler, s = \stem(T)$とする。
+            $s \in S$を仮定して良い。
+            $u = u(s)$と置く。
+            $t \in \omega^{<\omega}$を
+            $$
+            \phi(u(0)) \append \dots \append \phi(u(|u|-1)) \append t \in D
+            $$
+            を満たすものとする。
+            無限個の$k \in \dom(f^s)$があって、$\phi(k) = t$となる。
+            $f_s$が単射なので、$s \append f_s(k) \in T$となるようにそのような$k$を取れる。
+            よって、ある条件$T' \le T$があって、$T'$は$u \append k \subseteq \dot{x}$を好む。これで
+            $\dot{c}$がCohen realなことを示された。場合2の証明終了。
+        </p>
+        <p>
+            以後、場合2を否定する。
+
+            するとある$s^* \in \omega$がとれて、任意の延長$s \supseteq s^*$と$u$について、有限個を除いた全ての$k$について、すべての$m$について、$s \append m$は$u \append k \not \subseteq \dot{x}$を強制する。
+            簡単のため、$s^* = \varnothing$とする。
+
+            「有限個を除いた全ての$k$について」で除外される最初の有限個を$k^u_s$とする。
+            そこで次の場合3が成り立つ。
+        </p>
+        <p><b><u>場合3</u></b>: 任意の$s, u \in \omega^{<\omega}$と任意の$m \in \omega$と任意の$k \ge k^u_s$について$s \append m \forces u \append k \not \subseteq \dot{x}$.</p>
+        <p>
+            以後、この場合3が実際には起こらないことを示し、証明を完了させる。
+            目標は$\dot{x}$のグラウンドモデルの元のバウンドを作り、$\dot{x}$がunbounded realなことに矛盾させることである。
+        </p>
+        <p>
+            いきなり一般的に証明してもいいが、まず小目標として、$T$ of stem $\varnothing$があって、$T \forces \dot{x}(0) < k^\varnothing_\varnothing$となることを示そう。
+            場合3の仮定において、$s = u = \varnothing$とすることで、
+            $\forall m\ \forall k \ge k^\varnothing_\varnothing\ \seq{m} \forces \dot{x}(0) \ne k$となる。
+            特に$k \in [k^\varnothing_\varnothing, k^\varnothing_{\seq{s(0)}}]$の有限個の範囲の$k$を動かし、$m$に関して木をマージすると
+            $$
+                \exists T_1 \text{ of stem } \varnothing\ T_1 \forces \dot{x}(0) \not \in [k^\varnothing_\varnothing, k^\varnothing_{\seq{\dot{d}(0)}})
+            $$
+            が分かる。
+            再び場合3の仮定より
+            $\forall \seq{s(0), s(1)} \ \forall k \ge k^\varnothing_{s(0)} \ \seq{s(0), s(1)} \forces \dot{x}(0) \ne k$となる。
+            特に$k \in [k^\varnothing_{s(0)}, k^\varnothing_{\seq{s(0), s(1)}})$の有限個の範囲の$k$を動かし、木をマージすると
+            $$
+                \exists T_2 \le_1 T_1\ T_2 \forces \dot{x}(0) \not \in [k^\varnothing_{\seq{\dot{d}(0)}}, k^\varnothing_{\seq{\dot{d}(0), \dot{d}(1)}})
+            $$
+            が分かる。この操作を繰り返しfusion limit $T$を取ると、$T \forces \dot{x}(0) < k^\varnothing_\varnothing$となる。
+            これで小目標を証明できた。
+        </p>
+        <p class="comment">
+            コメント：賢い対角線論法である。
+        </p>
+        <p>
+            最終目標を示そう。
+            まず、各$s \in \omega^{<\omega}$に対して有限部分関数$f_s \colon \omega \to \omega$を帰納的に定める。
+            $f_s(0) = k^\varnothing_\varnothing$とする。
+            与えられた$i+1$に対して、$i+1 \in (s(l-1), s(l)]$となる$l$を取る ($i + 1 \le s(0)$のときは$l = 0$とする)。
+            $$
+            f_s(i+1) = \max \{ k^{\seq{j_0, \dots, f_i}}_{s \restrict l} : j_k \le f(k) \text{ for all } k \}
+            $$
+            とおく。
+            $T^0 = \omega^{<\omega}$とおく。
+            fusion sequenceを定めるために、$T^n$から$T^{n+1}$へ行く手順を示す。
+            $T^n$が与えられたとする。
+            各$T^n_s$ (|s|=n+1)を強めて、
+            $$
+            T^{n+1}_s \forces \seq{j_0, \dots, j_{i-1}, k} \subseteq \dot{x}
+            $$
+            となるようにする。ただし、$i \le s(n)$で、$\seq{j_0, \dots, j_{i-1}}$は各成分$j_l \le f_s(l)$、かつ$k \in [k^{\seq{j_0, \dots, j_{i-1}}}_{s \restrict n}, k^{\seq{j_0, \dots, j_{i-1}}}_{s})$なる任意の元を動く。
+            これらは有限通りなので、場合3の仮定より可能である。
+            最後に$T = \bigcap_{n} T^n$をfusion limitとする。
+        </p>
+        <p>
+            主張：$T \forces \dot{x}(i) < f_{d \restrict i}(i) \text{ (for $i \in (\dot{d}(l-1), \dot{d}(l)]$)}$.
+        </p>
+        <p>
+            主張の証明。$T$を持つジェネリックフィルター$G$を取り、それに対応するジェネリック実数を$d$とする。
+            帰納法により主張を示す。
+            $i = 0$なら、各$T_{d \restrict n} \in G$が$\dot{x}(0) \not \in [k^\varnothing_{d \restrict n}, k^\varnothing_{d \restrict (n+1)})$を強制するため、$x(0) < k^\varnothing_\varnothing = f_{d \restrict n}(0)$となる。
+            $i$未満で主張が成立すると仮定する。
+            $j_k = x(k)$とおく。各$n \ge l$について、構成より
+            $$
+            T_{d \restrict n} \forces \seq{j_0, \dots, j_{i-1}, k} \not \subseteq \dot{x} \text{ for $k \in [k^{\seq{j_0, \dots, j_{i-1}}}_{d \restrict n}, k^{\seq{j_0, \dots, j_{i-1}}}_{d \restrict (n+1)})$}
+            $$
+            特に$x(i) \not \in [k^{\seq{j_0, \dots, j_{i-1}}}_{d \restrict n}, k^{\seq{j_0, \dots, j_{i-1}}}_{d \restrict (n+1)})$となり、$x(i) < k^{\seq{j_0, \dots, j_{i-1}}}_{d \restrict l} \le f_{d \restrict l}(i)$となる。 (主張の証明終わり)
+        </p>
+        <p>
+            $V$で$h \colon \omega \to \omega$を
+            $$
+            h(i) = \max \{ f_s(i) : s \in \omega^{<\omega}, |s| \le i, \ran(f_s) \subseteq i \}
+            $$
+            とおけば、主張より、$T \forces \dot{x} \le h$となる。
+        </p>
+        <p>
+            $\dot{x}$はunbounded realだったからこれで矛盾し、場合3は起こらない。これで定理が証明された。
+        </p>
+    </div>
+    <h2>参考文献</h2>
+    <ul>
+        <li>[Jec03] Jech, T. (2003). Set theory. Berlin, Heidelberg: Springer Berlin Heidelberg.</li>
+        <li>[Pal13] Palumbo, J. T. (2013). Hechler forcing and its relatives. University of California, Los Angeles.</li>
+    </ul>
+
+
+</body>
+
+</html>
