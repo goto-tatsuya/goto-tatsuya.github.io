@@ -289,9 +289,38 @@ function createZoomButtons(cy) {
             }
         });
     };
-    $zoomIn[0].addEventListener("click", () => zoomBy(1.2));
-    $zoomOut[0].addEventListener("click", () => zoomBy(1 / 1.2));
-    $fit[0].addEventListener("click", () => cy.fit(undefined, 30));
+
+    const bindGraphControl = ($button, action) => {
+        const button = $button[0];
+        let handledTouch = false;
+        const stopGraphEvent = (event) => {
+            event.stopPropagation();
+        };
+
+        ["pointerdown", "pointermove", "pointerup", "mousedown", "mouseup", "touchstart", "touchmove"].forEach(type => {
+            button.addEventListener(type, stopGraphEvent);
+        });
+
+        button.addEventListener("touchend", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            handledTouch = true;
+            action();
+            setTimeout(() => {
+                handledTouch = false;
+            }, 500);
+        });
+
+        button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (handledTouch) return;
+            action();
+        });
+    };
+
+    bindGraphControl($zoomIn, () => zoomBy(1.2));
+    bindGraphControl($zoomOut, () => zoomBy(1 / 1.2));
+    bindGraphControl($fit, () => cy.fit(undefined, 30));
     $controls.append($zoomIn, $zoomOut, $fit);
     return $controls;
 }
