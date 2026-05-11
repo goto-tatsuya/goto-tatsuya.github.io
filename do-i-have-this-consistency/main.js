@@ -575,7 +575,6 @@ async function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_in
     tempCanvas.width = canvas.width;
     tempCanvas.height = canvas.height;
     const ctx = tempCanvas.getContext('2d');
-    ctx.filter = "blur(20px)";
     if (!small_inv) return;
     let values = partition_by_model(invariants, theorems, small_inv, large_inv);
     let points = [];
@@ -605,12 +604,72 @@ async function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_in
 async function applyBlurToCanvas(canvas, sourceCanvas, radius) {
     const width = canvas.width;
     const height = canvas.height;
-    const snapshot = await createImageBitmap(sourceCanvas);
     const ctx = canvas.getContext('2d');
+    const sourceCtx = sourceCanvas.getContext('2d');
+    const sourceData = sourceCtx.getImageData(0, 0, width, height);
+    const blurredData = blurImageData(sourceData, width, height, radius);
+
     ctx.clearRect(0, 0, width, height);
-    ctx.drawImage(snapshot, 0, 0);
+    ctx.putImageData(blurredData, 0, 0);
 }
 
+function blurImageData(imageData, width, height, radius) {
+    if (radius <= 0) {
+        return imageData;
+    }
+
+    const source = imageData.data;
+    const destination = new Uint8ClampedArray(source.length);
+    for (let channel = 0; channel < 4; channel++) {
+        const blurred = boxBlurChannel(source, width, height, radius, channel);
+        for (let i = 0; i < blurred.length; i++) {
+            destination[i * 4 + channel] = blurred[i];
+        }
+    }
+
+    imageData.data.set(destination);
+    return imageData;
+}
+
+function boxBlurChannel(source, width, height, radius, channel) {
+    const horizontal = new Float32Array(width * height);
+    const output = new Uint8ClampedArray(width * height);
+    const diameter = radius * 2 + 1;
+
+    for (let y = 0; y < height; y++) {
+        let sum = 0;
+        for (let x = -radius; x <= radius; x++) {
+            const clampedX = Math.min(width - 1, Math.max(0, x));
+            sum += source[(y * width + clampedX) * 4 + channel];
+        }
+        for (let x = 0; x < width; x++) {
+            horizontal[y * width + x] = sum / diameter;
+
+            const prevX = Math.max(0, x - radius);
+            const nextX = Math.min(width - 1, x + radius + 1);
+            sum += source[(y * width + nextX) * 4 + channel];
+            sum -= source[(y * width + prevX) * 4 + channel];
+        }
+    }
+
+    for (let x = 0; x < width; x++) {
+        let sum = 0;
+        for (let y = -radius; y <= radius; y++) {
+            const clampedY = Math.min(height - 1, Math.max(0, y));
+            sum += horizontal[clampedY * width + x];
+        }
+        for (let y = 0; y < height; y++) {
+            output[y * width + x] = sum / diameter;
+
+            const prevY = Math.max(0, y - radius);
+            const nextY = Math.min(height - 1, y + radius + 1);
+            sum += horizontal[nextY * width + x];
+            sum -= horizontal[prevY * width + x];
+        }
+    }
+
+    return output;
+}
 
 function binarizeCanvas(canvas, threshold, thresholdAlpha, white, black) {
     const ctx = canvas.getContext('2d');
