@@ -178,9 +178,9 @@ function run() {
     const source = document.querySelector("#source");
     const tex_replacement = new TeXReplacement(document.querySelector("#tex-replacement").value);
     const right = document.querySelector("#result-area");
-    let invariants, theorems, consistency, models;
+    let invariants, theorems, consistency, models, positions;
     try {
-        [invariants, theorems, consistency, models] = parse(source.value);
+        [invariants, theorems, consistency, models, positions] = parse(source.value);
     } catch (e) {
         if (e instanceof ParseError) {
             alert("Parse error on the " + (e.lineno + 1) + "-th line.");
@@ -267,9 +267,10 @@ function run() {
     $(right).append($buttons);
     let $graph = $("<div id=graph class='graph-view' style='width:" + CANVAS_WIDTH + "px;height:" + CANVAS_HEIGHT + "px'></div>");
     $(right).append($graph);
-    let [cy, canvas] = make_graph(invariants, theorems, consistency, tips, tex_replacement);
+    let [cy, canvas] = make_graph(invariants, theorems, consistency, tips, tex_replacement, positions);
     $graph.append(createZoomButtons(cy));
     $buttons.append(createModelButtons(models, cy, canvas, invariants, theorems));
+    $buttons.append(createPositionLogButton(cy));
     $(right).append("<p>Table of Con(x < y)</p>").append($table);
 }
 
@@ -368,6 +369,33 @@ function createModelButtons(models, cy, canvas, invariants, theorems) {
     return div;
 }
 
+function createPositionLogButton(cy) {
+    let $button = $("<button type='button' class='tab-btn graph-position-button'>Memorize positions</button>");
+    $button.hide();
+
+    cy.on('dragfree', 'node', () => {
+        $button.show();
+    });
+
+    $button[0].addEventListener("click", () => {
+        const lines = cy.nodes().map(node => {
+            const position = node.position();
+            return `- ${node.id()},${Number(position.x.toFixed(2))},${Number(position.y.toFixed(2))}`;
+        });
+        const source = document.querySelector("#source");
+        const positionsBlock = `positions:\n${lines.join("\n")}\n`;
+        if (/^positions:\n(?:- .*(?:\n|$))*/m.test(source.value)) {
+            source.value = source.value.replace(/^positions:\n(?:- .*(?:\n|$))*/m, positionsBlock);
+        } else {
+            const prefix = source.value && !source.value.endsWith("\n") ? "\n" : "";
+            source.value += `${prefix}${positionsBlock}`;
+        }
+        source.focus();
+    });
+
+    return $button;
+}
+
 function clearAllTooltip(tips) {
     for (let x in tips) {
         tips[x].hide();
@@ -389,7 +417,7 @@ function revertColor(cy) {
     if (prev_inv2) cy.getElementById(prev_inv2).removeClass("focused");
 }
 
-function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
+function make_graph(invariants, theorems, consistency, tips, tex_replacement, positions) {
     let elements = [];
 
     invariants.forEach((invariant, i) => {
@@ -460,6 +488,7 @@ function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
         userZoomingEnabled: false,
     });
     rotateGraph(cy, -30);
+    applyNodePositions(cy, positions);
     cy.nodeHtmlLabel([
         {
             query: 'node',
@@ -530,6 +559,19 @@ function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
     div.append(canvas)
     elem.appendChild(div);
     return [cy, canvas];
+}
+
+function applyNodePositions(cy, positions) {
+    let applied = false;
+    for (let id in positions) {
+        const node = cy.getElementById(id);
+        if (!node.length) continue;
+        node.position(positions[id]);
+        applied = true;
+    }
+    if (applied) {
+        cy.fit(undefined, 30);
+    }
 }
 
 function showTips(tips, id) {
@@ -877,6 +919,7 @@ function parse(text) {
     let theorems = [];
     let consistency = [];
     let models = [];
+    let positions = {};
     const num_lines = lines.length;
     for (let i = 0; i < num_lines; i++) {
         let line = lines[i];
@@ -885,7 +928,7 @@ function parse(text) {
             continue;
         }
         let m;
-        if (m = line.match(/^(invariants|theorems|consistency|models):$/)) {
+        if (m = line.match(/^(invariants|theorems|consistency|models|positions):$/)) {
             mode = m[1];
         } else if (m = line.match(/^- (.+)$/)) {
             if (mode === "invariants") {
@@ -916,6 +959,15 @@ function parse(text) {
                     }
                 }
                 models.push([model_name, small_invariants, large_invariants]);
+            } else if (mode === "positions") {
+                let m2 = m[1].match(/^(.+),\s*(-?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?),\s*(-?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)$/i);
+                if (!m2) {
+                    throw new ParseError(i);
+                }
+                positions[m2[1]] = {
+                    x: Number(m2[2]),
+                    y: Number(m2[3])
+                };
             } else {
                 throw new ParseError(i);
             }
@@ -923,7 +975,7 @@ function parse(text) {
             throw new ParseError(i);
         }
     }
-    return [invariants, theorems, consistency, models];
+    return [invariants, theorems, consistency, models, positions];
 }
 
 class Graph {
