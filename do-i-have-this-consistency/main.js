@@ -265,11 +265,35 @@ function run() {
     $(right).empty();
     let $buttons = $("<div>");
     $(right).append($buttons);
-    let $graph = $("<div id=graph style='width:" + CANVAS_WIDTH + "px;height:" + CANVAS_HEIGHT + "px'></div>");
+    let $graph = $("<div id=graph class='graph-view' style='width:" + CANVAS_WIDTH + "px;height:" + CANVAS_HEIGHT + "px'></div>");
     $(right).append($graph);
     let [cy, canvas] = make_graph(invariants, theorems, consistency, tips, tex_replacement);
+    $graph.append(createZoomButtons(cy));
     $buttons.append(createModelButtons(models, cy, canvas, invariants, theorems));
     $(right).append("<p>Table of Con(x < y)</p>").append($table);
+}
+
+function createZoomButtons(cy) {
+    let $controls = $("<div class='graph-zoom-controls' aria-label='Graph zoom controls' />");
+    let $zoomIn = $("<button type='button' aria-label='Zoom in' title='Zoom in'>+</button>");
+    let $zoomOut = $("<button type='button' aria-label='Zoom out' title='Zoom out'>−</button>");
+    let $fit = $("<button type='button' aria-label='Fit graph' title='Fit graph'>⌂</button>");
+    const zoomBy = (factor) => {
+        const container = cy.container();
+        const zoom = cy.zoom() * factor;
+        cy.zoom({
+            level: Math.max(cy.minZoom(), Math.min(cy.maxZoom(), zoom)),
+            renderedPosition: {
+                x: container.clientWidth / 2,
+                y: container.clientHeight / 2
+            }
+        });
+    };
+    $zoomIn[0].addEventListener("click", () => zoomBy(1.2));
+    $zoomOut[0].addEventListener("click", () => zoomBy(1 / 1.2));
+    $fit[0].addEventListener("click", () => cy.fit(undefined, 30));
+    $controls.append($zoomIn, $zoomOut, $fit);
+    return $controls;
 }
 
 function createModelButtons(models, cy, canvas, invariants, theorems) {
@@ -307,7 +331,7 @@ function createModelButtons(models, cy, canvas, invariants, theorems) {
         if (active_model) [, small_inv, large_inv] = active_model;
         drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv);
     });
-    cy.on('pan', () => {
+    cy.on('pan zoom', () => {
         let small_inv, large_inv;
         if (active_model) [, small_inv, large_inv] = active_model;
         drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv);
@@ -402,7 +426,9 @@ function make_graph(invariants, theorems, consistency, tips, tex_replacement) {
             }
         ],
         layout: { name: 'dagre', rankDir: 'LR' },
-        zoomingEnabled: false,
+        minZoom: 0.25,
+        maxZoom: 3,
+        userZoomingEnabled: false,
     });
     rotateGraph(cy, -30);
     cy.nodeHtmlLabel([
@@ -516,7 +542,6 @@ function clearVoronoi(canvas) {
 }
 
 async function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_inv) {
-    let pan = cy.pan();
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = canvas.width;
     tempCanvas.height = canvas.height;
@@ -527,8 +552,8 @@ async function drawVoronoi(canvas, cy, invariants, theorems, small_inv, large_in
     let points = [];
     let ids = [];
     cy.nodes().forEach(node => {
-        const p = node.position();
-        points.push([p.x + pan.x, p.y + pan.y]);
+        const p = node.renderedPosition();
+        points.push([p.x, p.y]);
         ids.push(node.id());
     });
     const delaunay = d3.Delaunay.from(points);
