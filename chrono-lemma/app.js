@@ -67,9 +67,9 @@ const PROBLEM_SETS = [
         id: "incompleteness",
         year: 1931,
         era: "1931年",
-        title: "十分強い形式体系には、真だが証明できない命題がある",
-        statement: "ゲーデルの第一不完全性定理。",
-        explanation: "算術を含む無矛盾な体系の限界を示し、20世紀の基礎論を大きく変えました。",
+        title: "計算可能に公理化された十分強い無矛盾な算術理論は完全ではない",
+        statement: "その理論の中では、証明も反証もできない算術文が存在する。",
+        explanation: "ゲーデルの第一不完全性定理は、十分な算術を表現できる形式理論が、無矛盾性と計算可能な公理化の下では完全になれないことを示しました。",
       },
       {
         id: "church-turing",
@@ -579,9 +579,9 @@ const THEOREM_TRANSLATIONS = {
     },
     incompleteness: {
       era: "1931",
-      title: "Every sufficiently strong formal system has true but unprovable statements",
-      statement: "Godel's first incompleteness theorem.",
-      explanation: "It revealed limits of consistent systems containing arithmetic and reshaped twentieth-century foundations.",
+      title: "Every consistent computably axiomatized arithmetic theory of sufficient strength is incomplete",
+      statement: "In such a theory, there is an arithmetical sentence that can be neither proved nor refuted.",
+      explanation: "Godel's first incompleteness theorem shows that a formal theory expressive enough for arithmetic cannot be both consistent, computably axiomatized, and complete.",
     },
     "church-turing": {
       era: "1936",
