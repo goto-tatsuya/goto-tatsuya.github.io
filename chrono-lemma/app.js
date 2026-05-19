@@ -233,7 +233,7 @@ const PROBLEM_SETS = [
         era: "1961年",
         title: "可測基数が存在すれば V = L ではない",
         statement: "可測基数の存在は構成可能性公理と両立しない。",
-        explanation: "Scott の定理は、大きな基数が L の細構造的な最小性を超えることを示す初期の重要結果です。",
+        explanation: "Scott の定理は、巨大基数が L の細構造的な最小性を超えることを示す初期の重要結果です。",
       },
       {
         id: "cohen-ch-independence",
@@ -288,7 +288,7 @@ const PROBLEM_SETS = [
         year: 1988,
         era: "1988年",
         title: "Martin's Maximum は相対無矛盾である",
-        statement: "十分強い大きな基数を仮定すると、定常集合保存強制に対する最大級の強制公理 MM のモデルを作れる。",
+        statement: "十分強い巨大基数を仮定すると、定常集合保存強制に対する最大級の強制公理 MM のモデルを作れる。",
         explanation: "Foreman、Magidor、Shelah による MM は、PFA を超える強制公理として多くの構造的帰結を持ちます。",
       },
       {
@@ -297,7 +297,7 @@ const PROBLEM_SETS = [
         era: "1989年",
         title: "十分多くの Woodin 基数から射影決定性が従う",
         statement: "Woodin 基数列とその上の可測基数から、すべての射影集合のゲーム決定性が導かれる。",
-        explanation: "Martin-Steel の定理は、大きな基数と記述集合論の正則性性質を結ぶ中心的な結果です。",
+        explanation: "Martin-Steel の定理は、巨大基数と記述集合論の正則性性質を結ぶ中心的な結果です。",
       },
       {
         id: "aspero-schindler-mm-star",
@@ -316,7 +316,7 @@ const PROBLEM_SETS = [
     roundIds: [
       "easton-continuum-function",
       "jensen-covering",
-      "magidor-strong-compact",
+      "magidor-sch-aleph-omega",
       "laver-indestructibility",
       "dodd-jensen-core-model",
       "baumgartner-pfa",
@@ -340,7 +340,7 @@ const PROBLEM_SETS = [
         era: "1971年",
         title: "Kunen の非存在定理",
         statement: "選択公理の下では、宇宙 V から V 自身への非自明な初等埋め込み j: V -> V は存在しない。",
-        explanation: "Reinhardt 基数型の極端な大きな基数仮説を ZFC で排除し、大きな基数階層の上限を鋭くしました。",
+        explanation: "Reinhardt 基数型の極端な巨大基数仮説を ZFC で排除し、巨大基数階層の上限を鋭くしました。",
       },
       {
         id: "jensen-covering",
@@ -348,15 +348,15 @@ const PROBLEM_SETS = [
         era: "1974年",
         title: "Jensen の covering theorem",
         statement: "0# が存在しなければ、任意の非可算な順序数集合は同じ濃度の構成可能集合で被覆される。",
-        explanation: "V と L の距離を大きな基数の不在から測る細構造理論の核心的結果です。",
+        explanation: "V と L の距離を巨大基数の不在から測る細構造理論の核心的結果です。",
       },
       {
-        id: "magidor-strong-compact",
-        year: 1976,
-        era: "1976年",
-        title: "最初の強コンパクト基数の相対的一貫性現象",
-        statement: "大きな基数仮定の下で、最初の強コンパクト基数の位置は最初の可測基数や最初の超コンパクト基数と一致し得る。",
-        explanation: "Magidor の結果は、強コンパクト性と超コンパクト性の関係が単純な絶対的順序ではないことを示しました。",
+        id: "magidor-sch-aleph-omega",
+        year: 1977,
+        era: "1977年",
+        title: "Magidor による ℵω での SCH 破れの無矛盾性",
+        statement: "巨大基数仮定の下で、ℵω が強極限特異基数でありながら特異基数仮説を満たさないモデルを構成できる。",
+        explanation: "Magidor の構成は、Silver の制限定理の先で、最初の可算共終数の特異基数における基数算術が巨大基数と強制法で大きく変わり得ることを示しました。",
       },
       {
         id: "laver-borel-conjecture-consistency",
@@ -372,7 +372,7 @@ const PROBLEM_SETS = [
         era: "1978年",
         title: "Laver の超コンパクト性の indestructibility",
         statement: "超コンパクト基数は準備強制により、以後の <kappa-directed closed forcing で破壊されないようにできる。",
-        explanation: "Laver preparation は、強制法と大きな基数を同時に扱う現代集合論の基本技術です。",
+        explanation: "Laver preparation は、強制法と巨大基数を同時に扱う現代集合論の基本技術です。",
       },
       {
         id: "dodd-jensen-core-model",
@@ -380,7 +380,7 @@ const PROBLEM_SETS = [
         era: "1982年",
         title: "Dodd-Jensen の core model K",
         statement: "可測基数の内的モデルがない状況で、L を拡張する fine structural core model が covering 性質を満たす。",
-        explanation: "Core model 理論は、内的モデルによって大きな基数の不在を精密に解析する標準的枠組みになりました。",
+        explanation: "Core model 理論は、内的モデルによって巨大基数の不在を精密に解析する標準的枠組みになりました。",
       },
       {
         id: "baumgartner-pfa",
@@ -751,11 +751,11 @@ const THEOREM_TRANSLATIONS = {
       statement: "If 0# does not exist, every uncountable set of ordinals is covered by a constructible set of the same cardinality.",
       explanation: "This core fine-structure result measures the distance between V and L from the absence of large cardinals.",
     },
-    "magidor-strong-compact": {
-      era: "1976",
-      title: "Relative consistency phenomena for the first strongly compact cardinal",
-      statement: "Under large cardinal assumptions, the first strongly compact cardinal can coincide with the first measurable or the first supercompact.",
-      explanation: "Magidor's result showed that strong compactness and supercompactness do not have a simple absolute ordering.",
+    "magidor-sch-aleph-omega": {
+      era: "1977",
+      title: "Magidor's consistency result for the failure of SCH at aleph_omega",
+      statement: "From large cardinal assumptions, one can construct a model where aleph_omega is a strong limit singular cardinal but fails the singular cardinal hypothesis.",
+      explanation: "Magidor's construction showed that beyond Silver's restriction theorem, cardinal arithmetic at the first singular of countable cofinality can be substantially changed by large cardinals and forcing.",
     },
     "laver-borel-conjecture-consistency": {
       era: "1976",
