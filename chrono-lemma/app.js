@@ -421,6 +421,37 @@ const PROBLEM_SETS = [
 const DEFAULT_PROBLEM_SET_ID = "math-logic";
 const DEFAULT_LANGUAGE = "ja";
 
+const FALSE_PROPOSITIONS = {
+  "math-logic": {
+    id: "false-math-logic-finite-model-compactness",
+    isFalse: true,
+    title: "有限モデルコンパクト性定理",
+    statement: "一階理論のすべての有限部分が有限モデルを持つなら、その理論全体も有限モデルを持つ。",
+    explanation: "一階論理のコンパクト性はモデルの存在を保証しますが、有限モデルであることは保存しません。任意に大きな有限モデルを要求する理論は反例になります。",
+  },
+  "general-math": {
+    id: "false-general-math-continuous-finitely-nondifferentiable",
+    isFalse: true,
+    title: "連続関数は高々有限個の点を除いて微分可能である",
+    statement: "グラフが途切れずにつながっていれば、尖った点や折れ曲がりは有限個しか現れない。",
+    explanation: "連続だが無限個の点で微分不能な関数や、至るところ微分不能な連続関数が存在します。",
+  },
+  "axiomatic-set-theory": {
+    id: "false-set-theory-countably-complete-ultrafilter-omega",
+    isFalse: true,
+    title: "ω 上には可算完備な非主超フィルターが存在する",
+    statement: "自然数全体の上でも、可算個の交わりに閉じた非自明な超フィルターを取ることができる。",
+    explanation: "ω 上の可算完備な超フィルターは主超フィルターになります。非主なものは存在しません。",
+  },
+  "axiomatic-set-theory-extreme": {
+    id: "false-set-theory-absolute-suslin-hypothesis",
+    isFalse: true,
+    title: "絶対 Suslin 仮説定理",
+    statement: "ZFC では、可算鎖条件を満たす完備稠密線型順序はすべて可分である。",
+    explanation: "これは Suslin 仮説を ZFC の定理として主張していますが、Suslin 仮説は ZFC から独立です。",
+  },
+};
+
 const UI_TEXT = {
   ja: {
     appStatusLabel: "ゲーム状況",
@@ -429,6 +460,7 @@ const UI_TEXT = {
     tagline: "定理や発見を、成立した時代順に並べる。",
     languageLegend: "言語",
     problemSetLegend: "問題セット",
+    falseModeLabel: "偽な命題が混ざるモード",
     start: "開始",
     roundLabel: "ラウンド",
     scoreLabel: "正解",
@@ -443,8 +475,15 @@ const UI_TEXT = {
     incorrect: "不正解",
     correctCopy: "カードをタイムラインに追加しました。年代と解説は最後にまとめて表示します。",
     incorrectCopy: (position) => `正しい位置は${position}番目です。年代と解説は最後にまとめて表示します。`,
+    falseCorrectCopy: "偽な命題として宣言しました。解説は最後にまとめて表示します。",
+    falseIncorrectCopy: "この命題は偽でした。「偽である」に入れる必要があります。",
+    falseDeclarationIncorrectCopy: (position) =>
+      `この命題は真です。タイムライン上の正しい位置は${position}番目です。`,
     next: "次へ",
     showResults: "結果を見る",
+    declareFalse: "偽である",
+    declaredFalseTitle: "偽と宣言した命題",
+    declaredFalseEmpty: "偽な命題をここに入れる",
     insertFirst: (position) => `${position}番目に挿入: 最初`,
     insertLast: (position) => `${position}番目に挿入: 最後`,
     insert: (position) => `${position}番目に挿入`,
@@ -458,6 +497,7 @@ const UI_TEXT = {
     tagline: "Place theorems and discoveries in the order they appeared.",
     languageLegend: "Language",
     problemSetLegend: "Problem set",
+    falseModeLabel: "Mix in one false proposition",
     start: "Start",
     roundLabel: "round",
     scoreLabel: "correct",
@@ -473,8 +513,15 @@ const UI_TEXT = {
     correctCopy: "The card was added to the timeline. Dates and explanations appear in the final view.",
     incorrectCopy: (position) =>
       `The correct position was ${position}. Dates and explanations appear in the final view.`,
+    falseCorrectCopy: "Declared as false. The explanation appears in the final view.",
+    falseIncorrectCopy: "This proposition was false. It belongs in the false declaration box.",
+    falseDeclarationIncorrectCopy: (position) =>
+      `This proposition is true. Its correct timeline position was ${position}.`,
     next: "Next",
     showResults: "See results",
+    declareFalse: "False",
+    declaredFalseTitle: "Propositions declared false",
+    declaredFalseEmpty: "Drop false propositions here",
     insertFirst: (position) => `Insert at position ${position}: first`,
     insertLast: (position) => `Insert at position ${position}: last`,
     insert: (position) => `Insert at position ${position}`,
@@ -752,19 +799,42 @@ const THEOREM_TRANSLATIONS = {
       statement: "Under AD in L(R), Pmax extensions formulate axiom (*), a strong structural theory of H(omega_2).",
       explanation: "The Pmax program is Woodin's central framework connecting determinacy, forcing axioms, and the continuum problem.",
     },
+    "false-math-logic-finite-model-compactness": {
+      title: "Finite model compactness theorem",
+      statement: "If every finite subset of a first-order theory has a finite model, then the whole theory has a finite model.",
+      explanation: "First-order compactness preserves the existence of a model, but not the existence of a finite model. Theories requiring arbitrarily large finite models give counterexamples.",
+    },
+    "false-general-math-continuous-finitely-nondifferentiable": {
+      title: "A continuous function is differentiable except at finitely many points",
+      statement: "If a graph has no breaks, then it can only have finitely many corners or bends.",
+      explanation: "There are continuous functions that fail to be differentiable at infinitely many points, and even everywhere.",
+    },
+    "false-set-theory-countably-complete-ultrafilter-omega": {
+      title: "There is a countably complete nonprincipal ultrafilter on omega",
+      statement: "Even on the natural numbers, one can take a nontrivial ultrafilter closed under countable intersections.",
+      explanation: "Every countably complete ultrafilter on omega is principal. A nonprincipal one cannot exist.",
+    },
+    "false-set-theory-absolute-suslin-hypothesis": {
+      title: "Absolute Suslin hypothesis theorem",
+      statement: "ZFC proves that every complete dense linear order with the countable chain condition is separable.",
+      explanation: "This asserts Suslin's hypothesis as a theorem of ZFC, but Suslin's hypothesis is independent of ZFC.",
+    },
   },
 };
 
 const state = {
   language: DEFAULT_LANGUAGE,
   problemSetId: DEFAULT_PROBLEM_SET_ID,
+  falseMode: false,
   hasStarted: false,
   timeline: [],
+  falseDeclarations: [],
   deck: [],
   current: null,
   locked: false,
   round: 1,
   score: 0,
+  totalRounds: 0,
   lastResult: null,
 };
 
@@ -773,6 +843,7 @@ const challengePanelEl = document.querySelector("#challenge-panel");
 const timelinePanelEl = document.querySelector("#timeline-panel");
 const languageOptionsEl = document.querySelector(".language-options");
 const problemSetOptionsEl = document.querySelector("#problem-set-options");
+const falseModeCheckboxEl = document.querySelector("#false-mode-checkbox");
 const startButtonEl = document.querySelector("#start-button");
 const statsEl = document.querySelector("#stats");
 const roundEl = document.querySelector("#round");
@@ -788,6 +859,9 @@ const resultCopyEl = document.querySelector("#result-copy");
 const nextButtonEl = document.querySelector("#next-button");
 const restartButtonEl = document.querySelector("#restart-button");
 const shareButtonEl = document.querySelector("#share-button");
+const falseZoneEl = document.querySelector("#false-zone");
+const falseDropButtonEl = document.querySelector("#false-drop-button");
+const falseListEl = document.querySelector("#false-list");
 const confettiLayerEl = document.querySelector("#confetti-layer");
 
 function t(key, ...args) {
@@ -811,6 +885,7 @@ function applyStaticText() {
   document.querySelector(".topbar").setAttribute("aria-label", t("appStatusLabel"));
   challengePanelEl.setAttribute("aria-label", t("cardLabel"));
   timelinePanelEl.setAttribute("aria-label", t("timelineLabel"));
+  falseZoneEl.setAttribute("aria-label", t("declareFalse"));
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     element.textContent = t(element.dataset.i18n);
   });
@@ -858,22 +933,29 @@ function selectProblemSetRadio(problemSetId) {
 
 function showStartScreen(problemSetId = state.problemSetId) {
   state.problemSetId = problemSetId;
+  state.falseMode = falseModeCheckboxEl.checked;
   state.hasStarted = false;
   state.timeline = [];
+  state.falseDeclarations = [];
   state.deck = [];
   state.current = null;
   state.locked = false;
   state.round = 1;
   state.score = 0;
+  state.totalRounds = 0;
   state.lastResult = null;
 
   selectProblemSetRadio(state.problemSetId);
+  falseModeCheckboxEl.checked = state.falseMode;
+  falseModeCheckboxEl.disabled = false;
   challengePanelEl.hidden = true;
   timelinePanelEl.hidden = true;
   statsEl.hidden = true;
   startButtonEl.hidden = false;
   shareButtonEl.hidden = true;
   resultPanelEl.hidden = true;
+  falseZoneEl.hidden = true;
+  falseListEl.replaceChildren();
   timelineEl.replaceChildren();
   roundEl.textContent = "-";
   scoreEl.textContent = "0";
@@ -884,18 +966,28 @@ function startGame(problemSetId = state.problemSetId) {
   const byId = createTheoremMap(problemSet);
 
   state.problemSetId = problemSet.id;
+  state.falseMode = falseModeCheckboxEl.checked;
   state.hasStarted = true;
   selectProblemSetRadio(problemSet.id);
   state.timeline = problemSet.initialIds.map((id) => byId.get(id)).filter(Boolean).sort(compareByYear);
+  state.falseDeclarations = [];
   state.deck = problemSet.roundIds.map((id) => byId.get(id)).filter(Boolean);
+  if (state.falseMode) {
+    const falseProposition = getFalseProposition(problemSet.id);
+    if (falseProposition) {
+      insertAtRandomPosition(state.deck, falseProposition);
+    }
+  }
   state.current = null;
   state.locked = false;
   state.round = 1;
   state.score = 0;
+  state.totalRounds = state.deck.length;
   state.lastResult = null;
   challengePanelEl.hidden = false;
   timelinePanelEl.hidden = false;
   statsEl.hidden = false;
+  falseModeCheckboxEl.disabled = true;
   startButtonEl.hidden = true;
   shareButtonEl.hidden = true;
   resultPanelEl.hidden = true;
@@ -908,6 +1000,16 @@ function getProblemSet(problemSetId) {
 
 function createTheoremMap(problemSet) {
   return new Map(problemSet.theorems.map((theorem) => [theorem.id, theorem]));
+}
+
+function getFalseProposition(problemSetId) {
+  const proposition = FALSE_PROPOSITIONS[problemSetId];
+  return proposition ? { ...proposition } : null;
+}
+
+function insertAtRandomPosition(items, item) {
+  const index = Math.floor(Math.random() * (items.length + 1));
+  items.splice(index, 0, item);
 }
 
 function drawNextCard() {
@@ -934,6 +1036,15 @@ function normalizedIndex(index) {
 function attemptInsert(index) {
   if (state.locked || !state.current) return;
 
+  if (state.current.isFalse) {
+    state.locked = true;
+    state.falseDeclarations.push(state.current);
+    playResultSound(false);
+    showResult(false, { kind: "false-target" });
+    render();
+    return;
+  }
+
   const correctIndex = normalizedIndex(index);
   const isCorrect = index === correctIndex;
   state.locked = true;
@@ -945,6 +1056,27 @@ function attemptInsert(index) {
 
   playResultSound(isCorrect);
   showResult(isCorrect, correctIndex);
+  render();
+}
+
+function attemptFalseDeclaration() {
+  if (state.locked || !state.current) return;
+
+  if (state.current.isFalse) {
+    state.locked = true;
+    state.falseDeclarations.push(state.current);
+    state.score += 1;
+    playResultSound(true);
+    showResult(true, { kind: "false-target" });
+    render();
+    return;
+  }
+
+  const correctIndex = normalizedIndex();
+  state.locked = true;
+  state.timeline.splice(correctIndex, 0, state.current);
+  playResultSound(false);
+  showResult(false, { kind: "timeline", correctIndex, declaredFalse: true });
   render();
 }
 
@@ -1035,15 +1167,25 @@ function launchConfetti() {
   window.setTimeout(() => confettiLayerEl.replaceChildren(), 2600);
 }
 
-function showResult(isCorrect, correctIndex) {
-  state.lastResult = { isCorrect, correctIndex };
+function showResult(isCorrect, resultDetail) {
+  const detail =
+    typeof resultDetail === "number"
+      ? { kind: "timeline", correctIndex: resultDetail }
+      : resultDetail;
+  state.lastResult = { isCorrect, detail };
   resultPanelEl.hidden = false;
   resultPanelEl.classList.toggle("error", !isCorrect);
   resultIconEl.textContent = isCorrect ? "⭕️" : "✕";
   resultLabelEl.textContent = isCorrect ? t("correct") : t("incorrect");
-  resultCopyEl.textContent = isCorrect
-    ? t("correctCopy")
-    : t("incorrectCopy", correctIndex + 1);
+  if (detail?.kind === "false-target") {
+    resultCopyEl.textContent = isCorrect ? t("falseCorrectCopy") : t("falseIncorrectCopy");
+  } else if (detail?.declaredFalse) {
+    resultCopyEl.textContent = t("falseDeclarationIncorrectCopy", detail.correctIndex + 1);
+  } else {
+    resultCopyEl.textContent = isCorrect
+      ? t("correctCopy")
+      : t("incorrectCopy", detail.correctIndex + 1);
+  }
   nextButtonEl.textContent = state.deck.length > 0 ? t("next") : t("showResults");
 }
 
@@ -1061,17 +1203,16 @@ function render() {
     challengePanelEl.draggable = !state.locked;
     challengePanelEl.classList.toggle("draggable-card", !state.locked);
   } else {
-    const problemSet = getProblemSet(state.problemSetId);
-    const total = problemSet.roundIds.length;
     candidateEraEl.textContent = t("completeEra");
     candidateTitleEl.textContent = t("completeTitle");
-    candidateStatementEl.textContent = t("completeStatement", state.score, total);
+    candidateStatementEl.textContent = t("completeStatement", state.score, state.totalRounds);
     remainingCountEl.textContent = "";
     challengePanelEl.draggable = false;
     challengePanelEl.classList.remove("draggable-card");
     shareButtonEl.hidden = false;
   }
 
+  renderFalseZone(isComplete);
   timelineEl.replaceChildren();
 
   const slotCount = isComplete ? state.timeline.length : state.timeline.length + 1;
@@ -1102,6 +1243,33 @@ function render() {
   }
 }
 
+function renderFalseZone(isComplete) {
+  falseZoneEl.hidden = !state.falseMode;
+  if (!state.falseMode) return;
+
+  falseDropButtonEl.disabled = isComplete || state.locked || !state.current;
+  falseDropButtonEl.classList.toggle("correct-position", state.locked && state.current?.isFalse);
+  falseDropButtonEl.textContent = t("declareFalse");
+  falseDropButtonEl.setAttribute("aria-label", t("declareFalse"));
+  falseListEl.replaceChildren();
+
+  if (state.falseDeclarations.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "false-empty";
+    empty.textContent = t("declaredFalseEmpty");
+    falseListEl.append(empty);
+    return;
+  }
+
+  const heading = document.createElement("h3");
+  heading.textContent = t("declaredFalseTitle");
+  falseListEl.append(heading);
+
+  state.falseDeclarations.forEach((theorem) => {
+    falseListEl.append(createCard(theorem, isComplete));
+  });
+}
+
 function handleCandidateDragStart(event) {
   if (state.locked || !state.current) {
     event.preventDefault();
@@ -1114,7 +1282,7 @@ function handleCandidateDragStart(event) {
 
 function handleCandidateDragEnd() {
   challengePanelEl.classList.remove("is-dragging");
-  document.querySelectorAll(".insert-button.drag-over").forEach((button) => {
+  document.querySelectorAll(".insert-button.drag-over, .false-drop-button.drag-over").forEach((button) => {
     button.classList.remove("drag-over");
   });
 }
@@ -1135,6 +1303,20 @@ function handleInsertDrop(event, index) {
   event.currentTarget.classList.remove("drag-over");
   if (state.locked || !state.current) return;
   attemptInsert(index);
+}
+
+function handleFalseDragOver(event) {
+  if (state.locked || !state.current) return;
+  event.preventDefault();
+  event.currentTarget.classList.add("drag-over");
+  event.dataTransfer.dropEffect = "move";
+}
+
+function handleFalseDrop(event) {
+  event.preventDefault();
+  event.currentTarget.classList.remove("drag-over");
+  if (state.locked || !state.current) return;
+  attemptFalseDeclaration();
 }
 
 function insertLabel(index) {
@@ -1176,7 +1358,7 @@ function createCard(theorem, showDetails) {
   if (showDetails) {
     const year = document.createElement("div");
     year.className = "card-year";
-    year.textContent = localizedTheorem.era;
+    year.textContent = theorem.isFalse ? t("declareFalse") : localizedTheorem.era;
     card.append(year);
   }
 
@@ -1185,7 +1367,7 @@ function createCard(theorem, showDetails) {
 
 nextButtonEl.addEventListener("click", () => {
   if (state.deck.length === 0) {
-    const isPerfect = state.score === getProblemSet(state.problemSetId).roundIds.length;
+    const isPerfect = state.score === state.totalRounds;
     state.current = null;
     state.locked = true;
     resultPanelEl.hidden = true;
@@ -1204,7 +1386,7 @@ nextButtonEl.addEventListener("click", () => {
 
 shareButtonEl.addEventListener("click", () => {
   const problemSet = getProblemSet(state.problemSetId);
-  const total = problemSet.roundIds.length;
+  const total = state.totalRounds || problemSet.roundIds.length;
   const text = t("shareText", localizeProblemSetTitle(problemSet), state.score, total, window.location.href);
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   window.open(url, "_blank", "noopener,noreferrer");
@@ -1212,6 +1394,10 @@ shareButtonEl.addEventListener("click", () => {
 
 challengePanelEl.addEventListener("dragstart", handleCandidateDragStart);
 challengePanelEl.addEventListener("dragend", handleCandidateDragEnd);
+falseDropButtonEl.addEventListener("click", attemptFalseDeclaration);
+falseDropButtonEl.addEventListener("dragover", handleFalseDragOver);
+falseDropButtonEl.addEventListener("dragleave", handleInsertDragLeave);
+falseDropButtonEl.addEventListener("drop", handleFalseDrop);
 restartButtonEl.addEventListener("click", () => startGame());
 startButtonEl.addEventListener("click", () => startGame(getSelectedProblemSetId()));
 problemSetOptionsEl.addEventListener("change", (event) => {
@@ -1229,7 +1415,7 @@ languageOptionsEl.addEventListener("change", (event) => {
       render();
     }
     if (!resultPanelEl.hidden && state.lastResult) {
-      showResult(state.lastResult.isCorrect, state.lastResult.correctIndex);
+      showResult(state.lastResult.isCorrect, state.lastResult.detail);
     }
   }
 });

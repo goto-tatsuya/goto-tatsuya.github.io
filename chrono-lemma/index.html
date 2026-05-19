@@ -31,6 +31,10 @@
             <legend data-i18n="problemSetLegend">問題セット</legend>
             <div id="problem-set-options" class="set-options"></div>
           </fieldset>
+          <label class="mode-option">
+            <input id="false-mode-checkbox" type="checkbox" />
+            <span data-i18n="falseModeLabel">偽な命題が混ざるモード</span>
+          </label>
           <button id="start-button" type="button" data-i18n="start">開始</button>
           <div id="stats" class="stats" aria-live="polite" hidden>
             <span><strong id="round">1</strong> <span data-i18n="roundLabel">ラウンド</span></span>
@@ -54,6 +58,10 @@
           <button id="restart-button" type="button" data-i18n="restart">最初から</button>
         </div>
         <button id="share-button" class="share-button" type="button" hidden data-i18n="share">Xに投稿する</button>
+        <section id="false-zone" class="false-zone" aria-label="偽である" hidden>
+          <button id="false-drop-button" class="false-drop-button" type="button" data-i18n="declareFalse">偽である</button>
+          <div id="false-list" class="false-list"></div>
+        </section>
         <ol id="timeline" class="timeline"></ol>
       </section>
 
@@ -65,6 +73,6 @@
     </main>
     <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
 
-    <script src="app.js?3"></script>
+    <script src="app.js?4"></script>
   </body>
 </html>
