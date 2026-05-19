@@ -487,8 +487,10 @@ const UI_TEXT = {
     insertFirst: (position) => `${position}番目に挿入: 最初`,
     insertLast: (position) => `${position}番目に挿入: 最後`,
     insert: (position) => `${position}番目に挿入`,
-    shareText: (setTitle, score, total, url) =>
-      `Chrono Lemma「${setTitle}」で${total}問中${score}問正解しました。\n${url}`,
+    shareText: (setTitle, score, total, isFalseMode, url) => {
+      const modeLabel = isFalseMode ? "（偽な命題が混ざるモード）" : "";
+      return `Chrono Lemma「${setTitle}」${modeLabel}で${total}問中${score}問正解しました。\n${url}`;
+    },
   },
   en: {
     appStatusLabel: "Game status",
@@ -525,8 +527,10 @@ const UI_TEXT = {
     insertFirst: (position) => `Insert at position ${position}: first`,
     insertLast: (position) => `Insert at position ${position}: last`,
     insert: (position) => `Insert at position ${position}`,
-    shareText: (setTitle, score, total, url) =>
-      `I got ${score} of ${total} correct in Chrono Lemma: ${setTitle}.\n${url}`,
+    shareText: (setTitle, score, total, isFalseMode, url) => {
+      const modeLabel = isFalseMode ? " with one false proposition mixed in" : "";
+      return `I got ${score} of ${total} correct in Chrono Lemma${modeLabel}: ${setTitle}.\n${url}`;
+    },
   },
 };
 
@@ -1387,7 +1391,7 @@ nextButtonEl.addEventListener("click", () => {
 shareButtonEl.addEventListener("click", () => {
   const problemSet = getProblemSet(state.problemSetId);
   const total = state.totalRounds || problemSet.roundIds.length;
-  const text = t("shareText", localizeProblemSetTitle(problemSet), state.score, total, window.location.href);
+  const text = t("shareText", localizeProblemSetTitle(problemSet), state.score, total, state.falseMode, window.location.href);
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   window.open(url, "_blank", "noopener,noreferrer");
 });
