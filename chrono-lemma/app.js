@@ -419,8 +419,344 @@ const PROBLEM_SETS = [
 ];
 
 const DEFAULT_PROBLEM_SET_ID = "math-logic";
+const DEFAULT_LANGUAGE = "ja";
+
+const UI_TEXT = {
+  ja: {
+    appStatusLabel: "ゲーム状況",
+    cardLabel: "今回のカード",
+    timelineLabel: "タイムライン",
+    tagline: "定理や発見を、成立した時代順に並べる。",
+    languageLegend: "言語",
+    problemSetLegend: "問題セット",
+    start: "開始",
+    roundLabel: "ラウンド",
+    scoreLabel: "正解",
+    restart: "最初から",
+    share: "Xに投稿する",
+    eraHidden: "年代は最後に表示",
+    completeEra: "完了",
+    completeTitle: "すべてのカードを並べました",
+    completeStatement: (score, total) => `${total}問中${score}問正解しました。`,
+    remaining: (count) => `残り ${count} 枚`,
+    correct: "正解",
+    incorrect: "不正解",
+    correctCopy: "カードをタイムラインに追加しました。年代と解説は最後にまとめて表示します。",
+    incorrectCopy: (position) => `正しい位置は${position}番目です。年代と解説は最後にまとめて表示します。`,
+    next: "次へ",
+    showResults: "結果を見る",
+    insertFirst: (position) => `${position}番目に挿入: 最初`,
+    insertLast: (position) => `${position}番目に挿入: 最後`,
+    insert: (position) => `${position}番目に挿入`,
+    shareText: (setTitle, score, total, url) =>
+      `Chrono Lemma「${setTitle}」で${total}問中${score}問正解しました。\n${url}`,
+  },
+  en: {
+    appStatusLabel: "Game status",
+    cardLabel: "Current card",
+    timelineLabel: "Timeline",
+    tagline: "Place theorems and discoveries in the order they appeared.",
+    languageLegend: "Language",
+    problemSetLegend: "Problem set",
+    start: "Start",
+    roundLabel: "round",
+    scoreLabel: "correct",
+    restart: "Restart",
+    share: "Post to X",
+    eraHidden: "Era shown at the end",
+    completeEra: "Complete",
+    completeTitle: "All cards have been placed",
+    completeStatement: (score, total) => `You got ${score} of ${total} correct.`,
+    remaining: (count) => `${count} card${count === 1 ? "" : "s"} left`,
+    correct: "Correct",
+    incorrect: "Incorrect",
+    correctCopy: "The card was added to the timeline. Dates and explanations appear in the final view.",
+    incorrectCopy: (position) =>
+      `The correct position was ${position}. Dates and explanations appear in the final view.`,
+    next: "Next",
+    showResults: "See results",
+    insertFirst: (position) => `Insert at position ${position}: first`,
+    insertLast: (position) => `Insert at position ${position}: last`,
+    insert: (position) => `Insert at position ${position}`,
+    shareText: (setTitle, score, total, url) =>
+      `I got ${score} of ${total} correct in Chrono Lemma: ${setTitle}.\n${url}`,
+  },
+};
+
+const SET_TRANSLATIONS = {
+  en: {
+    "math-logic": "Mathematics and Logic",
+    "general-math": "General Mathematics",
+    "axiomatic-set-theory": "Axiomatic Set Theory",
+    "axiomatic-set-theory-extreme": "Axiomatic Set Theory: Extreme",
+  },
+};
+
+const THEOREM_TRANSLATIONS = {
+  en: {
+    "euclid-primes": {
+      era: "around 300 BCE",
+      title: "There are infinitely many prime numbers",
+      statement: "Given any finite list of primes, one can construct a number not divisible by any of them.",
+      explanation: "This classical proof from Euclid's Elements is one of the earliest major theorems in number theory.",
+    },
+    pythagoras: {
+      era: "around 500 BCE",
+      title: "In a right triangle, the square of the hypotenuse equals the sum of the squares of the other sides",
+      statement: "The Pythagorean theorem in Euclidean geometry.",
+      explanation: "Known since antiquity and systematized in Greek mathematics, it is a basic theorem of geometry.",
+    },
+    "fermat-little": {
+      era: "1640",
+      title: "Fermat's little theorem",
+      statement: "If p is prime and a is not divisible by p, then a to the p - 1 power is congruent to 1.",
+      explanation: "A fundamental congruence theorem that supported the development of modern number theory.",
+    },
+    "euler-polyhedra": {
+      era: "1758",
+      title: "For convex polyhedra, V - E + F = 2",
+      statement: "Euler's polyhedron formula relating the numbers of vertices, edges, and faces.",
+      explanation: "A representative combinatorial invariant that helped move mathematical thinking from geometry toward topology.",
+    },
+    "cantor-uncountable": {
+      era: "1874",
+      title: "The set of real numbers has greater cardinality than the set of natural numbers",
+      statement: "The real numbers cannot be exhausted by a countable sequence; infinities can have different sizes.",
+      explanation: "Cantor's result created set theory and gave mathematics tools for comparing infinities.",
+    },
+    "goedel-completeness": {
+      era: "1929",
+      title: "Every consistent first-order theory has a model",
+      statement: "Godel's completeness theorem for first-order logic: semantic consequence matches provability.",
+      explanation: "Godel's completeness theorem is a central result in logic and a starting point for model theory.",
+    },
+    incompleteness: {
+      era: "1931",
+      title: "Every sufficiently strong formal system has true but unprovable statements",
+      statement: "Godel's first incompleteness theorem.",
+      explanation: "It revealed limits of consistent systems containing arithmetic and reshaped twentieth-century foundations.",
+    },
+    "church-turing": {
+      era: "1936",
+      title: "There is no general algorithm for the halting problem",
+      statement: "No procedure can always decide whether an arbitrary program will halt.",
+      explanation: "The work of Church and Turing underlies computability theory and computer science.",
+    },
+    "four-color": {
+      era: "1976",
+      title: "Planar maps can be colored with four colors",
+      statement: "Four colors suffice so that adjacent regions never share the same color.",
+      explanation: "The four color theorem was an early, prominent example of a computer-assisted proof.",
+    },
+    "fermat-last": {
+      era: "1994",
+      title: "For n at least 3, x^n + y^n = z^n has no positive integer solutions",
+      statement: "Fermat's last theorem.",
+      explanation: "Wiles's proof is deeply connected with elliptic curves and modular forms.",
+    },
+    "pythagorean-general": {
+      era: "around 500 BCE",
+      title: "A right triangle satisfies a^2 + b^2 = c^2",
+      statement: "If c is the hypotenuse and a, b are the other sides, then a^2 + b^2 = c^2.",
+      explanation: "The Pythagorean theorem is one of the best-known results linking geometry and formulas directly.",
+    },
+    "euclid-primes-general": {
+      era: "around 300 BCE",
+      title: "There are infinitely many prime numbers",
+      statement: "No matter how many primes you collect, they cannot exhaust all primes.",
+      explanation: "Euclid's short classical proof is also a famous example of proof by contradiction.",
+    },
+    "quadratic-formula-general": {
+      era: "around 628",
+      title: "Quadratic equations have a formula for their solutions",
+      statement: "The solutions of ax^2 + bx + c = 0 can be expressed from a, b, and c using square roots.",
+      explanation: "General methods for quadratics developed from antiquity and were treated systematically by Brahmagupta and others.",
+    },
+    "fermat-little-general": {
+      era: "1640",
+      title: "Fermat's little theorem",
+      statement: "If p is prime and a is not divisible by p, then a^(p-1) leaves remainder 1 when divided by p.",
+      explanation: "This basic result of elementary number theory connects primes with modular arithmetic and later cryptography.",
+    },
+    "fundamental-theorem-calculus-general": {
+      era: "around 1668",
+      title: "Differentiation and integration are inverse operations",
+      statement: "Differentiation measures rate of change, while integration accumulates area; fundamentally they run in opposite directions.",
+      explanation: "The fundamental theorem of calculus is a central idea supporting analysis after Newton and Leibniz.",
+    },
+    "euler-formula-general": {
+      era: "1748",
+      title: "e^(iπ) + 1 = 0",
+      statement: "An identity arising from Euler's formula, connecting exponentials, trigonometric functions, and complex numbers.",
+      explanation: "It is famous because the constants e, i, π, 1, and 0 appear in one compact equation.",
+    },
+    "bayes-theorem-general": {
+      era: "1763",
+      title: "Conditional probabilities can be updated with Bayes' theorem",
+      statement: "Observed evidence can be used to recompute the probability of a hypothesis.",
+      explanation: "Bayes' theorem is a basic probability formula used widely in statistics, machine learning, and decision-making.",
+    },
+    "fundamental-theorem-algebra-general": {
+      era: "1799",
+      title: "Over the complex numbers, every polynomial equation has a root",
+      statement: "Every nonconstant polynomial with complex coefficients has at least one complex solution.",
+      explanation: "The fundamental theorem of algebra shows that the complex numbers are closed under polynomial equations.",
+    },
+    "cantor-uncountable-general": {
+      era: "1874",
+      title: "There are more real numbers than natural numbers",
+      statement: "No listing of natural numbers can count through all real numbers.",
+      explanation: "Cantor's result made clear that infinities can have different sizes.",
+    },
+    "noether-theorem-general": {
+      era: "1918",
+      title: "Conservation laws arise from symmetries",
+      statement: "Every continuous symmetry of physical laws has a corresponding conserved quantity.",
+      explanation: "Noether's theorem deeply links mathematics and physics, explaining conservation of energy and momentum.",
+    },
+    "four-color-general": {
+      era: "1976",
+      title: "Planar maps can be colored with four colors",
+      statement: "Any planar map can be colored with four colors so adjacent regions never share a color.",
+      explanation: "The four color theorem has a simple statement but became famous for its use of computer-assisted proof.",
+    },
+    "godel-constructible-gch": {
+      era: "1940",
+      title: "AC and GCH hold in the constructible universe L",
+      statement: "L is an inner model of ZF in which the axiom of choice and the generalized continuum hypothesis hold.",
+      explanation: "Godel's constructible universe gave a standard inner model showing that CH and GCH cannot be refuted from ZF.",
+    },
+    "scott-measurable-not-l": {
+      era: "1961",
+      title: "If a measurable cardinal exists, then V is not L",
+      statement: "The existence of a measurable cardinal is incompatible with the axiom of constructibility.",
+      explanation: "Scott's theorem was an early important result showing that large cardinals exceed the minimal fine structure of L.",
+    },
+    "cohen-ch-independence": {
+      era: "1963",
+      title: "The continuum hypothesis is independent of ZFC",
+      statement: "Forcing can realize both CH and its negation within relative consistency over ZFC.",
+      explanation: "Cohen's forcing became the standard technique for independence proofs and transformed set-theoretic method.",
+    },
+    "solovay-measurable-reals": {
+      era: "1970",
+      title: "There is a ZF + DC model where every set of reals is Lebesgue measurable",
+      statement: "Assuming an inaccessible cardinal, one can build a model of ZF + DC in which all sets of reals are measurable.",
+      explanation: "The Solovay model clarified the tension between choice and regularity properties in real analysis.",
+    },
+    "jensen-diamond": {
+      era: "1972",
+      title: "The diamond principle holds in L",
+      statement: "In the constructible universe, diamond on omega_1 predicts subsets of omega_1 stationarily often.",
+      explanation: "Jensen's fine structure yields diamond, a key combinatorial principle for Suslin trees and many constructions.",
+    },
+    "silver-singular-cardinal": {
+      era: "1974",
+      title: "Silver's singular cardinal theorem",
+      statement: "GCH cannot first fail at a singular cardinal of uncountable cofinality.",
+      explanation: "This result advanced the singular cardinal problem and led toward later pcf theory.",
+    },
+    "martin-borel-determinacy": {
+      era: "1975",
+      title: "Every Borel game is determined",
+      statement: "For infinite perfect-information games with a Borel winning set, one of the players has a winning strategy.",
+      explanation: "Martin's Borel determinacy is a theorem of ZFC at the boundary of descriptive set theory and axiomatic set theory.",
+    },
+    "shelah-proper-forcing": {
+      era: "1982",
+      title: "Countable support iterations preserve proper forcing",
+      statement: "Countable support iterations of proper forcing are proper and preserve omega_1.",
+      explanation: "Shelah's proper forcing theory became a foundation for forcing axioms such as PFA.",
+    },
+    "martins-maximum": {
+      era: "1988",
+      title: "Martin's Maximum is relatively consistent",
+      statement: "Assuming sufficiently strong large cardinals, one can build models of MM, a maximal forcing axiom for stationary-set-preserving forcing.",
+      explanation: "The MM of Foreman, Magidor, and Shelah extends PFA and has many structural consequences.",
+    },
+    "martin-steel-projective-determinacy": {
+      era: "1989",
+      title: "Projective determinacy follows from sufficiently many Woodin cardinals",
+      statement: "A sequence of Woodin cardinals with a measurable cardinal above implies determinacy for all projective sets.",
+      explanation: "The Martin-Steel theorem is central in linking large cardinals with regularity properties in descriptive set theory.",
+    },
+    "aspero-schindler-mm-star": {
+      era: "2021",
+      title: "MM++ implies Woodin's axiom (*)",
+      statement: "A strong form of Martin's Maximum implies Woodin's axiom (*), connecting Pmax with uncountable set theory.",
+      explanation: "The Aspero-Schindler result recently clarified the relationship between forcing axioms and Woodin's Pmax program.",
+    },
+    "easton-continuum-function": {
+      era: "1970",
+      title: "Easton's theorem",
+      statement: "On regular cardinals, the continuum function can be forced quite freely subject to monotonicity and cofinality constraints.",
+      explanation: "This result showed that post-Cohen forcing can control broad cardinal arithmetic, not just CH.",
+    },
+    "kunen-inconsistency": {
+      era: "1971",
+      title: "Kunen's inconsistency theorem",
+      statement: "Under choice, there is no nontrivial elementary embedding j: V -> V from the universe to itself.",
+      explanation: "It ruled out Reinhardt-style extreme large cardinal hypotheses in ZFC and sharpened the upper end of the hierarchy.",
+    },
+    "jensen-covering": {
+      era: "1974",
+      title: "Jensen's covering theorem",
+      statement: "If 0# does not exist, every uncountable set of ordinals is covered by a constructible set of the same cardinality.",
+      explanation: "This core fine-structure result measures the distance between V and L from the absence of large cardinals.",
+    },
+    "magidor-strong-compact": {
+      era: "1976",
+      title: "Relative consistency phenomena for the first strongly compact cardinal",
+      statement: "Under large cardinal assumptions, the first strongly compact cardinal can coincide with the first measurable or the first supercompact.",
+      explanation: "Magidor's result showed that strong compactness and supercompactness do not have a simple absolute ordering.",
+    },
+    "laver-borel-conjecture-consistency": {
+      era: "1976",
+      title: "Laver's consistency proof of Borel's conjecture",
+      statement: "Using countable support iteration, the statement that every strong measure zero set is countable was shown relatively consistent with ZFC.",
+      explanation: "Laver's model links small sets of reals with iteration techniques in proper forcing.",
+    },
+    "laver-indestructibility": {
+      era: "1978",
+      title: "Laver indestructibility of supercompactness",
+      statement: "A supercompact cardinal can be prepared so later <kappa-directed closed forcing does not destroy its supercompactness.",
+      explanation: "Laver preparation is a basic modern technique for handling forcing and large cardinals together.",
+    },
+    "dodd-jensen-core-model": {
+      era: "1982",
+      title: "The Dodd-Jensen core model K",
+      statement: "When there is no inner model with a measurable cardinal, a fine-structural core model extending L satisfies covering.",
+      explanation: "Core model theory became a standard framework for analyzing the absence of large cardinals through inner models.",
+    },
+    "baumgartner-pfa": {
+      era: "1984",
+      title: "Proper Forcing Axiom",
+      statement: "A forcing axiom asserting filters for proper forcing notions and at most aleph_1 many dense sets was formulated.",
+      explanation: "PFA is a powerful axiom implying not-CH and structural reflection principles, central to proper forcing theory.",
+    },
+    "foreman-magidor-shelah-ns": {
+      era: "1988",
+      title: "Martin's Maximum and saturation of NS_{omega_1}",
+      statement: "Foreman, Magidor, and Shelah introduced Martin's Maximum and analyzed related saturation phenomena for the nonstationary ideal.",
+      explanation: "MM extends PFA into a maximal forcing axiom with a rich consistency theory for stationary-set-preserving forcing.",
+    },
+    "shelah-pcf-theory": {
+      era: "1994",
+      title: "Shelah's pcf theory constrains singular cardinal arithmetic",
+      statement: "Possible cofinality theory gives strong ZFC upper bounds on power-set behavior at singular cardinals.",
+      explanation: "pcf theory provides deep combinatorial tools for controlling singular cardinal arithmetic without forcing.",
+    },
+    "woodin-pmax-star": {
+      era: "1999",
+      title: "Woodin's Pmax and axiom (*)",
+      statement: "Under AD in L(R), Pmax extensions formulate axiom (*), a strong structural theory of H(omega_2).",
+      explanation: "The Pmax program is Woodin's central framework connecting determinacy, forcing axioms, and the continuum problem.",
+    },
+  },
+};
 
 const state = {
+  language: DEFAULT_LANGUAGE,
   problemSetId: DEFAULT_PROBLEM_SET_ID,
   hasStarted: false,
   timeline: [],
@@ -429,11 +765,13 @@ const state = {
   locked: false,
   round: 1,
   score: 0,
+  lastResult: null,
 };
 
 const timelineEl = document.querySelector("#timeline");
 const challengePanelEl = document.querySelector("#challenge-panel");
 const timelinePanelEl = document.querySelector("#timeline-panel");
+const languageOptionsEl = document.querySelector(".language-options");
 const problemSetOptionsEl = document.querySelector("#problem-set-options");
 const startButtonEl = document.querySelector("#start-button");
 const statsEl = document.querySelector("#stats");
@@ -452,6 +790,32 @@ const restartButtonEl = document.querySelector("#restart-button");
 const shareButtonEl = document.querySelector("#share-button");
 const confettiLayerEl = document.querySelector("#confetti-layer");
 
+function t(key, ...args) {
+  const text = UI_TEXT[state.language][key] ?? UI_TEXT[DEFAULT_LANGUAGE][key];
+  return typeof text === "function" ? text(...args) : text;
+}
+
+function localizeProblemSetTitle(problemSet) {
+  return SET_TRANSLATIONS[state.language]?.[problemSet.id] ?? problemSet.title;
+}
+
+function localizeTheorem(theorem) {
+  return {
+    ...theorem,
+    ...(THEOREM_TRANSLATIONS[state.language]?.[theorem.id] ?? {}),
+  };
+}
+
+function applyStaticText() {
+  document.documentElement.lang = state.language;
+  document.querySelector(".topbar").setAttribute("aria-label", t("appStatusLabel"));
+  challengePanelEl.setAttribute("aria-label", t("cardLabel"));
+  timelinePanelEl.setAttribute("aria-label", t("timelineLabel"));
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
+  });
+}
+
 function setupProblemSetSelect() {
   problemSetOptionsEl.replaceChildren(
     ...PROBLEM_SETS.map((problemSet) => {
@@ -466,12 +830,19 @@ function setupProblemSetSelect() {
       input.disabled = problemSet.roundIds.length === 0;
 
       const title = document.createElement("span");
-      title.textContent = problemSet.title;
+      title.textContent = localizeProblemSetTitle(problemSet);
 
       label.append(input, title);
       return label;
     }),
   );
+}
+
+function selectLanguageRadio(language) {
+  const input = languageOptionsEl.querySelector(`input[name="language"][value="${language}"]`);
+  if (input) {
+    input.checked = true;
+  }
 }
 
 function getSelectedProblemSetId() {
@@ -494,6 +865,7 @@ function showStartScreen(problemSetId = state.problemSetId) {
   state.locked = false;
   state.round = 1;
   state.score = 0;
+  state.lastResult = null;
 
   selectProblemSetRadio(state.problemSetId);
   challengePanelEl.hidden = true;
@@ -520,6 +892,7 @@ function startGame(problemSetId = state.problemSetId) {
   state.locked = false;
   state.round = 1;
   state.score = 0;
+  state.lastResult = null;
   challengePanelEl.hidden = false;
   timelinePanelEl.hidden = false;
   statsEl.hidden = false;
@@ -540,6 +913,7 @@ function createTheoremMap(problemSet) {
 function drawNextCard() {
   state.current = state.deck.shift() ?? null;
   state.locked = false;
+  state.lastResult = null;
   resultPanelEl.hidden = true;
   render();
 }
@@ -662,14 +1036,15 @@ function launchConfetti() {
 }
 
 function showResult(isCorrect, correctIndex) {
+  state.lastResult = { isCorrect, correctIndex };
   resultPanelEl.hidden = false;
   resultPanelEl.classList.toggle("error", !isCorrect);
   resultIconEl.textContent = isCorrect ? "⭕️" : "✕";
-  resultLabelEl.textContent = isCorrect ? "正解" : "不正解";
+  resultLabelEl.textContent = isCorrect ? t("correct") : t("incorrect");
   resultCopyEl.textContent = isCorrect
-    ? "カードをタイムラインに追加しました。年代と解説は最後にまとめて表示します。"
-    : `正しい位置は${correctIndex + 1}番目です。年代と解説は最後にまとめて表示します。`;
-  nextButtonEl.textContent = state.deck.length > 0 ? "次へ" : "結果を見る";
+    ? t("correctCopy")
+    : t("incorrectCopy", correctIndex + 1);
+  nextButtonEl.textContent = state.deck.length > 0 ? t("next") : t("showResults");
 }
 
 function render() {
@@ -678,18 +1053,19 @@ function render() {
   scoreEl.textContent = String(state.score);
 
   if (state.current) {
-    candidateEraEl.textContent = "年代は最後に表示";
-    candidateTitleEl.textContent = state.current.title;
-    candidateStatementEl.textContent = state.current.statement;
-    remainingCountEl.textContent = `残り ${state.deck.length + 1} 枚`;
+    const current = localizeTheorem(state.current);
+    candidateEraEl.textContent = t("eraHidden");
+    candidateTitleEl.textContent = current.title;
+    candidateStatementEl.textContent = current.statement;
+    remainingCountEl.textContent = t("remaining", state.deck.length + 1);
     challengePanelEl.draggable = !state.locked;
     challengePanelEl.classList.toggle("draggable-card", !state.locked);
   } else {
     const problemSet = getProblemSet(state.problemSetId);
     const total = problemSet.roundIds.length;
-    candidateEraEl.textContent = "完了";
-    candidateTitleEl.textContent = "すべてのカードを並べました";
-    candidateStatementEl.textContent = `${total}問中${state.score}問正解しました。`;
+    candidateEraEl.textContent = t("completeEra");
+    candidateTitleEl.textContent = t("completeTitle");
+    candidateStatementEl.textContent = t("completeStatement", state.score, total);
     remainingCountEl.textContent = "";
     challengePanelEl.draggable = false;
     challengePanelEl.classList.remove("draggable-card");
@@ -763,12 +1139,13 @@ function handleInsertDrop(event, index) {
 
 function insertLabel(index) {
   const position = index + 1;
-  if (index === 0) return `${position}番目に挿入: 最初`;
-  if (index === state.timeline.length) return `${position}番目に挿入: 最後`;
-  return `${position}番目に挿入`;
+  if (index === 0) return t("insertFirst", position);
+  if (index === state.timeline.length) return t("insertLast", position);
+  return t("insert", position);
 }
 
 function createCard(theorem, showDetails) {
+  const localizedTheorem = localizeTheorem(theorem);
   const card = document.createElement("article");
   card.className = "card";
   if (state.locked && state.current?.id === theorem.id) {
@@ -779,16 +1156,16 @@ function createCard(theorem, showDetails) {
 
   const title = document.createElement("div");
   title.className = "card-title";
-  title.textContent = theorem.title;
+  title.textContent = localizedTheorem.title;
 
   const statement = document.createElement("div");
   statement.className = "card-statement";
-  statement.textContent = theorem.statement;
+  statement.textContent = localizedTheorem.statement;
 
   if (showDetails) {
     const explanation = document.createElement("div");
     explanation.className = "card-explanation";
-    explanation.textContent = theorem.explanation;
+    explanation.textContent = localizedTheorem.explanation;
     body.append(title, statement, explanation);
   } else {
     body.append(title, statement);
@@ -799,7 +1176,7 @@ function createCard(theorem, showDetails) {
   if (showDetails) {
     const year = document.createElement("div");
     year.className = "card-year";
-    year.textContent = theorem.era;
+    year.textContent = localizedTheorem.era;
     card.append(year);
   }
 
@@ -828,7 +1205,7 @@ nextButtonEl.addEventListener("click", () => {
 shareButtonEl.addEventListener("click", () => {
   const problemSet = getProblemSet(state.problemSetId);
   const total = problemSet.roundIds.length;
-  const text = `Chrono Lemma「${problemSet.title}」で${total}問中${state.score}問正解しました。\n${window.location.href}`;
+  const text = t("shareText", localizeProblemSetTitle(problemSet), state.score, total, window.location.href);
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   window.open(url, "_blank", "noopener,noreferrer");
 });
@@ -842,6 +1219,22 @@ problemSetOptionsEl.addEventListener("change", (event) => {
     showStartScreen(event.target.value);
   }
 });
+languageOptionsEl.addEventListener("change", (event) => {
+  if (event.target.matches('input[name="language"]')) {
+    state.language = event.target.value;
+    applyStaticText();
+    setupProblemSetSelect();
+    selectProblemSetRadio(state.problemSetId);
+    if (state.hasStarted) {
+      render();
+    }
+    if (!resultPanelEl.hidden && state.lastResult) {
+      showResult(state.lastResult.isCorrect, state.lastResult.correctIndex);
+    }
+  }
+});
 
+applyStaticText();
+selectLanguageRadio(state.language);
 setupProblemSetSelect();
 showStartScreen();
