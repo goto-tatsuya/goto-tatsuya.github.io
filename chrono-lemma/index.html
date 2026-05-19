@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chrono Lemma</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar" aria-label="ゲーム状況">
+        <div>
+          <h1>Chrono Lemma</h1>
+          <p>定理や発見を、成立した時代順に並べる。</p>
+        </div>
+        <div class="topbar-actions">
+          <fieldset class="set-picker">
+            <legend>問題セット</legend>
+            <div id="problem-set-options" class="set-options"></div>
+          </fieldset>
+          <button id="start-button" type="button">開始</button>
+          <div id="stats" class="stats" aria-live="polite" hidden>
+            <span><strong id="round">1</strong> ラウンド</span>
+            <span><strong id="score">0</strong> 正解</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="challenge-panel" class="challenge-panel" aria-label="今回のカード" hidden>
+        <div class="challenge-meta">
+          <span id="candidate-era">?</span>
+          <span id="remaining-count"></span>
+        </div>
+        <h2 id="candidate-title"></h2>
+        <p id="candidate-statement"></p>
+      </section>
+
+      <section id="timeline-panel" class="timeline-panel" aria-label="タイムライン" hidden>
+        <div class="timeline-header">
+          <h2>Timeline</h2>
+          <button id="restart-button" type="button">最初から</button>
+        </div>
+        <button id="share-button" class="share-button" type="button" hidden>Xに投稿する</button>
+        <ol id="timeline" class="timeline"></ol>
+      </section>
+
+      <section id="result-panel" class="result-panel" hidden aria-live="polite">
+        <h2 id="result-title"><span id="result-icon" aria-hidden="true"></span><span id="result-label"></span></h2>
+        <p id="result-copy"></p>
+        <button id="next-button" type="button">次へ</button>
+      </section>
+    </main>
+    <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
