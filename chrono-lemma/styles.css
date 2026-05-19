@@ -148,7 +148,7 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.stats span,
+.stats > span,
 .challenge-meta span {
   border: 1px solid var(--line);
   background: rgba(255, 253, 247, 0.75);
