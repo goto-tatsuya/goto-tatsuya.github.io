@@ -323,7 +323,7 @@ const PROBLEM_SETS = [
       "foreman-magidor-shelah-ns",
       "shelah-pcf-theory",
       "woodin-pmax-star",
-      "aspero-schindler-mm-star-extreme",
+      "laver-borel-conjecture-consistency",
     ],
     theorems: [
       {
@@ -357,6 +357,14 @@ const PROBLEM_SETS = [
         title: "最初の強コンパクト基数の相対的一貫性現象",
         statement: "大きな基数仮定の下で、最初の強コンパクト基数の位置は最初の可測基数や最初の超コンパクト基数と一致し得る。",
         explanation: "Magidor の結果は、強コンパクト性と超コンパクト性の関係が単純な絶対的順序ではないことを示しました。",
+      },
+      {
+        id: "laver-borel-conjecture-consistency",
+        year: 1976,
+        era: "1976年",
+        title: "Laver による Borel 予想の無矛盾性",
+        statement: "可算サポート反復を用いて、すべての強測度零集合が可算であるという Borel 予想の ZFC との相対無矛盾性が示された。",
+        explanation: "Laver のモデルは、実数直線上の小さい集合の性質と proper forcing の反復技法を結びつける古典的結果です。",
       },
       {
         id: "laver-indestructibility",
@@ -405,14 +413,6 @@ const PROBLEM_SETS = [
         title: "Woodin の Pmax と公理 (*)",
         statement: "AD^{L(R)} の下で Pmax 拡大を用い、H(omega_2) の強い構造理論を与える公理 (*) が定式化された。",
         explanation: "Pmax プログラムは、決定性公理、強制公理、連続体問題を結ぶ Woodin の中心的構想です。",
-      },
-      {
-        id: "aspero-schindler-mm-star-extreme",
-        year: 2021,
-        era: "2021年",
-        title: "MM++ は Woodin の公理 (*) を含意する",
-        statement: "強い形の Martin's Maximum から、Pmax と H(omega_2) の理論を結ぶ Woodin の公理 (*) が従う。",
-        explanation: "Aspero-Schindler の定理は、強制公理路線と Pmax 路線が予想以上に近いことを示した近年の重要結果です。",
       },
     ],
   },
