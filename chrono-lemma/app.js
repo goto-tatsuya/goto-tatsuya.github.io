@@ -685,9 +685,11 @@ function render() {
     challengePanelEl.draggable = !state.locked;
     challengePanelEl.classList.toggle("draggable-card", !state.locked);
   } else {
+    const problemSet = getProblemSet(state.problemSetId);
+    const total = problemSet.roundIds.length;
     candidateEraEl.textContent = "完了";
     candidateTitleEl.textContent = "すべてのカードを並べました";
-    candidateStatementEl.textContent = `${state.score}問正解しました。`;
+    candidateStatementEl.textContent = `${total}問中${state.score}問正解しました。`;
     remainingCountEl.textContent = "";
     challengePanelEl.draggable = false;
     challengePanelEl.classList.remove("draggable-card");
