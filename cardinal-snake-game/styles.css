@@ -139,6 +139,7 @@ h1 {
   box-shadow: 0 22px 70px var(--shadow);
   overflow: hidden;
   position: relative;
+  touch-action: none;
   width: 100%;
 }
 

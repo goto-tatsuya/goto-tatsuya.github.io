@@ -11,6 +11,7 @@ const overlayText = document.querySelector("#overlay-text");
 const startButton = document.querySelector("#start-button");
 const nextStageButton = document.querySelector("#next-stage-button");
 const directionButtons = document.querySelectorAll("[data-dir]");
+const boardWrap = document.querySelector(".board-wrap");
 
 const GRID_SIZE = 40;
 const TILE_COUNT = canvas.width / GRID_SIZE;
@@ -18,6 +19,7 @@ const TICK_MS = 300;
 const RANDOM_STAGE_BONUS_ADD_CHANCE = 0.08;
 const START_POSITION = { x: 6, y: 6 };
 const RIVER_START_POSITION = { x: 1, y: 6 };
+const SWIPE_MIN_DISTANCE = 24;
 const STAGES = [
   {
     name: "Stage 1: Apples",
@@ -146,6 +148,7 @@ let isGameOver;
 let currentStageIndex = 0;
 let scorePopups;
 let stageState;
+let swipeStart = null;
 
 function resetGame() {
   window.clearInterval(timerId);
@@ -172,7 +175,7 @@ function resetGame() {
   updateScore();
   draw(performance.now());
   drawExpGraph();
-  showOverlay("Ready", getCurrentStage().readyText ?? "Press arrow keys or WASD to start", "Start");
+  showOverlay("Ready", getCurrentStage().readyText ?? "Press arrow keys, WASD, or swipe to start", "Start");
 }
 
 function startGame() {
@@ -954,6 +957,22 @@ function drawScorePopups(timestamp) {
   });
 }
 
+function isInteractiveElement(element) {
+  return element instanceof Element && Boolean(element.closest("button, select, input, textarea, a"));
+}
+
+function getSwipeDirection(deltaX, deltaY) {
+  if (Math.hypot(deltaX, deltaY) < SWIPE_MIN_DISTANCE) {
+    return null;
+  }
+
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    return deltaX > 0 ? "right" : "left";
+  }
+
+  return deltaY > 0 ? "down" : "up";
+}
+
 document.addEventListener("keydown", (event) => {
   const directionName = KEYS[event.code];
 
@@ -963,6 +982,59 @@ document.addEventListener("keydown", (event) => {
 
   event.preventDefault();
   setDirection(directionName);
+});
+
+boardWrap.addEventListener(
+  "touchstart",
+  (event) => {
+    if (event.touches.length !== 1 || isInteractiveElement(event.target)) {
+      swipeStart = null;
+      return;
+    }
+
+    const touch = event.touches[0];
+    swipeStart = {
+      x: touch.clientX,
+      y: touch.clientY,
+    };
+  },
+  { passive: true },
+);
+
+boardWrap.addEventListener(
+  "touchmove",
+  (event) => {
+    if (!swipeStart) {
+      return;
+    }
+
+    event.preventDefault();
+  },
+  { passive: false },
+);
+
+boardWrap.addEventListener(
+  "touchend",
+  (event) => {
+    if (!swipeStart || event.changedTouches.length === 0) {
+      swipeStart = null;
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+    const directionName = getSwipeDirection(touch.clientX - swipeStart.x, touch.clientY - swipeStart.y);
+    swipeStart = null;
+
+    if (directionName) {
+      event.preventDefault();
+      setDirection(directionName);
+    }
+  },
+  { passive: false },
+);
+
+boardWrap.addEventListener("touchcancel", () => {
+  swipeStart = null;
 });
 
 startButton.addEventListener("click", startGame);
