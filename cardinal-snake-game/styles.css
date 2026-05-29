@@ -38,6 +38,12 @@ button:focus-visible {
   filter: brightness(1.08);
 }
 
+button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.8) brightness(0.62);
+  opacity: 0.58;
+}
+
 .app {
   display: grid;
   min-height: 100vh;

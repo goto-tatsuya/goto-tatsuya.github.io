@@ -17,6 +17,7 @@ const TILE_COUNT = canvas.width / GRID_SIZE;
 const TICK_MS = 300;
 const RANDOM_STAGE_BONUS_ADD_CHANCE = 0.08;
 const START_POSITION = { x: 6, y: 6 };
+const RIVER_START_POSITION = { x: 1, y: 6 };
 const STAGES = [
   {
     name: "Stage 1: Apples",
@@ -61,6 +62,44 @@ const STAGES = [
     ],
   },
   {
+    name: "Special: River",
+    targetScore: 13,
+    startPosition: RIVER_START_POSITION,
+    allowedDirections: ["upRight", "right", "downRight"],
+    directionAliases: {
+      up: "upRight",
+      down: "downRight",
+    },
+    boardTheme: "river",
+    readyText: "The river only carries you right-up, right, or right-down",
+    items: [
+      { type: "exp", k: 0, n: 1, x: 3, y: 6 },
+      { type: "exp", k: 0, n: 2, x: 4, y: 5 },
+      { type: "exp", k: 0, n: 3, x: 5, y: 4 },
+      { type: "exp", k: 0, n: 2, x: 6, y: 5 },
+      { type: "exp", k: 0, n: 1, x: 7, y: 6 },
+      { type: "add", i: 0, j: 4, x: 8, y: 7 },
+      { type: "exp", k: 0, n: 4, x: 9, y: 8 },
+    ],
+  },
+  {
+    name: "Special: Invariant",
+    targetScore: 100,
+    startPosition: RIVER_START_POSITION,
+    allowedDirections: ["upRight", "right", "downRight"],
+    directionAliases: {
+      up: "upRight",
+      down: "downRight",
+    },
+    boardTheme: "river",
+    readyText: "Choose Cohen or Random, then collect non(M)",
+    items: [
+      { type: "add", i: 0, j: 100, x: 5, y: 5, invariantKey: "add" },
+      { type: "r", i: 0, j: 100, x: 5, y: 7, invariantKey: "r" },
+      { type: "non", x: 9, y: 6 },
+    ],
+  },
+  {
     name: "Random Stage",
     refillItems: true,
     targetScore: null,
@@ -80,6 +119,8 @@ const DIRECTIONS = {
   down: { x: 0, y: 1 },
   left: { x: -1, y: 0 },
   right: { x: 1, y: 0 },
+  upRight: { x: 1, y: -1 },
+  downRight: { x: 1, y: 1 },
 };
 const KEYS = {
   ArrowUp: "up",
@@ -104,14 +145,16 @@ let isRunning;
 let isGameOver;
 let currentStageIndex = 0;
 let scorePopups;
+let stageState;
 
 function resetGame() {
   window.clearInterval(timerId);
+  const startPosition = getStageStartPosition();
   snake = {
     segments: [
-      { ...START_POSITION },
-      { x: START_POSITION.x - 1, y: START_POSITION.y },
-      { x: START_POSITION.x - 2, y: START_POSITION.y },
+      { ...startPosition },
+      { x: startPosition.x - 1, y: startPosition.y },
+      { x: startPosition.x - 2, y: startPosition.y },
     ],
     expTable: new ExpTable(),
   };
@@ -121,13 +164,15 @@ function resetGame() {
   score = 0;
   lastTickAt = performance.now();
   scorePopups = [];
+  stageState = {};
   isRunning = false;
   isGameOver = false;
   items = createInitialItems();
+  updateDirectionButtons();
   updateScore();
   draw(performance.now());
   drawExpGraph();
-  showOverlay("Ready", "Press arrow keys or WASD to start", "Start");
+  showOverlay("Ready", getCurrentStage().readyText ?? "Press arrow keys or WASD to start", "Start");
 }
 
 function startGame() {
@@ -182,15 +227,16 @@ function tick() {
   const eatenItemIndex = items.findIndex((item) => sameCell(nextHead, item));
   const eatenItem = eatenItemIndex >= 0 ? items[eatenItemIndex] : null;
 
-  if (eatenItem?.type === "exp") {
-    const gainedScore = getExpValue(eatenItem.k, eatenItem.n);
+  if (isScoringItem(eatenItem)) {
+    const gainedScore = getItemScore(eatenItem);
     score += gainedScore;
     addScorePopup(gainedScore, nextHead);
     updateScore();
   }
 
-  if (eatenItem?.type === "add") {
+  if (hasAddEffect(eatenItem)) {
     snake.expTable.add(eatenItem.i, eatenItem.j);
+    rememberInvariantItem(eatenItem);
     drawExpGraph();
   }
 
@@ -207,7 +253,7 @@ function tick() {
 
   draw(performance.now());
 
-  if (eatenItem?.type === "exp") {
+  if (isScoringItem(eatenItem)) {
     const targetScore = getCurrentStage().targetScore;
 
     if (targetScore !== null && score >= targetScore) {
@@ -228,6 +274,28 @@ function addScorePopup(value, cell) {
   });
 }
 
+function isScoringItem(item) {
+  return item?.type === "exp" || item?.type === "non";
+}
+
+function getItemScore(item) {
+  if (item.type === "non") {
+    return stageState.lastInvariantItem === "r" ? 100 : 1;
+  }
+
+  return getExpValue(item.k, item.n);
+}
+
+function hasAddEffect(item) {
+  return item?.type === "add" || item?.type === "r";
+}
+
+function rememberInvariantItem(item) {
+  if (item.invariantKey) {
+    stageState.lastInvariantItem = item.invariantKey;
+  }
+}
+
 function createInitialItems() {
   const initialItems = [];
 
@@ -241,11 +309,15 @@ function createInitialItems() {
 }
 
 function createStageItem(item) {
-  if (item.type === "add") {
-    return shouldCreateBonusRandomAdd(item) ? createAddItem(0, 50) : createAddItem(item.i, item.j);
+  if (item.type === "add" || item.type === "r") {
+    return shouldCreateBonusRandomAdd(item) ? createAddItem(0, 50) : createAddEffectItem(item);
   }
 
-  return createApple(item.k, item.n);
+  if (item.type === "non") {
+    return placeItem({ ...item });
+  }
+
+  return createApple(item);
 }
 
 function shouldCreateBonusRandomAdd(item) {
@@ -255,24 +327,34 @@ function shouldCreateBonusRandomAdd(item) {
     && Math.random() < RANDOM_STAGE_BONUS_ADD_CHANCE;
 }
 
-function createApple(k, n) {
+function createApple(item) {
   return placeItem({
+    ...item,
     type: "exp",
-    k: k !== undefined ? k : randomInteger(1, 3),
-    n: n !== undefined ? n : randomInteger(0, 7),
+    k: item.k !== undefined ? item.k : randomInteger(1, 3),
+    n: item.n !== undefined ? item.n : randomInteger(0, 7),
   });
 }
 
 function createAddItem(i, j) {
-  i = i !== undefined ? i : randomInteger(0, 5);
+  return createAddEffectItem({ type: "add", i, j });
+}
+
+function createAddEffectItem(item) {
+  const i = item.i !== undefined ? item.i : randomInteger(0, 5);
   return placeItem({
-    type: "add",
+    ...item,
+    type: item.type,
     i: i,
-    j: j !== undefined ? j : i + randomInteger(0, 3),
+    j: item.j !== undefined ? item.j : i + randomInteger(0, 3),
   });
 }
 
 function placeItem(item) {
+  if (item.x !== undefined && item.y !== undefined) {
+    return { ...item };
+  }
+
   return {
     ...item,
     ...chooseItemCell(item),
@@ -351,11 +433,15 @@ function isEmptyCell(cell) {
 }
 
 function hasApple() {
-  return items.some((item) => item.type === "exp");
+  return items.some((item) => item.type === "exp" || item.type === "non");
 }
 
 function getCurrentStage() {
   return STAGES[currentStageIndex];
+}
+
+function getStageStartPosition() {
+  return getCurrentStage().startPosition ?? START_POSITION;
 }
 
 function hasNextStage() {
@@ -377,18 +463,29 @@ function getExpValue(k, n) {
 }
 
 function setDirection(name) {
-  const requested = DIRECTIONS[name];
+  const directionName = getStageDirectionName(name);
+  const requested = DIRECTIONS[directionName];
 
   if (isGameOver) {
     return;
   }
 
-  if (!requested || isOpposite(requested, direction)) {
+  if (!requested || !isDirectionAllowed(directionName) || isOpposite(requested, direction)) {
     return;
   }
 
   nextDirection = { ...requested };
   startGame();
+}
+
+function getStageDirectionName(name) {
+  return getCurrentStage().directionAliases?.[name] ?? name;
+}
+
+function isDirectionAllowed(name) {
+  const allowedDirections = getCurrentStage().allowedDirections;
+
+  return !allowedDirections || allowedDirections.includes(name);
 }
 
 function isOpposite(first, second) {
@@ -427,6 +524,13 @@ function setupStageSelect() {
   });
 }
 
+function updateDirectionButtons() {
+  directionButtons.forEach((button) => {
+    const directionName = getStageDirectionName(button.dataset.dir);
+    button.disabled = !isDirectionAllowed(directionName);
+  });
+}
+
 function showOverlay(title, text, buttonText, showNextStage = false) {
   overlayTitle.textContent = title;
   overlayText.textContent = text;
@@ -441,12 +545,49 @@ function hideOverlay() {
 
 function draw(timestamp = performance.now()) {
   context.clearRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = "rgba(24, 33, 31, 0.9)";
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  drawBoardBackground(timestamp);
   drawGrid();
   drawItems();
   drawSnake(getMoveProgress(timestamp));
   drawScorePopups(timestamp);
+}
+
+function drawBoardBackground(timestamp) {
+  if (getCurrentStage().boardTheme === "river") {
+    drawRiverBackground(timestamp);
+    return;
+  }
+
+  context.fillStyle = "rgba(24, 33, 31, 0.9)";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function drawRiverBackground(timestamp) {
+  const offset = -((timestamp / 28) % GRID_SIZE);
+  const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, "#17465c");
+  gradient.addColorStop(0.48, "#1d7a90");
+  gradient.addColorStop(1, "#123a54");
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  context.save();
+  context.lineWidth = 3;
+  context.lineCap = "round";
+  for (let y = 22; y < canvas.height; y += 48) {
+    context.strokeStyle = y % 96 === 22 ? "rgba(203, 244, 255, 0.34)" : "rgba(114, 207, 226, 0.24)";
+    context.beginPath();
+    for (let x = offset; x <= canvas.width + GRID_SIZE; x += 16) {
+      const waveY = y + Math.sin((x - timestamp / 18) / 26) * 5;
+      if (x === offset) {
+        context.moveTo(x, waveY);
+      } else {
+        context.lineTo(x, waveY);
+      }
+    }
+    context.stroke();
+  }
+  context.restore();
 }
 
 function getMoveProgress(timestamp) {
@@ -541,6 +682,8 @@ function drawItems() {
   items.forEach((item) => {
     if (item.type === "add") {
       drawAddItem(item, labels);
+    } else if (item.type === "r") {
+      drawRItem(item, labels);
     } else {
       drawApple(item, labels);
     }
@@ -573,6 +716,18 @@ function drawAddItem(item, labels) {
   labels.push(getItemLabelData(item));
 }
 
+function drawRItem(item, labels) {
+  const inset = 6;
+  context.fillStyle = "#7dd3fc";
+  context.fillRect(
+    item.x * GRID_SIZE + inset,
+    item.y * GRID_SIZE + inset,
+    GRID_SIZE - inset * 2,
+    GRID_SIZE - inset * 2,
+  );
+  labels.push(getItemLabelData(item));
+}
+
 function getItemLabelData(item) {
   if (item.type === "add") {
     return {
@@ -580,6 +735,24 @@ function getItemLabelData(item) {
       lines: ["Add", `\u200e(א\u200e_${item.i},א\u200e_${item.j})\u200e`],
       background: "rgba(255, 244, 200, 0.93)",
       text: "#4a3500",
+    };
+  }
+
+  if (item.type === "r") {
+    return {
+      item,
+      lines: [`\u200eRandom(א\u200e_${item.j})\u200e`],
+      background: "rgba(219, 246, 255, 0.93)",
+      text: "#083344",
+    };
+  }
+
+  if (item.type === "non") {
+    return {
+      item,
+      lines: ["non(M)"],
+      background: "rgba(255, 232, 228, 0.92)",
+      text: "#6d1812",
     };
   }
 
