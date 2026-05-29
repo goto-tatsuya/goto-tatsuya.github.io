@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cardinal Snake Game</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <section class="game-shell" aria-label="Cardinal Snake Game">
+        <header class="topbar">
+          <div>
+            <h1>Cardinal Snake Game</h1>
+          </div>
+          <div class="stats" aria-label="ゲーム状況">
+            <div class="stat">
+              <span>Score</span>
+              <strong id="score">0</strong>
+            </div>
+            <div class="stat">
+              <span>Target</span>
+              <strong id="target-score">100</strong>
+            </div>
+          </div>
+        </header>
+
+        <div class="stage-bar">
+          <label for="stage-select">Stage</label>
+          <select id="stage-select" aria-label="ステージ選択"></select>
+        </div>
+
+        <div class="board-wrap">
+          <canvas id="game-board" width="480" height="480" aria-label="ヘビゲーム盤面"></canvas>
+          <div id="overlay" class="overlay">
+            <div class="overlay-panel">
+              <h2 id="overlay-title">Ready</h2>
+              <p id="overlay-text">Press arrow keys or WASD to start</p>
+              <button id="start-button" type="button">Start</button>
+              <button id="next-stage-button" class="secondary-button" type="button">Next Stage</button>
+            </div>
+          </div>
+        </div>
+
+        <section class="graph-panel" aria-label="ExpTable graph">
+          <div class="graph-head">
+            <span>Exponential Graph 2^{aleph_n} = aleph_m</span>
+          </div>
+          <canvas id="exp-graph" width="480" height="120" aria-label="ExpTable の折れ線グラフ"></canvas>
+        </section>
+
+        <footer class="controls" aria-label="操作">
+          <button type="button" data-dir="up" aria-label="上へ">↑</button>
+          <div>
+            <button type="button" data-dir="left" aria-label="左へ">←</button>
+            <button type="button" data-dir="down" aria-label="下へ">↓</button>
+            <button type="button" data-dir="right" aria-label="右へ">→</button>
+          </div>
+        </footer>
+      </section>
+    </main>
+
+    <script src="exp-table.js"></script>
+    <script src="game.js"></script>
+  </body>
+</html>

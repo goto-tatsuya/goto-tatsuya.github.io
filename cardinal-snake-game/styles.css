@@ -1,0 +1,270 @@
+:root {
+  color-scheme: dark;
+  --bg: #101514;
+  --panel: #18211f;
+  --panel-strong: #202b28;
+  --text: #eef5f0;
+  --muted: #9fb0aa;
+  --accent: #e13f33;
+  --accent-2: #46b980;
+  --grid: #273531;
+  --shadow: rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at 20% 10%, #21302c 0, transparent 32rem), var(--bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+button:hover,
+button:focus-visible {
+  filter: brightness(1.08);
+}
+
+.app {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+}
+
+.game-shell {
+  width: min(100%, 560px);
+}
+
+.topbar {
+  align-items: end;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2rem, 8vw, 4rem);
+  line-height: 0.95;
+}
+
+.stats {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(76px, 1fr));
+}
+
+.stat {
+  background: var(--panel);
+  border: 1px solid #2b3935;
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: right;
+}
+
+.stat span {
+  color: var(--muted);
+  display: block;
+  font-size: 0.75rem;
+}
+
+.stat strong {
+  display: block;
+  font-size: 1.45rem;
+  line-height: 1.1;
+}
+
+.stage-bar {
+  align-items: center;
+  background: rgba(24, 33, 31, 0.82);
+  border: 1px solid #33433e;
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+}
+
+.stage-bar label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.stage-bar select {
+  background: #263531;
+  border: 1px solid #41524d;
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  min-height: 36px;
+  padding: 0 10px;
+  width: min(100%, 260px);
+}
+
+.board-wrap {
+  aspect-ratio: 1;
+  background:
+    linear-gradient(135deg, rgba(70, 185, 128, 0.14), rgba(225, 63, 51, 0.08)),
+    var(--panel-strong);
+  border: 1px solid #33433e;
+  border-radius: 8px;
+  box-shadow: 0 22px 70px var(--shadow);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+canvas {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.graph-panel {
+  background: rgba(24, 33, 31, 0.82);
+  border: 1px solid #33433e;
+  border-radius: 8px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.graph-head {
+  align-items: center;
+  border-bottom: 1px solid #2b3935;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+}
+
+.graph-head span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.graph-head strong {
+  color: var(--accent-2);
+  font-size: 0.85rem;
+}
+
+#exp-graph {
+  height: 120px;
+}
+
+.overlay {
+  align-items: center;
+  background: rgba(12, 17, 16, 0.72);
+  display: none;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: absolute;
+}
+
+.overlay.is-visible {
+  display: flex;
+}
+
+.overlay-panel {
+  background: rgba(24, 33, 31, 0.95);
+  border: 1px solid #40504b;
+  border-radius: 8px;
+  box-shadow: 0 16px 48px var(--shadow);
+  max-width: 280px;
+  padding: 22px;
+  text-align: center;
+  width: 100%;
+}
+
+.overlay-panel h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.overlay-panel p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 18px;
+}
+
+.overlay-panel button {
+  min-height: 44px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.overlay-panel button:first-of-type {
+  margin-top: 0;
+}
+
+.secondary-button {
+  background: #263531;
+  border: 1px solid #41524d;
+}
+
+.secondary-button.is-hidden {
+  display: none;
+}
+
+.controls {
+  display: none;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.controls div {
+  display: flex;
+  gap: 8px;
+}
+
+.controls button {
+  aspect-ratio: 1;
+  background: #263531;
+  border: 1px solid #41524d;
+  font-size: 1.35rem;
+  width: 56px;
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding: 16px;
+  }
+
+  .topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .controls {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+}
