@@ -47,7 +47,7 @@ const STAGES = [
     ],
   },
   {
-    name: "Stage 3: Current",
+    name: "Stage 3: Two Forcings",
     targetScore: 100,
     readyText: "Pay attention to the order in which you take the forcings!",
     items: [
@@ -57,7 +57,7 @@ const STAGES = [
     ],
   },
   {
-    name: "Stage 4: Ladder",
+    name: "Stage 4: Three Forcings",
     targetScore: 250,
     items: [
       { type: "add", i: 3, j: 100 },
@@ -147,7 +147,7 @@ const STAGES = [
   },
   {
     name: "Special: Easton",
-    targetScore: 100,
+    targetScore: 200,
     boardColumns: 20,
     startPosition: { x: 0, y: 6 },
     allowedDirections: ["upRight", "right", "downRight"],
@@ -172,6 +172,7 @@ const STAGES = [
       { type: "exp", k: 1, n: 2, x: 12, y: 6, labelLines: ["2^{\u200eא\u200e_2}"] },
       { type: "exp", k: 1, n: 3, x: 14, y: 6, labelLines: ["2^{\u200eא\u200e_3}"] },
       { type: "exp", k: 1, n: 4, x: 16, y: 6, labelLines: ["2^{\u200eא\u200e_4}"] },
+      { type: "exp", k: 1, n: 5, x: 18, y: 6, labelLines: ["2^{\u200eא\u200e_5}"] },
       {
         type: "add",
         i: 0,
