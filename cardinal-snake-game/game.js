@@ -69,7 +69,7 @@ const STAGES = [
     ],
   },
   {
-    name: "Special: River",
+    name: "Stage 5: River",
     targetScore: 13,
     startPosition: RIVER_START_POSITION,
     allowedDirections: ["upRight", "right", "downRight"],
@@ -90,7 +90,7 @@ const STAGES = [
     ],
   },
   {
-    name: "Special: Invariant",
+    name: "Stage 6: Invariant",
     targetScore: 100,
     startPosition: RIVER_START_POSITION,
     allowedDirections: ["upRight", "right", "downRight"],
@@ -107,7 +107,7 @@ const STAGES = [
     ],
   },
   {
-    name: "Special: Proper",
+    name: "Stage 7: Proper",
     targetScore: 2,
     startPosition: { x: 0, y: 6 },
     allowedDirections: ["upRight", "right", "downRight"],
@@ -146,7 +146,7 @@ const STAGES = [
     ],
   },
   {
-    name: "Special: Easton",
+    name: "Stage 8: Easton",
     targetScore: 200,
     boardColumns: 20,
     startPosition: { x: 0, y: 6 },
@@ -185,7 +185,7 @@ const STAGES = [
     ],
   },
   {
-    name: "Special: Conveyor",
+    name: "Stage 9: Conveyor",
     targetScore: 20,
     startPosition: { x: 0, y: 9 },
     readyText: "Walls block the route. Conveyor floors force the snake to move in the arrow direction.",
@@ -221,6 +221,44 @@ const STAGES = [
       { type: "add", i: 0, j: 8, x: 7, y: 6 },
       { type: "exp", k: 1, n: 0, x: 7, y: 3 },
       { type: "exp", k: 0, n: 9, x: 2, y: 2 },
+    ],
+  },
+  {
+    name: "Stage 10: Which support",
+    targetScore: 1,
+    boardColumns: 23,
+    boardViewColumns: 12,
+    startPosition: { x: 0, y: 5 },
+    readyText: "Ride through the Sacks supports and collect |(\u200eא\u200e_1)^V|.",
+    walls: [
+      ...createHorizontalCells(3, 22, 3),
+      ...createHorizontalCells(3, 17, 5),
+      ...createHorizontalCells(3, 22, 7),
+    ],
+    conveyors: [
+      { x: 3, y: 4, direction: "right" },
+      { x: 18, y: 4, direction: "right" },
+      { x: 3, y: 6, direction: "right" },
+      { x: 18, y: 6, direction: "right" },
+    ],
+    stageTexts: [
+      { x: 0, y: 4, width: 3, text: "finite support iteration" },
+      { x: 0, y: 6, width: 3, text: "countable support iteration" },
+      { x: 15, y: 4, width: 3, text: "... (\u200eא\u200e_0 many)" },
+      { x: 15, y: 6, width: 3, text: "... (\u200eא\u200e_0 many)" },
+    ],
+    items: [
+      ...createHorizontalItems("sacks", 4, 14, 4, { supportLane: "finite" }),
+      ...createHorizontalItems("sacks", 4, 14, 6, { supportLane: "countable" }),
+      {
+        type: "exp",
+        k: 0,
+        n: 1,
+        x: 20,
+        y: 5,
+        labelLines: ["|(\u200eא\u200e_1)^V|"],
+        supportScoreKey: "groundAleph1",
+      },
     ],
   },
   {
@@ -271,6 +309,7 @@ let currentStageIndex = 0;
 let scorePopups;
 let stageState;
 let swipeStart = null;
+let currentCameraColumn = 0;
 
 function resetGame() {
   window.clearInterval(timerId);
@@ -285,6 +324,7 @@ function resetGame() {
     expTable: new ExpTable(),
   };
   previousSnakeSegments = snake.segments.map((segment) => ({ ...segment }));
+  currentCameraColumn = getCameraColumn(startPosition.x);
   direction = { ...DIRECTIONS.right };
   nextDirection = { ...DIRECTIONS.right };
   score = 0;
@@ -361,6 +401,7 @@ function tick() {
   const eatenItem = eatenItemIndex >= 0 ? items[eatenItemIndex] : null;
 
   rememberProperItem(eatenItem);
+  rememberSupportItem(eatenItem);
 
   if (isScoringItem(eatenItem)) {
     const gainedScore = getItemScore(eatenItem);
@@ -426,6 +467,10 @@ function getItemScore(item) {
     return stageState.properNambaSelected ? 1 : 0;
   }
 
+  if (item.supportScoreKey === "groundAleph1") {
+    return stageState.supportLane === "countable" ? 1 : 0;
+  }
+
   return getExpValue(item.k, item.n);
 }
 
@@ -478,6 +523,12 @@ function rememberProperItem(item) {
   }
 }
 
+function rememberSupportItem(item) {
+  if (item?.supportLane) {
+    stageState.supportLane = item.supportLane;
+  }
+}
+
 function createInitialItems() {
   const initialItems = [];
 
@@ -495,7 +546,7 @@ function createStageItem(item) {
     return shouldCreateBonusRandomAdd(item) ? createAddItem(0, 50) : createAddEffectItem(item);
   }
 
-  if (item.type === "non") {
+  if (item.type === "non" || item.type === "sacks") {
     return placeItem({ ...item });
   }
 
@@ -630,6 +681,10 @@ function getStageConveyors() {
   return getCurrentStage().conveyors ?? [];
 }
 
+function getStageTexts() {
+  return getCurrentStage().stageTexts ?? [];
+}
+
 function getForcedDirection(cell) {
   const conveyor = getStageConveyors().find((floor) => sameCell(floor, cell));
   const directionName = conveyor?.direction;
@@ -641,8 +696,25 @@ function getBoardColumnCount() {
   return getCurrentStage().boardColumns ?? DEFAULT_COLUMN_COUNT;
 }
 
+function getBoardViewColumnCount() {
+  return getCurrentStage().boardViewColumns ?? getBoardColumnCount();
+}
+
+function getCameraColumn(centerX = snake?.segments?.[0]?.x ?? getStageStartPosition().x) {
+  const boardColumns = getBoardColumnCount();
+  const viewColumns = getBoardViewColumnCount();
+
+  if (boardColumns <= viewColumns) {
+    return 0;
+  }
+
+  const centeredColumn = centerX - (viewColumns - 1) / 2;
+
+  return clamp(centeredColumn, 0, boardColumns - viewColumns);
+}
+
 function updateBoardMetrics() {
-  const columnCount = getBoardColumnCount();
+  const columnCount = getBoardViewColumnCount();
   canvas.width = columnCount * GRID_SIZE;
   boardWrap.style.aspectRatio = `${columnCount} / ${ROW_COUNT}`;
 }
@@ -657,6 +729,18 @@ function hasNextStage() {
 
 function randomInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function createHorizontalCells(startX, endX, y) {
+  return Array.from({ length: endX - startX + 1 }, (_, index) => ({ x: startX + index, y }));
+}
+
+function createHorizontalItems(type, startX, endX, y, itemData = {}) {
+  return createHorizontalCells(startX, endX, y).map((cell) => ({ type, ...itemData, ...cell }));
 }
 
 function getExpValue(k, n) {
@@ -771,13 +855,20 @@ function hideOverlay() {
 }
 
 function draw(timestamp = performance.now()) {
+  const progress = getMoveProgress(timestamp);
+
   context.clearRect(0, 0, canvas.width, canvas.height);
   drawBoardBackground(timestamp);
+  currentCameraColumn = getCameraColumn(getAnimatedHeadCellX(progress));
+  context.save();
+  context.translate(-currentCameraColumn * GRID_SIZE, 0);
   drawStageTerrain();
   drawGrid();
+  drawStageTexts();
   drawItems();
-  drawSnake(getMoveProgress(timestamp));
+  drawSnake(progress);
   drawScorePopups(timestamp);
+  context.restore();
 }
 
 function drawBoardBackground(timestamp) {
@@ -824,6 +915,13 @@ function getMoveProgress(timestamp) {
   }
 
   return Math.min(1, Math.max(0, (timestamp - lastTickAt) / TICK_MS));
+}
+
+function getAnimatedHeadCellX(progress) {
+  const head = snake.segments[0];
+  const previousHead = previousSnakeSegments[0] ?? head;
+
+  return previousHead.x + (head.x - previousHead.x) * progress;
 }
 
 function render(timestamp) {
@@ -974,6 +1072,28 @@ function drawConveyor(conveyor) {
   context.restore();
 }
 
+function drawStageTexts() {
+  getStageTexts().forEach(drawStageText);
+}
+
+function drawStageText(stageText) {
+  const width = (stageText.width ?? 1) * GRID_SIZE;
+  const centerX = stageText.x * GRID_SIZE + width / 2;
+  const centerY = stageText.y * GRID_SIZE + GRID_SIZE / 2;
+  const fontSize = stageText.fontSize ?? 11;
+
+  context.save();
+  context.font = `800 ${fontSize}px system-ui, sans-serif`;
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.lineWidth = 4;
+  context.strokeStyle = "rgba(16, 21, 20, 0.88)";
+  context.fillStyle = "#eef5f0";
+  context.strokeText(stageText.text, centerX, centerY, width - 6);
+  context.fillText(stageText.text, centerX, centerY, width - 6);
+  context.restore();
+}
+
 function drawItems() {
   const labels = [];
 
@@ -982,6 +1102,8 @@ function drawItems() {
       drawAddItem(item, labels);
     } else if (item.type === "r") {
       drawRItem(item, labels);
+    } else if (item.type === "sacks") {
+      drawSacksItem(item);
     } else {
       drawApple(item, labels);
     }
@@ -1024,6 +1146,25 @@ function drawRItem(item, labels) {
     GRID_SIZE - inset * 2,
   );
   labels.push(getItemLabelData(item));
+}
+
+function drawSacksItem(item) {
+  const inset = 4;
+  const x = item.x * GRID_SIZE + inset;
+  const y = item.y * GRID_SIZE + inset;
+  const size = GRID_SIZE - inset * 2;
+
+  context.fillStyle = "#c7b7ff";
+  context.fillRect(x, y, size, size);
+  context.strokeStyle = "#5b4b91";
+  context.lineWidth = 2;
+  context.strokeRect(x + 0.5, y + 0.5, size - 1, size - 1);
+
+  context.fillStyle = "#241a4a";
+  context.font = "800 10px system-ui, sans-serif";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText("Sacks", item.x * GRID_SIZE + GRID_SIZE / 2, item.y * GRID_SIZE + GRID_SIZE / 2);
 }
 
 function getItemLabelData(item) {
@@ -1095,30 +1236,19 @@ function chooseItemLabelRect(label, placedRects) {
   const widths = label.lines.map((line) => context.measureText(line).width);
   const labelWidth = Math.max(...widths) + 10;
   const labelHeight = label.lines.length * lineHeight + 6;
-  const gap = 2;
-  const candidates = [
-    { x: centerX - labelWidth / 2, y: centerY - labelHeight / 2, distance: 0 },
-    { x: centerX - labelWidth / 2, y: centerY - GRID_SIZE / 2 - labelHeight - gap, distance: 1 },
-    { x: centerX - labelWidth / 2, y: centerY + GRID_SIZE / 2 + gap, distance: 1 },
-    { x: centerX - GRID_SIZE / 2 - labelWidth - gap, y: centerY - labelHeight / 2, distance: 1 },
-    { x: centerX + GRID_SIZE / 2 + gap, y: centerY - labelHeight / 2, distance: 1 },
-  ];
+  const rect = {
+    x: centerX - labelWidth / 2,
+    y: centerY - labelHeight / 2,
+    width: labelWidth,
+    height: labelHeight,
+  };
+  const overflow = getOverflowArea(rect);
+  const overlap = placedRects.reduce((total, placedRect) => total + getOverlapArea(rect, placedRect), 0);
 
-  return candidates
-    .map((candidate) => {
-      const rect = {
-        x: candidate.x,
-        y: candidate.y,
-        width: labelWidth,
-        height: labelHeight,
-      };
-      const overflow = getOverflowArea(rect);
-      const overlap = placedRects.reduce((total, placedRect) => total + getOverlapArea(rect, placedRect), 0);
-      const score = overflow * 1000 + overlap * 80 + candidate.distance * 300;
-
-      return { ...rect, score };
-    })
-    .sort((first, second) => first.score - second.score)[0];
+  return {
+    ...rect,
+    score: overflow * 1000 + overlap * 80,
+  };
 }
 
 function drawItemLabel(label, rect) {
@@ -1140,7 +1270,9 @@ function drawItemLabel(label, rect) {
 }
 
 function getOverflowArea(rect) {
-  const overflowX = Math.max(0, -rect.x) + Math.max(0, rect.x + rect.width - canvas.width);
+  const visibleLeft = currentCameraColumn * GRID_SIZE;
+  const visibleRight = visibleLeft + canvas.width;
+  const overflowX = Math.max(0, visibleLeft - rect.x) + Math.max(0, rect.x + rect.width - visibleRight);
   const overflowY = Math.max(0, -rect.y) + Math.max(0, rect.y + rect.height - canvas.height);
 
   return overflowX * rect.height + overflowY * rect.width;
