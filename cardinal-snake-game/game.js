@@ -19,6 +19,10 @@ const DEFAULT_COLUMN_COUNT = canvas.width / GRID_SIZE;
 const ROW_COUNT = canvas.height / GRID_SIZE;
 const TICK_MS = 300;
 const RANDOM_STAGE_BONUS_ADD_CHANCE = 0.08;
+const RANDOM_STAGE_BONUS_ADDS = [
+  { i: 0, j: 50 },
+  { i: 50, j: 200, minScore: 101 },
+];
 const START_POSITION = { x: 6, y: 6 };
 const RIVER_START_POSITION = { x: 1, y: 6 };
 const SWIPE_MIN_DISTANCE = 24;
@@ -267,6 +271,7 @@ const STAGES = [
     targetScore: null,
     readyText: "This stage has no clear condition.",
     items: [
+      { type: "add" },
       { type: "add" },
       { type: "add" },
       { type: "add" },
@@ -549,7 +554,7 @@ function createInitialItems() {
 
 function createStageItem(item) {
   if (item.type === "add" || item.type === "r") {
-    return shouldCreateBonusRandomAdd(item) ? createAddItem(0, 50) : createAddEffectItem(item);
+    return shouldCreateBonusRandomAdd(item) ? createBonusRandomAddItem() : createAddEffectItem(item);
   }
 
   if (item.type === "non" || item.type === "sacks") {
@@ -564,6 +569,13 @@ function shouldCreateBonusRandomAdd(item) {
     && item.i === undefined
     && item.j === undefined
     && Math.random() < RANDOM_STAGE_BONUS_ADD_CHANCE;
+}
+
+function createBonusRandomAddItem() {
+  const eligibleBonusAdds = RANDOM_STAGE_BONUS_ADDS.filter((bonusAdd) => score >= (bonusAdd.minScore ?? 0));
+  const selectedBonusAdd = eligibleBonusAdds[randomInteger(0, eligibleBonusAdds.length - 1)];
+
+  return createAddItem(selectedBonusAdd.i, selectedBonusAdd.j);
 }
 
 function createApple(item) {
