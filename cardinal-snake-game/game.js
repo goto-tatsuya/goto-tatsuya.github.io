@@ -116,7 +116,7 @@ const STAGES = [
       down: "downRight",
     },
     boardTheme: "river",
-    readyText: "Preserve properness and carefully look at the definition",
+    readyText: "Preserve \u200eא\u200e_1 and carefully look at the definition",
     descriptionLines: [
       "P = 1 if (\u200eא\u200e_2)^V < \u200eא\u200e_2, P = 0 otherwise.",
     ],
