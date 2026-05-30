@@ -100,6 +100,11 @@ h1 {
   line-height: 1.1;
 }
 
+#score,
+#target-score {
+  overflow-wrap: anywhere;
+}
+
 .stage-bar {
   align-items: center;
   background: rgba(24, 33, 31, 0.82);
@@ -147,6 +152,32 @@ canvas {
   display: block;
   height: 100%;
   width: 100%;
+}
+
+.stage-description {
+  background: rgba(12, 17, 16, 0.78);
+  border: 1px solid rgba(203, 244, 255, 0.26);
+  bottom: 14px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 700;
+  left: 14px;
+  line-height: 1.45;
+  pointer-events: none;
+  position: absolute;
+  right: 14px;
+  padding: 12px 14px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.72);
+  z-index: 1;
+}
+
+.stage-description.is-hidden {
+  display: none;
+}
+
+.stage-description p + p {
+  margin-top: 4px;
 }
 
 .graph-panel {
