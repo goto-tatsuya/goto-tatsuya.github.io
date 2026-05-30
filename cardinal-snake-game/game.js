@@ -15,7 +15,8 @@ const boardWrap = document.querySelector(".board-wrap");
 const stageDescription = document.querySelector("#stage-description");
 
 const GRID_SIZE = 40;
-const TILE_COUNT = canvas.width / GRID_SIZE;
+const DEFAULT_COLUMN_COUNT = canvas.width / GRID_SIZE;
+const ROW_COUNT = canvas.height / GRID_SIZE;
 const TICK_MS = 300;
 const RANDOM_STAGE_BONUS_ADD_CHANCE = 0.08;
 const START_POSITION = { x: 6, y: 6 };
@@ -145,6 +146,44 @@ const STAGES = [
     ],
   },
   {
+    name: "Special: Easton",
+    targetScore: 100,
+    boardColumns: 20,
+    startPosition: { x: 0, y: 6 },
+    allowedDirections: ["upRight", "right", "downRight"],
+    directionAliases: {
+      up: "upRight",
+      down: "downRight",
+    },
+    boardTheme: "river",
+    readyText: "Follow the Easton products across the river.",
+    items: [
+      {
+        type: "add",
+        i: 0,
+        j: 1,
+        x: 3,
+        y: 6,
+        labelLines: ["∏_{n ∈ ω} Add", "(\u200eא\u200e_n, \u200eא\u200e_{2^n})"],
+        eastonEffect: "powersOfTwo",
+      },
+      { type: "exp", k: 1, n: 0, x: 8, y: 6, labelLines: ["2^{\u200eא\u200e_0}"] },
+      { type: "exp", k: 1, n: 1, x: 10, y: 6, labelLines: ["2^{\u200eא\u200e_1}"] },
+      { type: "exp", k: 1, n: 2, x: 12, y: 6, labelLines: ["2^{\u200eא\u200e_2}"] },
+      { type: "exp", k: 1, n: 3, x: 14, y: 6, labelLines: ["2^{\u200eא\u200e_3}"] },
+      { type: "exp", k: 1, n: 4, x: 16, y: 6, labelLines: ["2^{\u200eא\u200e_4}"] },
+      {
+        type: "add",
+        i: 0,
+        j: 1,
+        x: 3,
+        y: 8,
+        labelLines: ["∏_{n ∈ ω} Add", "(\u200eא\u200e_n, \u200eא\u200e_{(n+1)!})"],
+        eastonEffect: "factorials",
+      },
+    ],
+  },
+  {
     name: "Random Stage",
     refillItems: true,
     targetScore: null,
@@ -195,6 +234,7 @@ let swipeStart = null;
 
 function resetGame() {
   window.clearInterval(timerId);
+  updateBoardMetrics();
   const startPosition = getStageStartPosition();
   snake = {
     segments: [
@@ -247,7 +287,7 @@ function endGame(title = "Game Over", text = `Score ${score}`) {
 }
 
 function clearGame() {
-  endGame("Clear", `Score ${score} / ${getCurrentStage().targetScore}`);
+  endGame("Clear", `Score: ${score}; Target: ${getCurrentStage().targetScore}`);
   if (hasNextStage()) {
     nextStageButton.classList.remove("is-hidden");
   }
@@ -284,7 +324,7 @@ function tick() {
   }
 
   if (hasAddEffect(eatenItem)) {
-    snake.expTable.add(eatenItem.i, eatenItem.j);
+    applyAddEffect(eatenItem);
     rememberInvariantItem(eatenItem);
     drawExpGraph();
   }
@@ -345,6 +385,35 @@ function getItemScore(item) {
 
 function hasAddEffect(item) {
   return item?.type === "add" || item?.type === "r";
+}
+
+function applyAddEffect(item) {
+  if (item.eastonEffect) {
+    applyEastonEffect(item.eastonEffect);
+    return;
+  }
+
+  snake.expTable.add(item.i, item.j);
+}
+
+function applyEastonEffect(effect) {
+  const tableLength = 10;
+
+  if (effect === "powersOfTwo") {
+    snake.expTable.table = [...Array.from({ length: tableLength }, (_, index) => 2 ** index), Infinity];
+    return;
+  }
+
+  if (effect === "factorials") {
+    let value = 1;
+    snake.expTable.table = [
+      ...Array.from({ length: tableLength }, (_, index) => {
+        value *= index + 1;
+        return value;
+      }),
+      Infinity,
+    ];
+  }
 }
 
 function rememberInvariantItem(item) {
@@ -432,8 +501,8 @@ function chooseItemCell(item) {
   const placedLabelRects = getPlacedItemLabelRects();
   const candidates = [];
 
-  for (let y = 0; y < TILE_COUNT; y += 1) {
-    for (let x = 0; x < TILE_COUNT; x += 1) {
+  for (let y = 0; y < ROW_COUNT; y += 1) {
+    for (let x = 0; x < getBoardColumnCount(); x += 1) {
       const candidate = { x, y };
 
       if (!isEmptyCell(candidate)) {
@@ -475,8 +544,8 @@ function getPlacedItemLabelRects() {
 }
 
 function createFallbackCell() {
-  for (let y = 0; y < TILE_COUNT; y += 1) {
-    for (let x = 0; x < TILE_COUNT; x += 1) {
+  for (let y = 0; y < ROW_COUNT; y += 1) {
+    for (let x = 0; x < getBoardColumnCount(); x += 1) {
       const candidate = { x, y };
 
       if (isEmptyCell(candidate)) {
@@ -489,7 +558,7 @@ function createFallbackCell() {
 }
 
 function isEdgeCell(cell) {
-  return cell.x === 0 || cell.y === 0 || cell.x === TILE_COUNT - 1 || cell.y === TILE_COUNT - 1;
+  return cell.x === 0 || cell.y === 0 || cell.x === getBoardColumnCount() - 1 || cell.y === ROW_COUNT - 1;
 }
 
 function isEmptyCell(cell) {
@@ -505,6 +574,16 @@ function hasApple() {
 
 function getCurrentStage() {
   return STAGES[currentStageIndex];
+}
+
+function getBoardColumnCount() {
+  return getCurrentStage().boardColumns ?? DEFAULT_COLUMN_COUNT;
+}
+
+function updateBoardMetrics() {
+  const columnCount = getBoardColumnCount();
+  canvas.width = columnCount * GRID_SIZE;
+  boardWrap.style.aspectRatio = `${columnCount} / ${ROW_COUNT}`;
 }
 
 function getStageStartPosition() {
@@ -560,7 +639,7 @@ function isOpposite(first, second) {
 }
 
 function hitsWall(cell) {
-  return cell.x < 0 || cell.y < 0 || cell.x >= TILE_COUNT || cell.y >= TILE_COUNT;
+  return cell.x < 0 || cell.y < 0 || cell.x >= getBoardColumnCount() || cell.y >= ROW_COUNT;
 }
 
 function hitsSnake(cell) {
@@ -687,9 +766,11 @@ function render(timestamp) {
 }
 
 function drawExpGraph() {
-  const values = Array.from({ length: TILE_COUNT }, (_, index) => snake.expTable.get(index));
+  const values = Array.from({ length: getBoardColumnCount() }, (_, index) => snake.expTable.get(index));
+  const infinityIndex = values.findIndex((value) => value === Infinity);
+  const graphValues = infinityIndex >= 0 ? values.slice(0, infinityIndex) : values;
   const maxIndex = values.length - 1;
-  const maxValue = Math.max(...values, 1);
+  const maxValue = Math.max(...graphValues, 1);
   const padding = 18;
   const graphWidth = graphCanvas.width - padding * 2;
   const graphHeight = graphCanvas.height - padding * 2;
@@ -721,7 +802,7 @@ function drawExpGraph() {
   graphContext.strokeStyle = "#f1c84b";
   graphContext.beginPath();
 
-  values.forEach((value, index) => {
+  graphValues.forEach((value, index) => {
     const x = padding + (index / maxIndex) * graphWidth;
     const y = graphCanvas.height - padding - (value / maxValue) * graphHeight;
 
@@ -746,13 +827,16 @@ function drawGrid() {
   context.strokeStyle = "rgba(39, 53, 49, 0.62)";
   context.lineWidth = 1;
 
-  for (let index = 0; index <= TILE_COUNT; index += 1) {
-    const position = index * GRID_SIZE + 0.5;
+  for (let x = 0; x <= getBoardColumnCount(); x += 1) {
+    const position = x * GRID_SIZE + 0.5;
     context.beginPath();
     context.moveTo(position, 0);
     context.lineTo(position, canvas.height);
     context.stroke();
+  }
 
+  for (let y = 0; y <= ROW_COUNT; y += 1) {
+    const position = y * GRID_SIZE + 0.5;
     context.beginPath();
     context.moveTo(0, position);
     context.lineTo(canvas.width, position);
