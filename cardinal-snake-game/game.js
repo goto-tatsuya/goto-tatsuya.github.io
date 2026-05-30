@@ -24,6 +24,7 @@ const STAGES = [
   {
     name: "Stage 1: Apples",
     targetScore: 7,
+    readyText: "Use the arrow keys, WASD, or swipe to guide the snake, collect apples, and reach at least the target score.",
     items: [
       { type: "exp", k: 0, n: 0 },
       { type: "exp", k: 0, n: 1 },
@@ -36,6 +37,7 @@ const STAGES = [
   {
     name: "Stage 2: Warmup",
     targetScore: 6,
+    readyText: "Taking Add(\u200eא\u200e_0, \u200eא\u200e_3) adds \u200eא\u200e_3 many \u200eא\u200e_0-Cohen reals.",
     items: [
       { type: "exp", k: 1, n: 0 },
       { type: "exp", k: 1, n: 2 },
@@ -45,6 +47,7 @@ const STAGES = [
   {
     name: "Stage 3: Current",
     targetScore: 100,
+    readyText: "Pay attention to the order in which you take the forcings!",
     items: [
       { type: "exp", k: 2, n: 0 },
       { type: "add", i: 0, j: 10 },
