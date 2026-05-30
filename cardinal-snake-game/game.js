@@ -265,6 +265,7 @@ const STAGES = [
     name: "Random Stage",
     refillItems: true,
     targetScore: null,
+    readyText: "This stage has no clear condition.",
     items: [
       { type: "add" },
       { type: "add" },
