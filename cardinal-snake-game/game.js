@@ -390,8 +390,13 @@ function tick() {
     y: head.y + direction.y,
   };
 
-  if (hitsWall(nextHead) || hitsSnake(nextHead)) {
-    endGame();
+  if (hitsWall(nextHead)) {
+    endGame("Game Over", `Reason: Hit a wall. Score ${score}`);
+    return;
+  }
+
+  if (hitsSnake(nextHead)) {
+    endGame("Game Over", `Reason: Hit yourself. Score ${score}`);
     return;
   }
 
@@ -435,7 +440,7 @@ function tick() {
     if (targetScore !== null && score >= targetScore) {
       clearGame();
     } else if (targetScore !== null && !hasApple()) {
-      endGame("Game Over", `Score ${score} / ${targetScore}`);
+      endGame("Game Over", `Reason: Not enough score. Score ${score} / ${targetScore}`);
     }
   }
 }
