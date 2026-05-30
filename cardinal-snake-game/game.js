@@ -688,6 +688,7 @@ function render(timestamp) {
 
 function drawExpGraph() {
   const values = Array.from({ length: TILE_COUNT }, (_, index) => snake.expTable.get(index));
+  const maxIndex = values.length - 1;
   const maxValue = Math.max(...values, 1);
   const padding = 18;
   const graphWidth = graphCanvas.width - padding * 2;
@@ -721,7 +722,7 @@ function drawExpGraph() {
   graphContext.beginPath();
 
   values.forEach((value, index) => {
-    const x = padding + (index / (values.length - 1)) * graphWidth;
+    const x = padding + (index / maxIndex) * graphWidth;
     const y = graphCanvas.height - padding - (value / maxValue) * graphHeight;
 
     if (index === 0) {
@@ -737,7 +738,7 @@ function drawExpGraph() {
   graphContext.font = "700 10px system-ui, sans-serif";
   graphContext.textAlign = "left";
   graphContext.textBaseline = "top";
-  graphContext.fillText("n", graphCanvas.width - padding + 4, graphCanvas.height - padding - 6);
+  graphContext.fillText(String(maxIndex), graphCanvas.width - padding + 4, graphCanvas.height - padding - 6);
   graphContext.fillText(String(maxValue), 6, padding - 6);
 }
 
