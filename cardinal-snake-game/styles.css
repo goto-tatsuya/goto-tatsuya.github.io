@@ -100,11 +100,6 @@ h1 {
   line-height: 1.1;
 }
 
-#score,
-#target-score {
-  overflow-wrap: anywhere;
-}
-
 .stage-bar {
   align-items: center;
   background: rgba(24, 33, 31, 0.82);

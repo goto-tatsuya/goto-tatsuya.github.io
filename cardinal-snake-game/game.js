@@ -107,8 +107,7 @@ const STAGES = [
   },
   {
     name: "Special: Proper",
-    targetScore: [1, 0, 1],
-    scoreType: "cardinalVector",
+    targetScore: 2,
     startPosition: { x: 0, y: 6 },
     allowedDirections: ["upRight", "right", "downRight"],
     directionAliases: {
@@ -118,12 +117,11 @@ const STAGES = [
     boardTheme: "river",
     readyText: "Preserve properness and carefully look at the definition",
     descriptionLines: [
-      "P = F_{<\u200eא\u200e_0}(\u200eא\u200e, \u200eא\u200e_2),",
-      "χ = 1 if (\u200eא\u200e_2)^V < \u200eא\u200e_2, χ = 0 otherwise.",
+      "P = 1 if (\u200eא\u200e_2)^V < \u200eא\u200e_2, P = 0 otherwise.",
     ],
     items: [
       { type: "add", i: 0, j: 0, x: 2, y: 5, labelLines: ["Cohen"] },
-      { type: "add", i: 0, j: 0, x: 2, y: 7, labelLines: ["P"], properKey: "P" },
+      { type: "add", i: 0, j: 0, x: 2, y: 7, labelLines: ["F_{<\u200eא\u200e_0}(\u200eא\u200e_0, \u200eא\u200e_2)"], properKey: "P" },
       { type: "add", i: 0, j: 0, x: 5, y: 5, labelLines: ["random"] },
       { type: "add", i: 0, j: 0, x: 5, y: 7, labelLines: ["Namba"], properKey: "Namba" },
       {
@@ -141,7 +139,7 @@ const STAGES = [
         n: 2,
         x: 10,
         y: 6,
-        labelLines: ["χ"],
+        labelLines: ["\u200eא\u200e_P"],
         properScoreKey: "chi",
       },
     ],
@@ -209,7 +207,7 @@ function resetGame() {
   previousSnakeSegments = snake.segments.map((segment) => ({ ...segment }));
   direction = { ...DIRECTIONS.right };
   nextDirection = { ...DIRECTIONS.right };
-  score = createInitialScore();
+  score = 0;
   lastTickAt = performance.now();
   scorePopups = [];
   stageState = {};
@@ -240,7 +238,7 @@ function startGame() {
   timerId = window.setInterval(tick, TICK_MS);
 }
 
-function endGame(title = "Game Over", text = `Score ${formatScore(score)}`) {
+function endGame(title = "Game Over", text = `Score ${score}`) {
   window.clearInterval(timerId);
   isRunning = false;
   isGameOver = true;
@@ -249,7 +247,7 @@ function endGame(title = "Game Over", text = `Score ${formatScore(score)}`) {
 }
 
 function clearGame() {
-  endGame("Clear", `Score: ${formatScore(score)}; Target: ${formatScore(getCurrentStage().targetScore)}`);
+  endGame("Clear", `Score ${score} / ${getCurrentStage().targetScore}`);
   if (hasNextStage()) {
     nextStageButton.classList.remove("is-hidden");
   }
@@ -280,7 +278,7 @@ function tick() {
 
   if (isScoringItem(eatenItem)) {
     const gainedScore = getItemScore(eatenItem);
-    score = addScores(score, gainedScore);
+    score += gainedScore;
     addScorePopup(gainedScore, nextHead);
     updateScore();
   }
@@ -307,10 +305,10 @@ function tick() {
   if (isScoringItem(eatenItem)) {
     const targetScore = getCurrentStage().targetScore;
 
-    if (hasTargetScore(targetScore) && hasMetTargetScore(score, targetScore)) {
+    if (targetScore !== null && score >= targetScore) {
       clearGame();
-    } else if (hasTargetScore(targetScore) && !hasApple()) {
-      endGame("Game Over", `Score: ${formatScore(score)}; Target: ${formatScore(targetScore)}`);
+    } else if (targetScore !== null && !hasApple()) {
+      endGame("Game Over", `Score ${score} / ${targetScore}`);
     }
   }
 }
@@ -331,19 +329,18 @@ function isScoringItem(item) {
 
 function getItemScore(item) {
   if (item.type === "non") {
-    return createScoreValue(stageState.lastInvariantItem === "r" ? 100 : 1);
+    return stageState.lastInvariantItem === "r" ? 100 : 1;
   }
 
   if (item.properScoreKey === "groundAleph1") {
-    return createCardinalBasisScore(stageState.properPSelected ? 0 : 1);
+    return stageState.properPSelected ? 0 : 1;
   }
 
   if (item.properScoreKey === "chi") {
-    return createScoreValue(stageState.properNambaSelected ? 1 : 0);
+    return stageState.properNambaSelected ? 1 : 0;
   }
 
-  const expValue = getExpValue(item.k, item.n);
-  return isCardinalVectorScoreStage() ? createCardinalBasisScore(expValue) : expValue;
+  return getExpValue(item.k, item.n);
 }
 
 function hasAddEffect(item) {
@@ -532,81 +529,6 @@ function getExpValue(k, n) {
   return value;
 }
 
-function createInitialScore() {
-  return isCardinalVectorScoreStage() ? [0] : 0;
-}
-
-function createScoreValue(value) {
-  return isCardinalVectorScoreStage() ? [value] : value;
-}
-
-function createCardinalBasisScore(alephIndex) {
-  const vector = new Array(alephIndex + 2).fill(0);
-  vector[alephIndex + 1] = 1;
-  return vector;
-}
-
-function addScores(currentScore, gainedScore) {
-  if (!Array.isArray(currentScore)) {
-    return currentScore + gainedScore;
-  }
-
-  const length = Math.max(currentScore.length, gainedScore.length);
-  return Array.from({ length }, (_, index) => (currentScore[index] ?? 0) + (gainedScore[index] ?? 0));
-}
-
-function hasTargetScore(targetScore) {
-  return targetScore !== null && targetScore !== undefined;
-}
-
-function hasMetTargetScore(currentScore, targetScore) {
-  if (!Array.isArray(currentScore) || !Array.isArray(targetScore)) {
-    return currentScore >= targetScore;
-  }
-
-  const length = Math.max(currentScore.length, targetScore.length);
-
-  for (let index = length - 1; index >= 0; index -= 1) {
-    const currentValue = currentScore[index] ?? 0;
-    const targetValue = targetScore[index] ?? 0;
-
-    if (currentValue !== targetValue) {
-      return currentValue > targetValue;
-    }
-  }
-
-  return true;
-}
-
-function formatScore(value) {
-  if (!Array.isArray(value)) {
-    return String(value);
-  }
-
-  const terms = [];
-
-  for (let index = value.length - 1; index >= 1; index -= 1) {
-    const coefficient = value[index] ?? 0;
-
-    if (coefficient === 0) {
-      continue;
-    }
-
-    const cardinalTerm = `\u200eא\u200e_${index - 1}`;
-    terms.push(coefficient === 1 ? cardinalTerm : `${coefficient} ${cardinalTerm}`);
-  }
-
-  if ((value[0] ?? 0) !== 0 || terms.length === 0) {
-    terms.push(String(value[0] ?? 0));
-  }
-
-  return terms.join(" + ");
-}
-
-function isCardinalVectorScoreStage() {
-  return getCurrentStage().scoreType === "cardinalVector";
-}
-
 function setDirection(name) {
   const directionName = getStageDirectionName(name);
   const requested = DIRECTIONS[directionName];
@@ -650,10 +572,8 @@ function sameCell(first, second) {
 }
 
 function updateScore() {
-  scoreElement.textContent = formatScore(score);
-  targetScoreElement.textContent = hasTargetScore(getCurrentStage().targetScore)
-    ? formatScore(getCurrentStage().targetScore)
-    : "None";
+  scoreElement.textContent = score;
+  targetScoreElement.textContent = getCurrentStage().targetScore ?? "None";
 }
 
 function updateStageDescription() {
@@ -1111,8 +1031,8 @@ function drawScorePopups(timestamp) {
     context.lineWidth = 4;
     context.strokeStyle = "rgba(16, 21, 20, 0.9)";
     context.fillStyle = "#eef5f0";
-    context.strokeText(`+${formatScore(popup.value)}`, popup.x, y);
-    context.fillText(`+${formatScore(popup.value)}`, popup.x, y);
+    context.strokeText(`+${popup.value}`, popup.x, y);
+    context.fillText(`+${popup.value}`, popup.x, y);
     context.restore();
   });
 }
