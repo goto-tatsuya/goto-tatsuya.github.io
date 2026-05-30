@@ -122,7 +122,7 @@ const STAGES = [
     ],
     items: [
       { type: "add", i: 0, j: 0, x: 2, y: 5, labelLines: ["Cohen"] },
-      { type: "add", i: 0, j: 0, x: 2, y: 7, labelLines: ["F_{<\u200eא\u200e_0}(\u200eא\u200e_0, \u200eא\u200e_2)"], properKey: "P" },
+      { type: "add", i: 0, j: 0, x: 2, y: 7, labelLines: ["Fn_{<\u200eא\u200e_0}(\u200eא\u200e_0, \u200eא\u200e_2)"], properKey: "P" },
       { type: "add", i: 0, j: 0, x: 5, y: 5, labelLines: ["random"] },
       { type: "add", i: 0, j: 0, x: 5, y: 7, labelLines: ["Namba"], properKey: "Namba" },
       {
