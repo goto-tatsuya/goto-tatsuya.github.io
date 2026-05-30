@@ -316,6 +316,7 @@ let scorePopups;
 let stageState;
 let swipeStart = null;
 let currentCameraColumn = 0;
+let randomStageGameOverCount = 0;
 
 function resetGame() {
   window.clearInterval(timerId);
@@ -369,7 +370,7 @@ function endGame(title = "Game Over", text = `Score ${score}`) {
   isRunning = false;
   isGameOver = true;
   updateScore();
-  showOverlay(title, text, "Restart", false);
+  showOverlay(title, getGameOverText(title, text), "Restart", false);
 }
 
 function clearGame() {
@@ -873,6 +874,24 @@ function updateDirectionButtons() {
     const directionName = getStageDirectionName(button.dataset.dir);
     button.disabled = !isDirectionAllowed(directionName);
   });
+}
+
+function getGameOverText(title, text) {
+  if (title !== "Game Over" || !isRandomStage()) {
+    return text;
+  }
+
+  randomStageGameOverCount += 1;
+
+  if (randomStageGameOverCount < 3) {
+    return text;
+  }
+
+  return `${text}\n\nHint: Sometimes Add(\u200eא\u200e_0, \u200eא\u200e_50) appears. Also, once your score exceeds 100, Add(\u200eא\u200e_50, \u200eא\u200e_200) appears too.`;
+}
+
+function isRandomStage() {
+  return getCurrentStage().name === "Random Stage";
 }
 
 function showOverlay(title, text, buttonText, showNextStage = false) {
