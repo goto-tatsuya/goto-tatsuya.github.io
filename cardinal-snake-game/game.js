@@ -185,6 +185,45 @@ const STAGES = [
     ],
   },
   {
+    name: "Special: Conveyor",
+    targetScore: 20,
+    startPosition: { x: 0, y: 9 },
+    readyText: "Walls block the route. Conveyor floors force the snake to move in the arrow direction.",
+    walls: [
+      { x: 3, y: 2 },
+      { x: 3, y: 3 },
+      { x: 3, y: 4 },
+      { x: 3, y: 5 },
+      { x: 3, y: 6 },
+      { x: 8, y: 5 },
+      { x: 8, y: 6 },
+      { x: 8, y: 7 },
+      { x: 8, y: 8 },
+      { x: 8, y: 9 },
+      { x: 4, y: 8 },
+      { x: 5, y: 8 },
+      { x: 6, y: 8 },
+    ],
+    conveyors: [
+      { x: 2, y: 9, direction: "right" },
+      { x: 3, y: 9, direction: "right" },
+      { x: 4, y: 9, direction: "up" },
+      { x: 4, y: 7, direction: "right" },
+      { x: 5, y: 7, direction: "right" },
+      { x: 6, y: 7, direction: "right" },
+      { x: 7, y: 7, direction: "up" },
+      { x: 7, y: 4, direction: "left" },
+      { x: 6, y: 4, direction: "left" },
+      { x: 5, y: 4, direction: "up" },
+    ],
+    items: [
+      { type: "exp", k: 0, n: 3, x: 4, y: 6 },
+      { type: "add", i: 0, j: 8, x: 7, y: 6 },
+      { type: "exp", k: 1, n: 0, x: 7, y: 3 },
+      { type: "exp", k: 0, n: 9, x: 2, y: 2 },
+    ],
+  },
+  {
     name: "Random Stage",
     refillItems: true,
     targetScore: null,
@@ -295,7 +334,13 @@ function clearGame() {
 }
 
 function tick() {
-  direction = nextDirection;
+  const forcedDirection = getForcedDirection(snake.segments[0]);
+  direction = forcedDirection ?? nextDirection;
+
+  if (forcedDirection) {
+    nextDirection = { ...forcedDirection };
+  }
+
   previousSnakeSegments = snake.segments.map((segment) => ({ ...segment }));
   lastTickAt = performance.now();
 
@@ -566,7 +611,7 @@ function isEmptyCell(cell) {
   const onSnake = snake.segments.some((segment) => sameCell(segment, cell));
   const onItem = items.some((item) => sameCell(item, cell));
 
-  return !onSnake && !onItem;
+  return !onSnake && !onItem && !hitsWall(cell) && !getStageConveyors().some((conveyor) => sameCell(conveyor, cell));
 }
 
 function hasApple() {
@@ -575,6 +620,21 @@ function hasApple() {
 
 function getCurrentStage() {
   return STAGES[currentStageIndex];
+}
+
+function getStageWalls() {
+  return getCurrentStage().walls ?? [];
+}
+
+function getStageConveyors() {
+  return getCurrentStage().conveyors ?? [];
+}
+
+function getForcedDirection(cell) {
+  const conveyor = getStageConveyors().find((floor) => sameCell(floor, cell));
+  const directionName = conveyor?.direction;
+
+  return directionName ? DIRECTIONS[directionName] : null;
 }
 
 function getBoardColumnCount() {
@@ -640,6 +700,10 @@ function isOpposite(first, second) {
 }
 
 function hitsWall(cell) {
+  return isOutOfBounds(cell) || getStageWalls().some((wall) => sameCell(wall, cell));
+}
+
+function isOutOfBounds(cell) {
   return cell.x < 0 || cell.y < 0 || cell.x >= getBoardColumnCount() || cell.y >= ROW_COUNT;
 }
 
@@ -709,6 +773,7 @@ function hideOverlay() {
 function draw(timestamp = performance.now()) {
   context.clearRect(0, 0, canvas.width, canvas.height);
   drawBoardBackground(timestamp);
+  drawStageTerrain();
   drawGrid();
   drawItems();
   drawSnake(getMoveProgress(timestamp));
@@ -843,6 +908,70 @@ function drawGrid() {
     context.lineTo(canvas.width, position);
     context.stroke();
   }
+}
+
+function drawStageTerrain() {
+  getStageConveyors().forEach(drawConveyor);
+  getStageWalls().forEach(drawWall);
+}
+
+function drawWall(wall) {
+  const x = wall.x * GRID_SIZE;
+  const y = wall.y * GRID_SIZE;
+  const inset = 3;
+
+  context.fillStyle = "#3c4642";
+  context.fillRect(x + inset, y + inset, GRID_SIZE - inset * 2, GRID_SIZE - inset * 2);
+
+  context.fillStyle = "#242d2a";
+  for (let row = 0; row < 3; row += 1) {
+    for (let column = 0; column < 2; column += 1) {
+      const brickX = x + inset + column * 17 + (row % 2) * 8;
+      const brickY = y + inset + row * 11;
+      context.fillRect(brickX, brickY, 13, 7);
+    }
+  }
+
+  context.strokeStyle = "rgba(238, 245, 240, 0.2)";
+  context.lineWidth = 1;
+  context.strokeRect(x + inset + 0.5, y + inset + 0.5, GRID_SIZE - inset * 2 - 1, GRID_SIZE - inset * 2 - 1);
+}
+
+function drawConveyor(conveyor) {
+  const directionVector = DIRECTIONS[conveyor.direction];
+
+  if (!directionVector) {
+    return;
+  }
+
+  const centerX = conveyor.x * GRID_SIZE + GRID_SIZE / 2;
+  const centerY = conveyor.y * GRID_SIZE + GRID_SIZE / 2;
+  const inset = 5;
+  const x = conveyor.x * GRID_SIZE + inset;
+  const y = conveyor.y * GRID_SIZE + inset;
+  const size = GRID_SIZE - inset * 2;
+
+  context.fillStyle = "rgba(89, 169, 255, 0.28)";
+  context.fillRect(x, y, size, size);
+  context.strokeStyle = "rgba(185, 225, 255, 0.7)";
+  context.lineWidth = 2;
+  context.strokeRect(x + 0.5, y + 0.5, size - 1, size - 1);
+
+  context.save();
+  context.translate(centerX, centerY);
+  context.rotate(Math.atan2(directionVector.y, directionVector.x));
+  context.fillStyle = "#d8f0ff";
+  context.beginPath();
+  context.moveTo(11, 0);
+  context.lineTo(-5, -9);
+  context.lineTo(-5, -4);
+  context.lineTo(-13, -4);
+  context.lineTo(-13, 4);
+  context.lineTo(-5, 4);
+  context.lineTo(-5, 9);
+  context.closePath();
+  context.fill();
+  context.restore();
 }
 
 function drawItems() {
