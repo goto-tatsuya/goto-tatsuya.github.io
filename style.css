@@ -14,6 +14,7 @@ html {
     padding: 0;
     margin: 0;
     background: var(--bg);
+    scroll-behavior: smooth;
 }
 
 body {
@@ -56,6 +57,13 @@ div.heading img {
     border-radius: 18px;
     box-shadow: var(--shadow);
     border: 1px solid rgba(16, 50, 62, 0.08);
+    transform: perspective(700px) translateX(var(--portrait-x, 0)) rotateX(var(--portrait-rx, 0)) rotateY(var(--portrait-ry, 0));
+    transition: transform 180ms ease, box-shadow 180ms ease;
+    will-change: transform;
+}
+
+div.heading img:hover {
+    box-shadow: 0 22px 56px rgba(20, 24, 33, 0.16);
 }
 
 div.box {
@@ -107,6 +115,9 @@ nav {
     border-radius: 999px;
     padding: 0.4rem;
     box-shadow: var(--shadow);
+    position: sticky;
+    top: 0.75rem;
+    z-index: 10;
 }
 
 nav ul {
@@ -136,8 +147,71 @@ nav li a:hover {
     padding: 0.55rem 1.2rem;
     border-radius: 999px;
     letter-spacing: 0.01em;
+    transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
 }
 
 nav li a:hover {
     background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+}
+
+section {
+    scroll-margin-top: 6rem;
+}
+
+section.section-entering {
+    animation: section-enter 320ms ease-out both;
+}
+
+.scroll-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 20;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 80ms linear;
+}
+
+@keyframes section-enter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 560px) {
+    nav {
+        border-radius: 18px;
+    }
+
+    nav li a:link,
+    nav li a:visited,
+    nav li a:hover {
+        padding-inline: 0.85rem;
+    }
+
+    section {
+        scroll-margin-top: 8rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }
