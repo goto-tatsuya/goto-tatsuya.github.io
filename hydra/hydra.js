@@ -51,7 +51,7 @@ function findPathFromCoordinate(hydra, x, y) {
         let dx = x - x2;
         let dy = y - y2;
         let d = Math.sqrt(dx * dx + dy * dy);
-        if (found == null && d < found_dist) {
+        if (d < found_dist) {
             found = path;
             found_dist = d;
         }
@@ -615,6 +615,14 @@ Runner.run(runner, engine);
 let g_mouseX, g_mouseY, g_clicked = false;
 let g_droppedX = null, g_droppedY = null;
 
+function getCanvasPosition(canvas, e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: (e.clientX - rect.left) * canvas.width / rect.width,
+        y: (e.clientY - rect.top) * canvas.height / rect.height
+    };
+}
+
 function main() {
     const canvas = document.getElementById("maincanvas");
     const ctx = canvas.getContext("2d");
@@ -626,8 +634,9 @@ function main() {
         g_clicked = false;
     }, 33);
     canvas.addEventListener("mousemove", (e) => {
-        g_mouseX = e.offsetX;
-        g_mouseY = e.offsetY;
+        const pos = getCanvasPosition(canvas, e);
+        g_mouseX = pos.x;
+        g_mouseY = pos.y;
     });
     canvas.addEventListener("click", (e) => {
         g_clicked = true;
@@ -649,8 +658,11 @@ document.getElementById("generate").addEventListener("click", () => {
     g_state = new StateBeginning(parse_tree(str), 0);
 });
 document.getElementById("maincanvas").addEventListener("drop", (e) => {
-    g_droppedX = e.offsetX
-    g_droppedY = e.offsetY;
+    e.preventDefault();
+    const canvas = e.currentTarget;
+    const pos = getCanvasPosition(canvas, e);
+    g_droppedX = pos.x;
+    g_droppedY = pos.y;
 });
 document.getElementById("maincanvas").addEventListener("dragover", (e) => {
     e.preventDefault();
