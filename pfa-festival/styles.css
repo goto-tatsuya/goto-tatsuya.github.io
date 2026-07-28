@@ -317,6 +317,7 @@ h1 .outline { color: transparent; -webkit-text-stroke: 2px var(--ivory); }
   grid-template-columns: 1fr minmax(360px, .75fr);
   gap: clamp(64px, 10vw, 140px);
   align-items: center;
+  background: var(--ivory);
 }
 .join-copy { max-width: 580px; margin: 34px 0 0; line-height: 2; }
 .join-card { padding: 38px; color: var(--ivory); background: var(--navy); box-shadow: 18px 18px 0 var(--red); }
