@@ -305,6 +305,16 @@ h1 .outline { color: transparent; -webkit-text-stroke: 2px var(--ivory); }
 .program-date span { color: rgba(255,248,231,.64); font-size: .78rem; }
 .program-content h3 { margin: 8px 0 9px; font-size: clamp(1.2rem, 2vw, 1.55rem); }
 .program-content p { max-width: 660px; margin: 0; color: rgba(255,248,231,.68); font-size: .88rem; line-height: 1.7; }
+.program-item--detailed { align-items: start; }
+.program-details {
+  max-width: 720px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,248,231,.18);
+}
+.program-details p { line-height: 1.9; }
+.program-details p + p { margin-top: 18px; }
+.program-details strong { color: var(--pale); }
 .note { margin: 24px 0 0; color: rgba(255,248,231,.52); font-size: .76rem; }
 .ticker { overflow: hidden; color: var(--navy); background: var(--red); }
 .ticker div { display: flex; width: max-content; padding: 21px 0; animation: marquee 34s linear infinite; }
