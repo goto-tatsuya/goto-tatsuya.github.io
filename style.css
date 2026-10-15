@@ -163,17 +163,6 @@ section.section-entering {
     animation: section-enter 320ms ease-out both;
 }
 
-.scroll-progress {
-    position: fixed;
-    inset: 0 0 auto;
-    z-index: 20;
-    height: 3px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 80ms linear;
-}
-
 @keyframes section-enter {
     from {
         opacity: 0;
